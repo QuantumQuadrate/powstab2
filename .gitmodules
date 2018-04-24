@@ -1,3 +1,6 @@
 [submodule "ads1256"]
 	path = ads1256
 	url = https://github.com/QuantumQuadrate/ads1256.git
+[submodule "dac8532"]
+	path = dac8532
+	url = https://github.com/QuantumQuadrate/dac8532.git
