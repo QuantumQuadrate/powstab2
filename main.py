@@ -3,7 +3,7 @@ import ConfigParser
 import logging
 import time
 import RPi.GPIO as GPIO
-import ADS1256
+import ads1256.ADS1256 as ads
 from worker_K10CR1 import WK10CR1
 from worker_DAC8532 import WDAC8532
 
@@ -11,32 +11,37 @@ from worker_DAC8532 import WDAC8532
 class RPiNE(object):
 
     def __init__(self, config_path='', logger=None):
-        self.logger = logger or logging.getLogger(__name__)
-        self.config = ConfigParser(os.path.join(config_path, 'config.cfg'))
+        if logger is None:
+            self.configure_logger()
+        else:
+            self.logger = logging.getLogger(__name__)
+        self.config = ConfigParser.ConfigParser()
+        self.config.read(os.path.join(config_path, 'config.cfg'))
         self.configure()
 
     def configure(self):
         self.max_channels = self.config.getint('MAIN', 'MaxChannels')
         self.channels = [None]*self.max_channels
         self.set_points = [None]*self.max_channels
-        self.configure_logger()
         self.configure_adc()
         self.configure_workers()
         self.configure_triggers()
 
     def configure_adc(self):
-        self.adc = ADS1256.ADS1256()
+        pass
 
     def configure_triggers(self):
+        GPIO.setmode(GPIO.BOARD)  # define the pin numbering (i think)
         trig_pin_list = []
         for ch in range(self.max_channels):
             # register trig pin for channel
-            trig_pin = self.config.get('CHANNEL{}'.format(ch), 'TrigPin')
+            trig_pin = self.config.getint('CHANNEL{}'.format(ch), 'TrigPin')
             if trig_pin in trig_pin_list:
                 msg = 'Duplicate trigger definition detected: `{}`.'
                 self.logger.warning(msg.format(trig_pin))
             else:
                 trig_pin_list.append(trig_pin)
+                GPIO.setup(trig_pin, GPIO.IN)
                 msg = 'Channel `{}` using trigger pin: `{}`.'
                 self.logger.info(msg.format(ch, trig_pin))
             GPIO.add_event_detect(trig_pin, GPIO.RISING, callback=self.take_channel_reading(ch))
@@ -46,10 +51,11 @@ class RPiNE(object):
             self.channels[ch] = None  # in case this gets called twice
             # setup the correct worker type for each feedback channel
             fb_type = self.config.get('CHANNEL{}'.format(ch), 'FeedbackDevice')
+            wname = 'NE_CH{}_{}'.format(ch, fb_type)
             if fb_type == WK10CR1.type:
-                self.channels[ch] = WK10CR1(self.config)
+                self.channels[ch] = WK10CR1(wname, self.config)
             if fb_type == WDAC8532.type:
-                self.channels[ch] = WDAC8532(self.config)
+                self.channels[ch] = WDAC8532(wname, self.config)
 
             if self.channels[ch] is None:
                 msg = 'No feedback device specified for channel `{}`.'
@@ -58,37 +64,37 @@ class RPiNE(object):
                 msg = 'Channel `{}` using `{}`.'
                 self.logger.info(msg.format(ch, fb_type))
 
-    def configure_logging(self):
-        pass
+    def configure_logger(self):
+        self.logger = logging.getLogger()
+        self.logger.setLevel(logging.DEBUG)
+        ch = logging.StreamHandler()
+        ch.setLevel(logging.DEBUG)  # change to info later
+        formatter = logging.Formatter('%(asctime)s:%(name)s:%(levelname)s: %(message)s')
+        ch.setFormatter(formatter)
+        self.logger.addHandler(ch)
+        self.logger.info('new logger initialized')
 
-    def prepare_adc(self, chan, h_chan, l_chan):
-        # set up the mux to read the correct channels
-        self.adc.SetInputMux(h_chan, l_chan)
-        # wait for the mux to settle if necessary
-        time.sleep(self.config.getfloat('MAIN'.format(chan), 'MuxSettleTimeSec'))
-
-    def read_fixed_cycles(self, cycles):
+    def read_fixed_cycles(self, channel, log2_cycles):
         ref_time = time.time()
-        datalist = []
-        # dummy read to clear any accumulated charge
-        self.adc.ReadADC()
         try:
-            for i in xrange(cycles):
-                datalist.append(self.adc.ReadADC())
-            result = float(sum(datalist))/float(cycles)
+            result = ads.read_diff(channel, log2_cycles)
         except:
             self.logger.exception('Problem when trying to read analog input')
             result = None
         return {'time': ref_time, 'average': result}
 
-    def read_fixed_time(self, time_ms):
+    def read_fixed_time(self, channel, time_ms):
         ref_time = time.time()
-        try:
-            result = self.adc.ReadADCc(float(time_ms)/1000.0)
-        except:
-            self.logger.exception('Problem when trying to read analog input')
-            result = None
-        return {'time': ref_time, 'average': result}
+        time_unit = 1000.0/float(ads.MAX_DATA_RATE)  # minimum sample time in ms
+        log2_cycles = 0
+        for i in range(15):
+            time_unit *= 2
+            if time_unit > time_ms:
+                time_ms = time_unit/2
+                log2_cycles = i
+                break
+        self.logger.debug("Using `{}` for `{}` ms.".format(log2_cycles, time_ms))
+        return self.read_fixed_cycles(channel, log2_cycles)
 
     def start_workers(self):
         for ch in self.channels:
@@ -121,14 +127,17 @@ class RPiNE(object):
                 read_param = 1
             read_method = self.read_fixed_cycles
 
-        def read_callback():
-            self.prepare_adc(chan, adc_high_ch, adc_low_ch)
-            result = read_method(read_param)
+        def read_callback(trig_chan):
+            self.logger.debug('Trigger for channel `{}` detected.'.format(chan))
+            result = read_method(chan, read_param)
+            self.logger.debug('ADC read result `{}`.'.format(result))
             try:
                 self.channels[chan].addToQueue(result)
             except:
                 msg = 'Problem adding result: `{}` to worker queue for channel: `{}`'
                 self.logger.exception(msg.format(result, chan))
+
+        return read_callback
 
 
 if __name__ == "__main__":

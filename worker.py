@@ -5,7 +5,7 @@ class Worker(object):
     type = ''
 
     def __init__(self, wname, config, logger=None):
-        self.wname
+        self.wname = wname
         self.config = config
         self.logger = logger or logging.getLogger(__name__)
 
