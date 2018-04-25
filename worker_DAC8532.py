@@ -9,6 +9,7 @@ class WDAC8532(Worker):
         self.output = 5  # start rf attentuator open all the way (5 V)
         if self.address > 1 or self.address < 0:
             self.logger.error('DAC8532 address: `{}` is out of range.'.format(self.address))
+        self.update_output()  # push starting output to dac
 
     def update_output(self):
         try:

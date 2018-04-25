@@ -10,8 +10,7 @@ class Worker(object):
         self.wname = 'NE_CH{}_{}'.format(channel, self.type)
         self.config = config
         self.logger = logger or logging.getLogger(__name__)
-        self.pid = PID()  # TODO: initilize with PID values from config
-        self.pid.setWindup(0)  # cancels build up of integral error on large SP changes to prevent overshoots
+        self.setup_pid()
         self.ready = True
         self.output = 0  # TODO: initialize with reasonable start value from config
         # could also read current state from device
@@ -22,6 +21,18 @@ class Worker(object):
     def setup(self):
         "override for actuator specific initilization"
         pass
+
+    def setup_pid(self):
+        section = 'CHANNEL{}'.format(self.channel)
+        kp = self.config.getfloat(section, 'Kp')
+        ki = self.config.getfloat(section, 'Ki')
+        kd = self.config.getfloat(section, 'Kd')
+        tau_s = self.config.getfloat(section, 'TauS')
+        invert = self.config.getboolean(section, 'Invert')
+        set_point = self.config.getboolean(section, 'SetPointV')
+        self.pid = PID(P=kp, I=ki, D=kd, invert=invert)
+        self.update_setpoint(set_point)
+        self.pid.setFiniteFilter(tau_s)
 
     def start(self):
         "override to start a worker in a new process if feedback device takes a while."
@@ -41,6 +52,7 @@ class Worker(object):
 
     def update_setpoint(self, sp):
         self.pid.SetPoint = sp
+        self.pid.clear()
 
     def update_pid(self, p=None, i=None, d=None):
         if p is not None:
