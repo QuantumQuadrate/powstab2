@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import os.path
 import ConfigParser
 import logging
@@ -127,8 +129,10 @@ class RPiNE(object):
             read_method = self.read_fixed_cycles
 
         def read_callback(trig_chan):
+            ttime = time.time()
             self.logger.debug('Trigger for channel `{}` detected.'.format(chan))
             result = read_method(chan, read_param)
+            dt_trig_read = time.time() - ttime
             self.logger.debug('ADC read result `{}`.'.format(result))
             try:
                 self.channels[chan].update(result)

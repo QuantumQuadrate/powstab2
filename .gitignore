@@ -102,3 +102,6 @@ ENV/
 
 # config file
 config.cfg
+
+nohup.out
+*.dat

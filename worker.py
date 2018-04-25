@@ -28,9 +28,9 @@ class Worker(object):
         ki = self.config.getfloat(section, 'Ki')
         kd = self.config.getfloat(section, 'Kd')
         tau_s = self.config.getfloat(section, 'TauS')
-        invert = self.config.getboolean(section, 'Invert')
-        set_point = self.config.getboolean(section, 'SetPointV')
-        self.pid = PID(P=kp, I=ki, D=kd, invert=invert)
+        self.invert = self.config.getboolean(section, 'Invert')
+        set_point = self.config.getfloat(section, 'SetPointV')
+        self.pid = PID(P=kp, I=ki, D=kd)
         self.update_setpoint(set_point)
         self.pid.setFiniteFilter(tau_s)
 
@@ -43,8 +43,13 @@ class Worker(object):
         input = input_obj['average']
         if self.ready:
             self.ready = False
-            self.delta = self.pid.update(input)
-            self.output += self.delta
+            self.pid.update(input)
+            out = self.pid.output
+            if self.invert:
+                out *= -1.0
+            self.delta = out
+            self.output += out
+            self.logger.debug('output: `{}`'.format(self.output))
             # when done updating output set self.ready to True
             self.update_output()
         else:
