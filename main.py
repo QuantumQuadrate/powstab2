@@ -51,11 +51,10 @@ class RPiNE(object):
             self.channels[ch] = None  # in case this gets called twice
             # setup the correct worker type for each feedback channel
             fb_type = self.config.get('CHANNEL{}'.format(ch), 'FeedbackDevice')
-            wname = 'NE_CH{}_{}'.format(ch, fb_type)
             if fb_type == WK10CR1.type:
-                self.channels[ch] = WK10CR1(wname, self.config)
+                self.channels[ch] = WK10CR1(ch, self.config)
             if fb_type == WDAC8532.type:
-                self.channels[ch] = WDAC8532(wname, self.config)
+                self.channels[ch] = WDAC8532(ch, self.config)
 
             if self.channels[ch] is None:
                 msg = 'No feedback device specified for channel `{}`.'
@@ -132,7 +131,7 @@ class RPiNE(object):
             result = read_method(chan, read_param)
             self.logger.debug('ADC read result `{}`.'.format(result))
             try:
-                self.channels[chan].addToQueue(result)
+                self.channels[chan].update(result)
             except:
                 msg = 'Problem adding result: `{}` to worker queue for channel: `{}`'
                 self.logger.exception(msg.format(result, chan))
