@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 from origin.client.origin_subscriber import Subscriber
 from origin import TIMESTAMP
 import time

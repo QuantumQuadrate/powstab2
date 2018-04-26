@@ -33,7 +33,6 @@ def pid_poller_loop(sub_addr, queue, log):
         # process new command messages from the parent process
         try:
             cmd = queue.get_nowait()
-            log.debug('hi!')
             log.info(cmd)
             if cmd['action'] == 'SHUTDOWN':
                 break
@@ -85,9 +84,9 @@ def pid_poller_loop(sub_addr, queue, log):
                         # if it doesn't make a new controller
                         fb_type = result['config'].get(result['name'], 'FeedbackDevice')
                         if fb_type == WK10CR1.type:
-                            pids[pid_ctrl_name] = WK10CR1(result['channel'], result['config'])
+                            pids[pid_ctrl_name] = WK10CR1(result['channel'], result['config'], logger=log)
                         if fb_type == WDAC8532.type:
-                            pids[pid_ctrl_name] = WDAC8532(result['channel'], result['config'])
+                            pids[pid_ctrl_name] = WDAC8532(result['channel'], result['config'], logger=log)
                     # update with new info
                     try:
                         pids[pid_ctrl_name].update(result)
