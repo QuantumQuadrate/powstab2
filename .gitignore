@@ -102,6 +102,8 @@ ENV/
 
 # config file
 config.cfg
+# origin config
+origin-server.cfg
 
 nohup.out
 *.dat
