@@ -40,7 +40,8 @@ class Worker(object):
 
     def update(self, input_obj):
         # do the PID stuff
-        input = input_obj['average']
+        # TODO: use actual timestamp from data
+        input = input_obj['measurement']
         if self.ready:
             self.ready = False
             self.pid.update(input)

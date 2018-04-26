@@ -82,7 +82,7 @@ class RPiNE(object):
         except:
             self.logger.exception('Problem when trying to read analog input')
             result = None
-        return {'time': ref_time, 'average': result}
+        return {'time': ref_time, 'measurement': result}
 
     def read_fixed_time(self, channel, time_ms):
         ref_time = time.time()
