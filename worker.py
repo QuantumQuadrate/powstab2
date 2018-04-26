@@ -30,9 +30,11 @@ class Worker(object):
         tau_s = self.config.getfloat(section, 'TauS')
         self.invert = self.config.getboolean(section, 'Invert')
         set_point = self.config.getfloat(section, 'SetPointV')
+        self.max_error = self.config.getfloat(section, 'MaxErrorV')
         self.pid = PID(P=kp, I=ki, D=kd)
         self.update_setpoint(set_point)
         self.pid.setFiniteFilter(tau_s)
+        self.error_sig = False
 
     def start(self):
         "override to start a worker in a new process if feedback device takes a while."
@@ -53,8 +55,14 @@ class Worker(object):
             self.logger.debug('output: `{}`'.format(self.output))
             # when done updating output set self.ready to True
             self.update_output()
+            if abs(self.pid.last_error) > self.max_error:
+                self.error_sig = True
+            else:
+                self.error_sig = False
         else:
             self.logger.warning('Recieved new input while busy updating the setpoint.')
+        return self.error_sig
+
 
     def update_setpoint(self, sp):
         self.pid.SetPoint = sp

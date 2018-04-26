@@ -2,6 +2,7 @@ import zmq
 import multiprocessing
 import sys
 import json
+import RPi.GPIO as GPIO
 from worker_K10CR1 import WK10CR1
 from worker_DAC8532 import WDAC8532
 
@@ -24,6 +25,9 @@ def pid_poller_loop(sub_addr, queue, log):
     # the hash is the data stream filter, the value is a list of callbacks
     subscriptions = {}
     pids = {}
+    error_pin = 36  # GPIO pin number for error signal output
+    GPIO.setmode(GPIO.BOARD)  # define the pin numbering (i think)
+    GPIO.setup(error_pin, GPIO.OUT)
     context = zmq.Context()
     sub_sock = context.socket(zmq.SUB)
     # listen for one second, before doing housekeeping
@@ -82,14 +86,16 @@ def pid_poller_loop(sub_addr, queue, log):
                     # check if pid controller exists
                     if pid_ctrl_name not in pids:
                         # if it doesn't make a new controller
+                        pids[pid_ctrl_name] = {'err_state': False}
+                        pid_dict = pids[pid_ctrl_name]
                         fb_type = result['config'].get(result['name'], 'FeedbackDevice')
                         if fb_type == WK10CR1.type:
-                            pids[pid_ctrl_name] = WK10CR1(result['channel'], result['config'], logger=log)
+                            pid_dict['pid'] = WK10CR1(result['channel'], result['config'], logger=log)
                         if fb_type == WDAC8532.type:
-                            pids[pid_ctrl_name] = WDAC8532(result['channel'], result['config'], logger=log)
-                    # update with new info
+                            pid_dict['pid'] = WDAC8532(result['channel'], result['config'], logger=log)
+                    # update with new info, save error state
                     try:
-                        pids[pid_ctrl_name].update(result)
+                        pid_dict['err_state'] = pids[pid_ctrl_name]['pid'].update(result)
                     except:
                         log.exception('Unhandled server exception in pid: `{}`'.format(pid_ctrl_name))
 
@@ -97,6 +103,13 @@ def pid_poller_loop(sub_addr, queue, log):
                 msg = "An unrecognized streamID `{}` was encountered"
                 log.error(msg.format(streamID))
                 log.error(subscriptions)
+
+            # or all pid error states and set error pin accordingly
+            global_err_state = False
+            for ch in pids:
+                global_err_state = global_err_state or pids[ch]['err_state']
+            GPIO.output(error_pin, global_err_state)
+
         except zmq.ZMQError as e:
             if e.errno != zmq.EAGAIN:
                 log.exception("zmq error encountered")
