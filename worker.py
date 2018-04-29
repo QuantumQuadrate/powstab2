@@ -46,8 +46,7 @@ class Worker(object):
         input = input_obj['measurement']
         if self.ready:
             self.ready = False
-            self.pid.update(input)
-            out = self.pid.output
+            out = self.pid.update(input)
             if self.invert:
                 out *= -1.0
             self.delta = out

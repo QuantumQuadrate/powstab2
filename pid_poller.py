@@ -28,6 +28,7 @@ def pid_poller_loop(sub_addr, queue, log):
     error_pin = 36  # GPIO pin number for error signal output
     GPIO.setmode(GPIO.BOARD)  # define the pin numbering (i think)
     GPIO.setup(error_pin, GPIO.OUT)
+    GPIO.output(error_pin, False)
     context = zmq.Context()
     sub_sock = context.socket(zmq.SUB)
     # listen for one second, before doing housekeeping
@@ -89,6 +90,7 @@ def pid_poller_loop(sub_addr, queue, log):
                         pids[pid_ctrl_name] = {'err_state': False}
                         pid_dict = pids[pid_ctrl_name]
                         fb_type = result['config'].get(result['name'], 'FeedbackDevice')
+                        log.debug('recieved first instance from channel: {} type: {}'.format(pid_ctrl_name, fb_type))
                         if fb_type == WK10CR1.type:
                             pid_dict['pid'] = WK10CR1(result['channel'], result['config'], logger=log)
                         if fb_type == WDAC8532.type:
@@ -108,7 +110,9 @@ def pid_poller_loop(sub_addr, queue, log):
             global_err_state = False
             for ch in pids:
                 global_err_state = global_err_state or pids[ch]['err_state']
-            GPIO.output(error_pin, global_err_state)
+                if pids[ch]['err_state']:
+                    log.info('{} is bad and should feel bad'.format(ch))
+            GPIO.output(error_pin, False) #global_err_state)
 
         except zmq.ZMQError as e:
             if e.errno != zmq.EAGAIN:
@@ -119,3 +123,4 @@ def pid_poller_loop(sub_addr, queue, log):
     log.info('Shutting down poller loop.')
     sub_sock.close()
     context.term()
+    GPIO.cleanup()

@@ -13,7 +13,7 @@ class WK10CR1(Worker):
         # setup thread for actuator since moving rotator can take some time
         self.restart = threading.Event()  # make an event for unpausing execution thread
         self.thread = threading.Thread(target=self.loop, name=self.wname)
-        self.thread.setDaemon()  # stop thread on exit of main program
+        self.thread.daemon = True  # stop thread on exit of main program
         self.thread.start()
 
     def update_output(self):
@@ -26,5 +26,5 @@ class WK10CR1(Worker):
             self.restart.wait()  # wait for event from main thread
             msg = '{}: Pushing new output to rotator: {}'
             self.logger.info(msg.format(self.wname, self.ser_num))
-            self.motor.moverel(self.output)
+            self.motor.moverel(self.delta)
             self.ready = True  # let the controller know it can accept new inputs
