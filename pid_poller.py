@@ -25,7 +25,7 @@ def pid_poller_loop(sub_addr, queue, log):
     # the hash is the data stream filter, the value is a list of callbacks
     subscriptions = {}
     pids = {}
-    error_pin = 36  # GPIO pin number for error signal output
+    error_pin = 10  # GPIO pin number for error signal output
     GPIO.setmode(GPIO.BOARD)  # define the pin numbering (i think)
     GPIO.setup(error_pin, GPIO.OUT)
     GPIO.output(error_pin, False)
@@ -112,7 +112,7 @@ def pid_poller_loop(sub_addr, queue, log):
                 global_err_state = global_err_state or pids[ch]['err_state']
                 if pids[ch]['err_state']:
                     log.info('{} is bad and should feel bad'.format(ch))
-            GPIO.output(error_pin, False) #global_err_state)
+            GPIO.output(error_pin, global_err_state)
 
         except zmq.ZMQError as e:
             if e.errno != zmq.EAGAIN:
