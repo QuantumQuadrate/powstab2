@@ -6,6 +6,7 @@ import RPi.GPIO as GPIO
 from worker_K10CR1 import WK10CR1
 from worker_DAC8532 import WDAC8532
 
+PWM = True 
 
 def pid_poller_loop(sub_addr, queue, log):
     '''This is a modified version of the default subscription poller loop that adds in feedback
@@ -25,10 +26,16 @@ def pid_poller_loop(sub_addr, queue, log):
     # the hash is the data stream filter, the value is a list of callbacks
     subscriptions = {}
     pids = {}
-    error_pin = 10  # GPIO pin number for error signal output
     GPIO.setmode(GPIO.BOARD)  # define the pin numbering (i think)
-    GPIO.setup(error_pin, GPIO.OUT)
-    GPIO.output(error_pin, False)
+    # TODO: read off of config [MAIN]
+    if not PWM:
+        error_pin = 10  # GPIO pin number for error signal output
+        GPIO.setup(error_pin, GPIO.OUT)
+        GPIO.output(error_pin, False)
+    else:
+        error_pin = 12  # GPIO pin number for error signal output
+        GPIO.setup(error_pin, GPIO.OUT)
+        pwm_ch = GPIO.PWM(error_pin, 1000)  # GPIO pin number for hardware PWM
     context = zmq.Context()
     sub_sock = context.socket(zmq.SUB)
     # listen for one second, before doing housekeeping
@@ -80,7 +87,7 @@ def pid_poller_loop(sub_addr, queue, log):
         try:
             [streamID, content] = sub_sock.recv_multipart()
             try:
-                log.info("new data")
+                log.debug("new data")
                 for cb in subscriptions[streamID]:
                     result = cb['callback'](streamID, json.loads(content), log, **cb['kwargs'])
                     pid_ctrl_name = result['name']
@@ -112,7 +119,13 @@ def pid_poller_loop(sub_addr, queue, log):
                 global_err_state = global_err_state or pids[ch]['err_state']
                 if pids[ch]['err_state']:
                     log.info('{} is bad and should feel bad'.format(ch))
-            GPIO.output(error_pin, global_err_state)
+            if not PWM:
+                GPIO.output(error_pin, global_err_state)
+            else:
+                if global_err_state:
+                    pwm_ch.start(50.)  # 50% duty cycle pwm output
+                else:
+                    pwm_ch.stop()
 
         except zmq.ZMQError as e:
             if e.errno != zmq.EAGAIN:

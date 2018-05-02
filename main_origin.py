@@ -4,10 +4,17 @@ from origin.client.origin_subscriber import Subscriber
 from origin import TIMESTAMP
 import time
 import logging
+import signal
+import sys
 import ConfigParser
 import pid_poller
 from worker_K10CR1 import WK10CR1
 from worker_DAC8532 import WDAC8532
+
+
+def sigterm_handler(_signo, _stack_frame):
+    # from https://stackoverflow.com/a/24574672
+    sys.exit(0)
 
 
 def stream_callback(stream_id, data, log, calibration=1, field='', name='', channel=''):
@@ -28,14 +35,21 @@ def stream_callback(stream_id, data, log, calibration=1, field='', name='', chan
 # I could open a subscriber object for each channel which would multi-process
 # the actuators
 if __name__ == '__main__':
+    # setup a catch for SIGTERM so process can be killed gracefully in the background
+    signal.signal(signal.SIGTERM, sigterm_handler)
+
     # setup logging
     logger = logging.getLogger(__name__)
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
     ch = logging.StreamHandler()
-    ch.setLevel(logging.INFO)
+    ch.setLevel(logging.WARNING)
+    fh = logging.FileHandler('pid.log')
+    fh.setLevel(logging.INFO)
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     ch.setFormatter(formatter)
+    fh.setFormatter(formatter)
     logger.addHandler(ch)
+    logger.addHandler(fh)
     logger.info('Started logging')
 
     # 12b 5V ADC calibration
@@ -87,6 +101,6 @@ if __name__ == '__main__':
     try:
         while True:
             time.sleep(2)
-    except KeyboardInterrupt:
+    finally: 
         sub.close()
         logger.info('closing')

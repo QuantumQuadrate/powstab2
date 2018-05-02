@@ -1,4 +1,5 @@
 import logging
+import time
 from ivPID import PID
 
 
@@ -17,6 +18,8 @@ class Worker(object):
         self.delta = 0  # in case an actuator needs a differential output
         self.address = self.config.getint('CHANNEL{}'.format(channel), 'Address')
         self.setup()
+        self.last_update = time.time()
+        self.last_pos_log = time.time()
 
     def setup(self):
         "override for actuator specific initilization"
@@ -44,14 +47,20 @@ class Worker(object):
         # do the PID stuff
         # TODO: use actual timestamp from data
         input = input_obj['measurement']
-        if self.ready:
+        # if we end up in a wierd state where the ready pin does get set back then just continue
+        if self.ready or (time.time()-self.last_update) > 10:
             self.ready = False
+            self.last_update = time.time()
             out = self.pid.update(input)
             if self.invert:
                 out *= -1.0
             self.delta = out
             self.output += out
-            self.logger.debug('output: `{}`'.format(self.output))
+            if time.time() - self.last_pos_log > 15:
+                self.logger.info('[{}] output: `{}`'.format(self.wname, self.output))
+                self.last_pos_log = time.time()
+            else:
+                self.logger.debug('[{}] output: `{}`'.format(self.wname, self.output))
             # when done updating output set self.ready to True
             self.update_output()
             if abs(self.pid.last_error) > self.max_error:

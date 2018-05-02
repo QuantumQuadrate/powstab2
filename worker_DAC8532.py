@@ -12,11 +12,15 @@ class WDAC8532(Worker):
         self.update_output()  # push starting output to dac
 
     def update_output(self):
+        if self.output > 5.0:
+            out = 5.0
+        else:
+            out = self.output
         try:
             # TODO: check return value to see if output is out of range
             # if it is propagate it back here so that if the controller rails
             # it doesn't just keep accumulating a non-physical output.
-            dac.set_voltage(self.address, self.output)
+            dac.set_voltage(self.address, out)
         except IOError:
             self.exception('A communication issue occured updating the DAC. Reverting output variable.')
             self.output -= self.delta

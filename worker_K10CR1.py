@@ -25,6 +25,6 @@ class WK10CR1(Worker):
         while True:
             self.restart.wait()  # wait for event from main thread
             msg = '{}: Pushing new output to rotator: {}'
-            self.logger.info(msg.format(self.wname, self.ser_num))
+            self.logger.debug(msg.format(self.wname, self.ser_num))
             self.motor.moverel(self.delta)
             self.ready = True  # let the controller know it can accept new inputs
