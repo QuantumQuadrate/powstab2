@@ -118,7 +118,7 @@ def pid_poller_loop(sub_addr, queue, log):
             for ch in pids:
                 global_err_state = global_err_state or pids[ch]['err_state']
                 if pids[ch]['err_state']:
-                    log.info('{} is bad and should feel bad'.format(ch))
+                    log.info('{} is bad and should feel bad: err {:05.3f}'.format(ch, pids[ch]['pid'].pid.last_error))
             if not PWM:
                 GPIO.output(error_pin, global_err_state)
             else:

@@ -63,6 +63,7 @@ class Worker(object):
                 self.logger.debug('[{}] output: `{}`'.format(self.wname, self.output))
             # when done updating output set self.ready to True
             self.update_output()
+            self.logger.debug('error {:05.3f}, max error {:05.3f}'.format(self.pid.last_error, self.max_error))
             if abs(self.pid.last_error) > self.max_error:
                 self.error_sig = True
             else:
