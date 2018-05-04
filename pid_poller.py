@@ -95,16 +95,15 @@ def pid_poller_loop(sub_addr, queue, log):
                     if pid_ctrl_name not in pids:
                         # if it doesn't make a new controller
                         pids[pid_ctrl_name] = {'err_state': False}
-                        pid_dict = pids[pid_ctrl_name]
                         fb_type = result['config'].get(result['name'], 'FeedbackDevice')
                         log.debug('recieved first instance from channel: {} type: {}'.format(pid_ctrl_name, fb_type))
                         if fb_type == WK10CR1.type:
-                            pid_dict['pid'] = WK10CR1(result['channel'], result['config'], logger=log)
+                            pids[pid_ctrl_name]['pid'] = WK10CR1(result['channel'], result['config'], logger=log)
                         if fb_type == WDAC8532.type:
-                            pid_dict['pid'] = WDAC8532(result['channel'], result['config'], logger=log)
+                            pids[pid_ctrl_name]['pid'] = WDAC8532(result['channel'], result['config'], logger=log)
                     # update with new info, save error state
                     try:
-                        pid_dict['err_state'] = pids[pid_ctrl_name]['pid'].update(result)
+                        pids[pid_ctrl_name]['err_state'] = pids[pid_ctrl_name]['pid'].update(result)
                     except:
                         log.exception('Unhandled server exception in pid: `{}`'.format(pid_ctrl_name))
 

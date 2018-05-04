@@ -57,19 +57,25 @@ class Worker(object):
             self.delta = out
             self.output += out
             if time.time() - self.last_pos_log > 15:
-                self.logger.info('[{}] output: `{}`'.format(self.wname, self.output))
+                self.logger.info('[{}] input: `{:.3f}`, error: `{:.3f}`, output: `{:.3f}`'.format(
+                    self.wname,
+                    input,
+                    self.pid.last_error,
+                    self.output
+                ))
                 self.last_pos_log = time.time()
             else:
-                self.logger.debug('[{}] output: `{}`'.format(self.wname, self.output))
+                self.logger.debug('[{}] output: `{:.3f}`'.format(self.wname, self.output))
             # when done updating output set self.ready to True
             self.update_output()
-            self.logger.debug('error {:05.3f}, max error {:05.3f}'.format(self.pid.last_error, self.max_error))
-            if abs(self.pid.last_error) > self.max_error:
-                self.error_sig = True
-            else:
-                self.error_sig = False
+            self.logger.debug('[{}] error {:05.3f}, max error {:05.3f}'.format(self.wname, self.pid.last_error, self.max_error))
         else:
-            self.logger.warning('Recieved new input while busy updating the setpoint.')
+            self.logger.warning('[{}] Recieved new input while busy updating the setpoint.'.format(self.wname))
+
+        if abs(input - self.pid.SetPoint) > self.max_error:
+            self.error_sig = True
+        else:
+            self.error_sig = False
         return self.error_sig
 
 
