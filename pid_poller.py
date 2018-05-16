@@ -36,11 +36,13 @@ def pid_poller_loop(sub_addr, queue, log):
         error_pin = 12  # GPIO pin number for error signal output
         GPIO.setup(error_pin, GPIO.OUT)
         pwm_ch = GPIO.PWM(error_pin, 1000)  # GPIO pin number for hardware PWM
+        pwm_ch.start(0.)
     context = zmq.Context()
     sub_sock = context.socket(zmq.SUB)
     # listen for one second, before doing housekeeping
     sub_sock.setsockopt(zmq.RCVTIMEO, 1000)
     sub_sock.connect(sub_addr)
+    global_err_state = False
     while True:
         # process new command messages from the parent process
         try:
@@ -113,18 +115,22 @@ def pid_poller_loop(sub_addr, queue, log):
                 log.error(subscriptions)
 
             # or all pid error states and set error pin accordingly
+            last_g_err_state = global_err_state
             global_err_state = False
             for ch in pids:
                 global_err_state = global_err_state or pids[ch]['err_state']
                 if pids[ch]['err_state']:
                     log.info('{} is bad and should feel bad: err {:05.3f}'.format(ch, pids[ch]['pid'].pid.last_error))
-            if not PWM:
-                GPIO.output(error_pin, global_err_state)
-            else:
-                if global_err_state:
-                    pwm_ch.start(50.)  # 50% duty cycle pwm output
+
+            if global_err_state != last_g_err_state:
+                if not PWM:
+                    GPIO.output(error_pin, global_err_state)
                 else:
-                    pwm_ch.stop()
+                    if global_err_state:
+                        log.info('trying to turn on the pwm output')
+                        pwm_ch.ChangeDutyCycle(50.)  # 50% duty cycle pwm output
+                    else:
+                        pwm_ch.ChangeDutyCycle(0.)  # 0% duty cycle pwm output for no error
 
         except zmq.ZMQError as e:
             if e.errno != zmq.EAGAIN:

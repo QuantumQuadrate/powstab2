@@ -14,6 +14,10 @@ class WDAC8532(Worker):
     def update_output(self):
         if self.output > 5.0:
             out = 5.0
+            self.output = 5.0
+        elif self.output < 0.0:
+            out = 0.0
+            self.output = 0.0
         else:
             out = self.output
         try:
