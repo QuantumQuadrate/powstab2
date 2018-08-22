@@ -43,3 +43,18 @@ You can now logout and it will continue to run.
 
 A convenience script `start.sh` is included which runs the above command and then `tail -f pid.out` or `tail -f nohup.out` to watch the logs until you have verified correct operation.
 When finished monitoring just `Ctrl-C` out and exit, the server will still be running.
+
+To kill the process run
+```bash
+$ ps -fA | grep python
+> root      1483  1478  0 16:19 pts/0    00:00:00 /usr/bin/python ./main_origin.py
+> root      1488  1483  1 16:19 pts/0    00:00:03 /usr/bin/python ./main_origin.py
+> pi        1499  1089  0 16:23 pts/0    00:00:00 grep --color=auto python
+```
+You need to kill the parent process, which is almost always the lowest process id number (1483 here).
+Then kill the parent process which will shutdown the child as well.
+```bash
+$ sudo kill 1483
+$ ps -fA | grep python
+> pi        1620  1089  0 16:26 pts/0    00:00:00 grep --color=auto python
+```
