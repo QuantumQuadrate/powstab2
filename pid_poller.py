@@ -1,6 +1,7 @@
 import zmq
 import multiprocessing
 import sys
+import time
 import json
 import RPi.GPIO as GPIO
 from worker_K10CR1 import WK10CR1
@@ -88,6 +89,7 @@ def pid_poller_loop(sub_addr, queue, log):
         # process data from the stream
         try:
             [streamID, content] = sub_sock.recv_multipart()
+            last_msg = time.time()
             try:
                 log.debug("new data")
                 for cb in subscriptions[streamID]:
@@ -135,6 +137,9 @@ def pid_poller_loop(sub_addr, queue, log):
         except zmq.ZMQError as e:
             if e.errno != zmq.EAGAIN:
                 log.exception("zmq error encountered")
+            elif time.time() - last_msg > 20:
+                pwm_ch.ChangeDutyCycle(50.)  # 50% duty cycle pwm output
+                
         except:
             log.exception("error encountered")
 
