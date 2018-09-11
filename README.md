@@ -6,6 +6,12 @@ Improved Raspberry Pi based PID controller
 sudo -H pip install wiringpi
 sudo -H pip install git+https://github.com/QuantumQuadrate/ivPID
 sudo -H pip install git+https://github.com/QuantumQuadrate/Origin.git
+```
+
+If you fail to install Origin, try: ```sudo apt install python-zmq``` and try the Origin install again, there seems to be a problem installing via pip right now (9/2018).
+
+
+```bash
 sudo -H pip install git+https://github.com/QuantumQuadrate/k10cr1.git
 cd ~ ; git clone --recurse-submodules https://github.com/QuantumQuadrate/powstab2.git ; cd powstab2
 ln -s <YOUR CONFIG>.cfg config.cfg
