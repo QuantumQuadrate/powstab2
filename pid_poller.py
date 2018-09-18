@@ -44,6 +44,7 @@ def pid_poller_loop(sub_addr, queue, log):
     sub_sock.setsockopt(zmq.RCVTIMEO, 1000)
     sub_sock.connect(sub_addr)
     global_err_state = False
+    last_msg = time.time()
     while True:
         # process new command messages from the parent process
         try:

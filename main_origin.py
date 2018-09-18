@@ -101,6 +101,8 @@ if __name__ == '__main__':
     try:
         while True:
             time.sleep(2)
+    except Exception as e:
+        print(e)
     finally: 
         sub.close()
         logger.info('closing')
