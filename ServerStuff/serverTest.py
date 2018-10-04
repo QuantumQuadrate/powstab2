@@ -170,7 +170,7 @@ if __name__ == '__main__':
     fullBinPath = os.path.abspath(os.getcwd() + "/" + sys.argv[0])
     fullBasePath = os.path.dirname(os.path.dirname(fullBinPath))
     fullCfgPath = os.path.join(fullBasePath, "config")
-
+    print(fullCfgPath)
     if len(sys.argv) > 1:
         if sys.argv[1] == 'test':
             configfile = os.path.join(fullCfgPath, "origin-server-test.cfg")
