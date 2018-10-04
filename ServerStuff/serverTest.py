@@ -167,7 +167,7 @@ if __name__ == '__main__':
     logger.addHandler(fLog)
 
     # first find ourself
-    fullBinPath = os.path.abspath(os.getcwd() + "/" + sys.argv[0])
+    fullBinPath = os.path.abspath(os.getcwd() + "/ServerStuff/" + sys.argv[0])
     fullBasePath = os.path.dirname(os.path.dirname(fullBinPath))
     fullCfgPath = os.path.join(fullBasePath, "config")
     print(fullCfgPath)
