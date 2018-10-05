@@ -97,7 +97,8 @@ def pid_poller_loop(sub_addr, queue):
         # process data from the stream
         try:
             [streamID, content] = sub_sock.recv_multipart()
-            print [streamID, content]
+            print streamID 
+            print content
             last_msg = time.time()
             try:
                 log.debug("new data")
