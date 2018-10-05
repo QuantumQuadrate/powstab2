@@ -1,12 +1,16 @@
-<h1>Monitor<h1>
-<form action="{{ url_for('monitor') }}" method=get>
-  <dl>
-  <dt><p>Subscribed Channels Settings:<p>
+  <h1>Monitor</h1>
+  <form action="{{ url_for('monitor') }}" method=get>
+<table class="rwd-table">
+  <tr>
+    <th>Subscribed Channels Settings:</th>
+  </tr>
+  <tr>
     {% for id in id_list %}
-    <dd><input type='button' value='channel id: {{id}}' onclick="window.location.href='/update/{{id}}'"/>
+    <td><input type='button' value='channel id: {{id}}' onclick="window.location.href='/update/{{id}}'"/>
     {% endfor %}
-  <dl>
-<form>
+  </tr>
+</table>
+
 <!-- {% for act in ['pause','restart','reset','unsubscribe'] %}
   <div>
     <input type='button' value='{{act}}' onclick="window.location.href='/monitor/{{act}}'"/>
