@@ -93,7 +93,6 @@ if __name__ == '__main__':
     print channels
     for channel in channels:
         streamName = config.get('CHANNEL{}'.format(channel['number']), 'StreamName')
-        streamName = 'toytesting'
         sub.subscribe(
             streamName,
             callback=channel['callback'],
