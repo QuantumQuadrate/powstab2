@@ -152,57 +152,57 @@ if __name__ == '__main__':
         sub.unsubscribe(stream)
         return render_template('commands.html', id=id, action='Unsubscribed all channels')
 
-
-    logger = logging.getLogger(__name__)
-    logger.setLevel(logging.DEBUG)
-
-    ch = logging.StreamHandler()
-    ch.setLevel(logging.INFO)
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    ch.setFormatter(formatter)
-    logger.addHandler(ch)
-
-    fLog = logging.FileHandler("f.log")
-    fLog.setLevel(logging.DEBUG)
-    fLog.setFormatter(formatter)
-    logger.addHandler(fLog)
-
-    # first find ourself
-    fullBinPath = os.path.abspath(os.getcwd() + "/ServerStuff/" + sys.argv[0])
-    fullBasePath = os.path.dirname(os.path.dirname(fullBinPath))
-    fullCfgPath = os.path.join(fullBasePath, "config")
-    print(fullCfgPath)
-    if len(sys.argv) > 1:
-        if sys.argv[1] == 'test':
-            configfile = os.path.join(fullCfgPath, "origin-server-test.cfg")
-        else:
-            configfile = os.path.join(fullCfgPath, sys.argv[1])
-    else:
-        configfile = os.path.join(fullCfgPath, "origin-server.cfg")
-
-    config = ConfigParser.ConfigParser()
-    config.read(configfile)
-
-    sub = Subscriber(config, logger)
-
-    logger.info("streams")
-    print('')
-    pprint.pprint(sub.known_streams.keys())
-
-    stream = 'toy'
-
-    if stream not in sub.known_streams:
-        print("stream not recognized")
-        sub.close()
-        sys.exit(1)
-
-    print("subscribing to stream: %s" % (stream,))
-    # sub.subscribe(stream)
-    # can use arbitrary callback
-    # if you need to use the same base callback for multiple streams pass in specific
-    # parameters through kwargs
-    sub.subscribe(stream, callback=test, buflen=200, trigstd=12, init=30, adrs=None)
-
+    #
+    # logger = logging.getLogger(__name__)
+    # logger.setLevel(logging.DEBUG)
+    #
+    # ch = logging.StreamHandler()
+    # ch.setLevel(logging.INFO)
+    # formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    # ch.setFormatter(formatter)
+    # logger.addHandler(ch)
+    #
+    # fLog = logging.FileHandler("f.log")
+    # fLog.setLevel(logging.DEBUG)
+    # fLog.setFormatter(formatter)
+    # logger.addHandler(fLog)
+    #
+    # # first find ourself
+    # fullBinPath = os.path.abspath(os.getcwd() + "/ServerStuff/" + sys.argv[0])
+    # fullBasePath = os.path.dirname(os.path.dirname(fullBinPath))
+    # fullCfgPath = os.path.join(fullBasePath, "config")
+    # print(fullCfgPath)
+    # if len(sys.argv) > 1:
+    #     if sys.argv[1] == 'test':
+    #         configfile = os.path.join(fullCfgPath, "origin-server-test.cfg")
+    #     else:
+    #         configfile = os.path.join(fullCfgPath, sys.argv[1])
+    # else:
+    #     configfile = os.path.join(fullCfgPath, "origin-server.cfg")
+    #
+    # config = ConfigParser.ConfigParser()
+    # config.read(configfile)
+    #
+    # sub = Subscriber(config, logger)
+    #
+    # logger.info("streams")
+    # print('')
+    # pprint.pprint(sub.known_streams.keys())
+    #
+    # stream = 'toy'
+    #
+    # if stream not in sub.known_streams:
+    #     print("stream not recognized")
+    #     sub.close()
+    #     sys.exit(1)
+    #
+    # print("subscribing to stream: %s" % (stream,))
+    # # sub.subscribe(stream)
+    # # can use arbitrary callback
+    # # if you need to use the same base callback for multiple streams pass in specific
+    # # parameters through kwargs
+    # sub.subscribe(stream, callback=test, buflen=200, trigstd=12, init=30, adrs=None)
+    #
 
 
 
