@@ -94,7 +94,7 @@ if __name__ == '__main__':
     for channel in channels:
         print config.get('CHANNEL{}'.format(channel['number']), 'StreamName'),
         callback=channel['callback'],
-        **channel['kwargs']
+        **channel['kwargs'])
         sub.subscribe(
             config.get('CHANNEL{}'.format(channel['number']), 'StreamName'),
             callback=channel['callback'],
