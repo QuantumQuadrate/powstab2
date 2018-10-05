@@ -14,8 +14,8 @@ from flask import Flask
 from flask import render_template
 from flask import request
 from origin.client.origin_subscriber import Subscriber
-from worker_K10CR1 import WK10CR1
-from worker_DAC8532 import WDAC8532
+from ../worker_K10CR1 import WK10CR1
+from ../worker_DAC8532 import WDAC8532
 
 def test(stream_id, data, state, log, control, buflen=100, trigstd=3, init=30, ch=None ,filename=None,adrs=None):
     """
