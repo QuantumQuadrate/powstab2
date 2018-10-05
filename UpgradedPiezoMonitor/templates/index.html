@@ -1,35 +1,38 @@
 <!DOCTYPE html>
-<link rel= "stylesheet" href= "{{ url_for('static',filename='styles.css') }}">
+<link rel="stylesheet" href="{{ url_for('static',filename='styles.css') }}">
 
-  <html lang="en">
+<html lang="en">
+
 <head>
-	<meta charset="utf-8" />
-	<title>Monitor</title>
+  <meta charset="utf-8" />
+  <title>Monitor</title>
 </head>
 
 <body>
-<div class="table-title">
-<h3>Monitor</h3>
-</div>
-<table class="table-fill">
+  <div class="table-title">
+    <h3>Monitor</h3>
+  </div>
+  <table class="table-fill">
 
-<thead>
-<tr>
-<th class="text-left">Subscribed Channels Settings:</th>
-</tr>
-</thead>
+    <thead>
+      <tr>
+        <th class="text-left">Subscribed Channels Settings:</th>
+      </tr>
+    </thead>
 
-<tbody class="table-hover">
-<tr>
-  {% for id in id_list %}
-    <td class="text-left" onclick="window.location.href='/update/{{id}}'">channel id: {{id}}</td>
-  {% endfor %}
-</tr>
-</tbody>
-</table>
+    <tbody class="table-hover">
+
+      {% for id in id_list %}
+      <tr>
+        <td class="text-left" onclick="window.location.href='/update/{{id}}'">channel id: {{id}}</td>
+      </tr>
+      {% endfor %}
+
+    </tbody>
+  </table>
 
 
-  </body>
+</body>
 <!-- {% for act in ['pause','restart','reset','unsubscribe'] %}
   <div>
     <input type='button' value='{{act}}' onclick="window.location.href='/monitor/{{act}}'"/>
