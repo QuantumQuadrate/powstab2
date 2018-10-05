@@ -51,11 +51,8 @@ if __name__ == '__main__':
         # a new process and won't know about anything in the main process after it starts
         channels.append({
             'number': ch_num,
-            'callback': stream_callback,
             'kwargs': {
-                'calibration': calib,
                 'field': config.get(section, 'FieldName'),
-                'name': section,
                 'channel': ch_num
                 }
         })
