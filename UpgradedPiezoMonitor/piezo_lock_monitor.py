@@ -237,7 +237,7 @@ if __name__ == '__main__':
     logger.addHandler(fLog)
 
     # first find ourself
-    fullBinPath = os.path.abspath(os.getcwd() + "/" + sys.argv[0])
+    fullBinPath = os.path.abspath(os.getcwd() + "/UpgradedPiezoMonitor/" + sys.argv[0])
     fullBasePath = os.path.dirname(os.path.dirname(fullBinPath))
     fullCfgPath = os.path.join(fullBasePath, "config")
 
@@ -258,7 +258,7 @@ if __name__ == '__main__':
     print('')
     pprint.pprint(sub.known_streams.keys())
 
-    stream = 'FNODE_ADCS'
+    stream = 'toy'
 
     if stream not in sub.known_streams:
         print("stream not recognized")
