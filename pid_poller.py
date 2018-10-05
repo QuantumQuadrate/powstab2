@@ -50,7 +50,7 @@ def pid_poller_loop(sub_addr, queue):
     # listen for one second, before doing housekeeping
     sub_sock.setsockopt(zmq.RCVTIMEO, 1000)
     sub_sock.connect(sub_addr)
-    print sub_sock
+    print sub_addr
     global_err_state = False
     last_msg = time.time()
     while True:
@@ -98,7 +98,7 @@ def pid_poller_loop(sub_addr, queue):
         # process data from the stream
         try:
             [streamID, content] = sub_sock.recv_multipart()
-    
+
             last_msg = time.time()
             try:
                 log.debug("new data")
