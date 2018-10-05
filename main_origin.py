@@ -92,11 +92,10 @@ if __name__ == '__main__':
     # read channels from feedback config file
     print channels
     for channel in channels:
-        print config.get('CHANNEL{}'.format(channel['number']), 'StreamName')
-        print channel['callback'],
-        print channel['kwargs']
+        streamName = config.get('CHANNEL{}'.format(channel['number']), 'StreamName')
+        streamName = 'toy'
         sub.subscribe(
-            config.get('CHANNEL{}'.format(channel['number']), 'StreamName'),
+            streamName,
             callback=channel['callback'],
             **channel['kwargs']
         )
