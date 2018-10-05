@@ -12,12 +12,14 @@
       </tr>
     </thead>
     <tbody class="table-hover">
+
+      {% for kw in kw_dict %}
       <tr>
-        {% for kw in kw_dict %}
         <td class="text-left">{{kw}}</td>
         <td class="text-left"><input type=text name={{kw}} value={{kw_dict[kw]}}></td>
-        {% endfor %}
       </tr>
+      {% endfor %}
+
     </tbody>
   </table>
 
