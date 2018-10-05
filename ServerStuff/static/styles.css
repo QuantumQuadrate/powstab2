@@ -91,7 +91,10 @@ tr:nth-child(odd) td {
   background:#EBEBEB;
 }
 
-tr:nth-child(odd):hover td {
+tr:nth-child(odd) td:hover {
+  background:#4E5066;
+}
+tr:nth-child(even) td:hover {
   background:#4E5066;
 }
 
