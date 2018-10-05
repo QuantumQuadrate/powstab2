@@ -10,9 +10,7 @@ import ConfigParser
 import pid_poller
 from worker_K10CR1 import WK10CR1
 from worker_DAC8532 import WDAC8532
-from flask import Flask
-from flask import render_template
-from flask import request
+import os
 
 def sigterm_handler(_signo, _stack_frame):
     # from https://stackoverflow.com/a/24574672
@@ -98,7 +96,7 @@ if __name__ == '__main__':
             callback=channel['callback'],
             **channel['kwargs']
         )
-    app = Flask("ServerStuff/serverTest.py")
-    app.run(host="0.0.0.0")
+
+    os.system('python ServerStuff/serverTest.py')
     sub.close()
     logger.info('closing')
