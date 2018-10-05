@@ -90,9 +90,6 @@ if __name__ == '__main__':
 
     #unsubscribe
     #mute alert
-    @app.route('/css')
-    def css():
-        return render_template('css.css')
 
     @app.route('/update/<id>/mute')
     def mute(id):
