@@ -37,7 +37,7 @@ if __name__ == '__main__':
     app = Flask(__name__)
 
     config = ConfigParser.ConfigParser()
-    config.read('../config.cfg')
+    config.read('config.cfg')
     # get all the activated channels from config file
     channels = []
     for section in config.sections():
