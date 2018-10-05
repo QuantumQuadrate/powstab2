@@ -1,17 +1,22 @@
 <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css.css') }}">
-  <h1>Monitor</h1>
-  <form action="{{ url_for('monitor') }}" method=get>
-<table class="rwd-table">
-  <tr>
-    <th>Subscribed Channels Settings:</th>
-  </tr>
-  <tr>
-    {% for id in id_list %}
-    <td><input type='button' value='channel id: {{id}}' onclick="window.location.href='/update/{{id}}'"/>
-    {% endfor %}
-  </tr>
-</table>
 
+<div class="wrapper">
+    <h1>Monitor</h1>
+  <div class="table">
+    <div class="row header">
+      <div class="cell">
+        Subscribed Channels Settings:
+      </div>
+    </div>
+
+    <div class="row">
+      {% for id in id_list %}
+      <div class="cell" data-title="Name">
+        <input type='button' value='channel id: {{id}}' onclick="window.location.href='/update/{{id}}'"/>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
 <!-- {% for act in ['pause','restart','reset','unsubscribe'] %}
   <div>
     <input type='button' value='{{act}}' onclick="window.location.href='/monitor/{{act}}'"/>
