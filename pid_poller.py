@@ -63,7 +63,7 @@ def pid_poller_loop(sub_addr, queue):
             if cmd['action'] == 'SUBSCRIBE':
                 msg = 'Subscribing with stream filter: [{}]'
                 stream_filter = cmd['stream_filter']
-                print stream_filter
+                stream_filter = 'toy'
                 log.info(msg.format(stream_filter))
                 # add the callback to the list of things to do for the stream
                 if stream_filter not in subscriptions:
