@@ -13,6 +13,7 @@ import ast
 from flask import Flask
 from flask import render_template
 from flask import request
+import logger
 from origin.client.origin_subscriber import Subscriber
 
 def test(stream_id, data, state, log, control, buflen=100, trigstd=3, init=30, ch=None ,filename=None,adrs=None):
