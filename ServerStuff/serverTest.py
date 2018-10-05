@@ -35,9 +35,31 @@ def test(stream_id, data, state, log, control, buflen=100, trigstd=3, init=30, c
 if __name__ == '__main__':
 #web server
     app = Flask(__name__)
-    sub_file = 'subscriptions.json'
-    with open(sub_file, 'w') as f:
-        f.write('{}')
+
+    config = ConfigParser.ConfigParser()
+    config.read('../config.cfg')
+    # get all the activated channels from config file
+    channels = []
+    for section in config.sections():
+        if 'CHANNEL' not in section:
+            continue  # not a channel definition
+        fb_type = config.get(section, 'FeedbackDevice')
+        if fb_type in [WDAC8532.type, WK10CR1.type]:
+            # get the channel number from the section title
+            ch_num = int(section.rsplit('CHANNEL')[1])
+            # callback has to be fully defined before Subscriber is initialized, since it starts
+            # a new process and won't know about anything in the main process after it starts
+            channels.append({
+                'number': ch_num,
+                'callback': stream_callback,
+                'kwargs': {
+                    'calibration': calib,
+                    'field': config.get(section, 'FieldName'),
+                    'name': section,
+                    'channel': ch_num
+                }
+            })
+    logger.info('Detected {} channel definitions from config file.'.format(len(channels)))
 
     #commands & webpage
     #home page "monitor"
@@ -50,37 +72,21 @@ if __name__ == '__main__':
                 f.write(sub_list_json)
         with open(sub_file, 'r') as f:
             sub_list = json.load(f)
+        id_list = []
+        for channel in channels:
+            id_list.append(channel['number'])
         #sub_list = {1:{'kwargs':{kwargs}, 'control':{control}}
         num_ch = len(sub_list)
-        return render_template('index.html', id_list = sub_list.keys(), **sub_list)
+        return render_template('index.html', id_list = id_list)
         # except Exception:
         #     return 'Unable to load page'
 
     #subscribe
     @app.route('/update/<id>', methods=['GET', 'POST'])
     def update(id):
-        id=id.encode('ascii','ignore')
-        with open(sub_file, 'r') as f:
-            sub_list = json.load(f)
-            #sub_list = {1:{'kwargs':{kwargs}, 'control':{control}}
-
-        if request.method == 'POST':
-            sub_list[id]['kwargs'] = request.form.to_dict()
-            sub.update(stream, int(id), **sub_list[id]['kwargs'])
-
-        id_dict = sub_list[id]
-        control = id_dict['control']
-        kwargs = id_dict['kwargs']
-
-        if control['alert'] == True:
-            alert = 'On'
-        else:
-            alert = 'Off'
-
-        if control['pause'] == True:
-            pause = 'Paused'
-        else:
-            pause = 'Started'
+        for channel in channels:
+            if channel['number'] == id:
+                kwargs = channel['kwargs']
 
         return render_template('keywords.html', id=id, kw_dict=kwargs, alert=alert, pause=pause)
 
