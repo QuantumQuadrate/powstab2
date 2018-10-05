@@ -46,21 +46,20 @@ if __name__ == '__main__':
         if 'CHANNEL' not in section:
             continue  # not a channel definition
         fb_type = config.get(section, 'FeedbackDevice')
-        if fb_type in [WDAC8532.type, WK10CR1.type]:
-            # get the channel number from the section title
-            ch_num = int(section.rsplit('CHANNEL')[1])
-            # callback has to be fully defined before Subscriber is initialized, since it starts
-            # a new process and won't know about anything in the main process after it starts
-            channels.append({
-                'number': ch_num,
-                'callback': stream_callback,
-                'kwargs': {
-                    'calibration': calib,
-                    'field': config.get(section, 'FieldName'),
-                    'name': section,
-                    'channel': ch_num
-                    }
-            })
+        # get the channel number from the section title
+        ch_num = int(section.rsplit('CHANNEL')[1])
+        # callback has to be fully defined before Subscriber is initialized, since it starts
+        # a new process and won't know about anything in the main process after it starts
+        channels.append({
+            'number': ch_num,
+            'callback': stream_callback,
+            'kwargs': {
+                'calibration': calib,
+                'field': config.get(section, 'FieldName'),
+                'name': section,
+                'channel': ch_num
+                }
+        })
     print channels
     #commands & webpage
     #home page "monitor"
