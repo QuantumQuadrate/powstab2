@@ -13,7 +13,6 @@ import ast
 from flask import Flask
 from flask import render_template
 from flask import request
-import logger
 from origin.client.origin_subscriber import Subscriber
 
 def test(stream_id, data, state, log, control, buflen=100, trigstd=3, init=30, ch=None ,filename=None,adrs=None):
@@ -58,10 +57,8 @@ if __name__ == '__main__':
                     'field': config.get(section, 'FieldName'),
                     'name': section,
                     'channel': ch_num
-                }
+                    }
             })
-    logger.info('Detected {} channel definitions from config file.'.format(len(channels)))
-
     #commands & webpage
     #home page "monitor"
     @app.route('/monitor', methods=['GET','PUT'])
