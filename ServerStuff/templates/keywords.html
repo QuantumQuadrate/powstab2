@@ -1,28 +1,57 @@
-<h1>Keywords Setting<h1>
+<!DOCTYPE html>
+<link rel="stylesheet" href="{{ url_for('static',filename='styles.css') }}">
 <form action="{{ url_for('update',id=id) }}" method=post>
-  <dl>
-  <dt><p>Input Keywords for {{kw_dict['ch']}}:<p>
-    <ul>
-      {% for kw in kw_dict %}
-      <li>{{kw}}: <input type=text name={{kw}} value={{kw_dict[kw]}}>
-      {% endfor %}
-    </ul>
-    <dd><input type=submit value=Update >
-    <dd>Alert: {{alert}}
-    <dd>Channel: {{pause}}
-  <dd><input type=button value=Reset onclick="window.location.href='/update/{{id}}/reset'">
-  <input type=button value='Reset All Channels' onclick="window.location.href='/update/{{id}}/resetall'">
-  <dd><input type=button value='Mute Channel Alert' onclick="window.location.href='/update/{{id}}/mute'">
-    <input type=button value='Unmute Channel Alert' onclick="window.location.href='/update/{{id}}/unmute'">
-  <dd><input type=button value='Mute All Alert' onclick="window.location.href='/update/{{id}}/muteall'">
-    <input type=button value='Unmute All Alert' onclick="window.location.href='/update/{{id}}/unmuteall'">
-  <dd><input type=button value=Pause onclick="window.location.href='/update/{{id}}/pause'">
-    <input type=button value='Pause All Channels' onclick="window.location.href='/update/{{id}}/pauseall'">
-  <dd><input type=button value=Restart onclick="window.location.href='/update/{{id}}/restart'">
-    <input type=button value='Restart All Channels' onclick="window.location.href='/update/{{id}}/restartall'">
-  <dd><input type=button value=Unsubscribe onclick="window.location.href='/update/{{id}}/unsubscribe'">
-  <dd><input type=button value=Back onclick="window.location.href='/monitor'">
-        </label>
-    </div>
-  <dl>
+  <div class="table-title">
+    <h3>Keywords Setting</h3>
+  </div>
+  <table class="table-fill">
+    <thead>
+      <tr>
+        <th class="text-left">Keyword</th>
+        <th class="text-left">Value</th>
+      </tr>
+    </thead>
+    <tbody class="table-hover">
+      <tr>
+        {% for kw in kw_dict %}
+        <td class="text-left">{{kw}}</td>
+        <td class="text-left"><input type=text name={{kw}} value={{kw_dict[kw]}}></td>
+        {% endfor %}
+      </tr>
+    </tbody>
+  </table>
+
+
+  <div class="table-title">
+    <h3>Actions</h3>
+  </div>
+  <table class="table-fill">
+    <tbody class="table-hover">
+      <tr>
+        <td class="text-left"><input type=button value=Reset onclick="window.location.href='/update/{{id}}/reset'"></td>
+        <td class="text-left"><input type=button value='Reset All Channels' onclick="window.location.href='/update/{{id}}/resetall'"></td>
+        <td class="text-left"><input type=button value='Mute Channel Alert' onclick="window.location.href='/update/{{id}}/mute'"></td>
+        <td class="text-left"><input type=button value='Mute All Alert' onclick="window.location.href='/update/{{id}}/muteall'"></td>
+      </tr>
+
+
+      <tr>
+        <td class="text-left"> <input type=button value='Mute All Alert' onclick="window.location.href='/update/{{id}}/muteall'"></td>
+        <td class="text-left"> <input type=button value='Unmute All Alert' onclick="window.location.href='/update/{{id}}/unmuteall'"></td>
+        <td class="text-left"><input type=button value=Pause onclick="window.location.href='/update/{{id}}/pause'"></td>
+        <td class="text-left"> <input type=button value='Pause All Channels' onclick="window.location.href='/update/{{id}}/pauseall'"></td>
+      </tr>
+
+      <tr>
+        <td class="text-left"> <input type=button value=Restart onclick="window.location.href='/update/{{id}}/restart'"></td>
+        <td class="text-left"> <input type=button value='Restart All Channels' onclick="window.location.href='/update/{{id}}/restartall'"></td>
+        <td class="text-left"> <input type=button value=Unsubscribe onclick="window.location.href='/update/{{id}}/unsubscribe'"></td>
+        <td class="text-left"> <input type=button value=Back onclick="window.location.href='/monitor'"></td>
+      </tr>
+
+    </tbody>
+  </table>
+
+
+
 </form>
