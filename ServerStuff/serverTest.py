@@ -74,6 +74,7 @@ if __name__ == '__main__':
     #subscribe
     @app.route('/update/<id>', methods=['GET', 'POST'])
     def update(id):
+        kwargs = []
         for channel in channels:
             if channel['number'] == id:
                 kwargs = channel['kwargs']
