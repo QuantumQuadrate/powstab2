@@ -7,7 +7,7 @@ import RPi.GPIO as GPIO
 from worker_K10CR1 import WK10CR1
 from worker_DAC8532 import WDAC8532
 
-PWM = True 
+PWM = True
 
 def pid_poller_loop(sub_addr, queue, log):
     '''This is a modified version of the default subscription poller loop that adds in feedback
@@ -23,6 +23,7 @@ def pid_poller_loop(sub_addr, queue, log):
         config: (channel configParser obj)
     }
     '''
+    print queue
     # a hash table (dict) of callbacks to perform when a message is recieved
     # the hash is the data stream filter, the value is a list of callbacks
     subscriptions = {}
@@ -140,7 +141,7 @@ def pid_poller_loop(sub_addr, queue, log):
                 log.exception("zmq error encountered")
             elif time.time() - last_msg > 20:
                 pwm_ch.ChangeDutyCycle(50.)  # 50% duty cycle pwm output
-                
+
         except:
             log.exception("error encountered")
 
