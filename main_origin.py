@@ -91,6 +91,7 @@ if __name__ == '__main__':
     sub = Subscriber(origin_config, logger, loop=pid_poller.pid_poller_loop)
     # read channels from feedback config file
     for channel in channels:
+        print channel
         sub.subscribe(
             config.get('CHANNEL{}'.format(channel['number']), 'StreamName'),
             callback=channel['callback'],
