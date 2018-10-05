@@ -113,6 +113,11 @@ td {
   text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.1);
   border-right: 1px solid #C1C3D1;
 }
+td:hover td {
+  background:#C0C0C0;
+  color:#FFFFFF;
+  border-top: 1px solid #22262e;
+}
 
 td:last-child {
   border-right: 0px;
