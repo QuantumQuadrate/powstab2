@@ -23,7 +23,7 @@
 <tbody class="table-hover">
 <tr>
   {% for id in id_list %}
-    <td class="text-left"><input type='button' value='channel id: {{id}}' onclick="window.location.href='/update/{{id}}'"/></td>
+    <td class="text-left" onclick="window.location.href='/update/{{id}}'">channel id: {{id}}</td>
   {% endfor %}
 </tr>
 </tbody>
