@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<link rel= "stylesheet" href= "{{ url_for('static',filename='styles.css') }}">
+
+  <html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Monitor</title>
+</head>
+
+<body>
+<div class="table-title">
+<h3>Monitor</h3>
+</div>
+<table class="table-fill">
+
+<thead>
+<tr>
+<th class="text-left">Subscribed Channels Settings:</th>
+</tr>
+</thead>
+
+<tbody class="table-hover">
+<tr>
+  {% for id in id_list %}
+    <td class="text-left" onclick="window.location.href='/update/{{id}}'">channel id: {{id}}</td>
+  {% endfor %}
+</tr>
+</tbody>
+</table>
+
+
+  </body>
+<!-- {% for act in ['pause','restart','reset','unsubscribe'] %}
+  <div>
+    <input type='button' value='{{act}}' onclick="window.location.href='/monitor/{{act}}'"/>
+  </div>
+{% endfor %}
+
+</body>
+</html> -->
+
+
+<!-- <body>
+  <p>Home page</p>
+    <div>
+      <input type='button' value='Pause' onclick="window.location.href='/monitor/pause'"/>
+      <input type='button' value='Restart' onclick="window.location.href='/monitor/restart'"/>
+    </div>
+    <div>
+      <input type='button' value='Reset' onclick="window.location.href='/monitor/reset'"/>
+    </div>
+    <div>
+      <input type='button' value='Unsubscribe' onclick="window.location.href='/monitor/unsubscribe'"/>
+    </div>
+  <a href='/reset'>reset</a>
+</body>
+</html> -->
