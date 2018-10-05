@@ -59,6 +59,7 @@ if __name__ == '__main__':
                     'channel': ch_num
                     }
             })
+    print channels
     #commands & webpage
     #home page "monitor"
     @app.route('/monitor', methods=['GET','PUT'])
