@@ -6,10 +6,10 @@ import json
 import RPi.GPIO as GPIO
 from worker_K10CR1 import WK10CR1
 from worker_DAC8532 import WDAC8532
-
+import logging
 PWM = True
 
-def pid_poller_loop(sub_addr, queue, log):
+def pid_poller_loop(sub_addr, queue):
     '''This is a modified version of the default subscription poller loop that adds in feedback
     functionality.
 
@@ -23,7 +23,13 @@ def pid_poller_loop(sub_addr, queue, log):
         config: (channel configParser obj)
     }
     '''
-    print queue
+    log = logging.getLogger('poller')
+    log.setLevel(logging.DEBUG)
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    ch.setFormatter(formatter)
+    log.addHandler(ch)
     # a hash table (dict) of callbacks to perform when a message is recieved
     # the hash is the data stream filter, the value is a list of callbacks
     subscriptions = {}
