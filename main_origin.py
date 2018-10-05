@@ -96,13 +96,7 @@ if __name__ == '__main__':
             callback=channel['callback'],
             **channel['kwargs']
         )
-
-    # implement a server here to listen for commands
-    try:
-        while True:
-            time.sleep(2)
-    except Exception as e:
-        print(e)
-    finally: 
-        sub.close()
-        logger.info('closing')
+    app = Flask("ServerStuff/serverTest.py")
+    app.run(host="0.0.0.0")
+    sub.close()
+    logger.info('closing')
