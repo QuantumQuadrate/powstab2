@@ -74,10 +74,29 @@ if __name__ == '__main__':
     #subscribe
     @app.route('/update/<id>', methods=['GET', 'POST'])
     def update(id):
-        kwargs = []
-        for channel in channels:
-            if channel['number'] == id:
-                kwargs = channel['kwargs']
+        id=id.encode('ascii','ignore')
+        with open(sub_file, 'r') as f:
+            sub_list = json.load(f)
+            #sub_list = {1:{'kwargs':{kwargs}, 'control':{control}}
+
+        if request.method == 'POST':
+            sub_list[id]['kwargs'] = request.form.to_dict()
+            sub.update(stream, int(id), **sub_list[id]['kwargs'])
+
+        id_dict = sub_list[id]
+        control = id_dict['control']
+        kwargs = id_dict['kwargs']
+
+        if control['alert'] == True:
+            alert = 'On'
+        else:
+            alert = 'Off'
+
+        if control['pause'] == True:
+            pause = 'Paused'
+        else:
+            pause = 'Started'
+
 
         return render_template('keywords.html', id=id, kw_dict=kwargs, alert=alert, pause=pause)
 
