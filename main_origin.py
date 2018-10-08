@@ -12,7 +12,7 @@ from worker_K10CR1 import WK10CR1
 from worker_DAC8532 import WDAC8532
 import os
 import subprocess
-import ServerStuff.serverTest
+import ServerStuff.serverTest as server
 
 def sigterm_handler(_signo, _stack_frame):
     # from https://stackoverflow.com/a/24574672
@@ -101,7 +101,7 @@ if __name__ == '__main__':
             **channel['kwargs']
         )
 
-    serverTest.runServer(sub)
+    server.runServer(sub)
 
     sub.close()
     logger.info('closing')
