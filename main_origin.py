@@ -38,7 +38,7 @@ if __name__ == '__main__':
     # setup a catch for SIGTERM so process can be killed gracefully in the background
     signal.signal(signal.SIGTERM, sigterm_handler)
     subprocess.Popen(['python', 'ServerStuff/serverTest.py'])
-    time.sleep(1000)
+    time.sleep(1)
     # setup logging
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.INFO)
