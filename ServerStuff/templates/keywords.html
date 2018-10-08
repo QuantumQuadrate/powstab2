@@ -10,6 +10,7 @@
                 var xmlHttp = new XMLHttpRequest();
                 xmlHttp.open( "GET", '/update/{{id}}/'+name+'/action', false );
                 xmlHttp.send( null );
+                location.reload();
               }
         }
     }
