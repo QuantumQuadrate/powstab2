@@ -63,7 +63,7 @@ def pid_poller_loop(sub_addr, queue):
             cmd = queue.get_nowait()
             if cmd['action'] == 'SHUTDOWN':
                 break
-            actionHandler.genericHandler(sub_sock, cmd, log, subscriptions, sub_list)
+            stream_filter = actionHandler.genericHandler(sub_sock, cmd, log, subscriptions, sub_list, stream_filter)
 
         except multiprocessing.queues.Empty:
             pass
@@ -74,7 +74,7 @@ def pid_poller_loop(sub_addr, queue):
             log.exception("error encountered")
 
         # process data from the stream
-        stream_filter = actionHandler.PID_Handler(sub_sock, global_err_state, last_msg, log, pids, subscriptions, PWM, pwm_ch, stream_filter)
+        actionHandler.PID_Handler(sub_sock, global_err_state, last_msg, log, pids, subscriptions, PWM, pwm_ch, stream_filter)
 
     log.info('Shutting down poller loop.')
     sub_sock.close()
