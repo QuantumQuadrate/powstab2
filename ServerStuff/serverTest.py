@@ -71,73 +71,32 @@ def runServer(sub, stream):
 
         return render_template('keywords.html', id=id, kw_dict=kwargs, alert=alert, pause=pause)
 
-    # @app.route('/monitor/subscribe/<ch>')
-    # def sub_ch(ch):
-    #     sub.subscribe(stream, )
 
-    #unsubscribe
-    #mute alert
-
-    @app.route('/update/<id>/mute')
-    def mute(id):
-        sub.mute(stream, int(id))
-        return render_template('commands.html', id=id, action='muted this channel')
-
-    @app.route('/update/<id>/unmute')
-    def unmute(id):
-        sub.unmute(stream, int(id))
-        return render_template('commands.html', id=id, action='Unmuted this channel')
-
-    #mute all channels alert
-    @app.route('/update/<id>/muteall')
-    def mute_all(id):
-        sub.mute_all(stream)
-        return render_template('commands.html', id=id, action='Muted all Channels')
-
-    @app.route('/update/<id>/unmuteall')
-    def unmute_all(id):
-        sub.unmute_all(stream)
-        return render_template('commands.html', id=id, action='Unmuted all Channels')
-
-    #Pause channel: stop getting data from the channel
-    @app.route('/update/<id>/pause')
-    def pause(id):
-        sub.pause(stream, int(id))
-        return render_template('commands.html', id=id, action='Paused this channel')
-
-    #pause all channels
-    @app.route('/update/<id>/pauseall')
-    def pause_all(id):
-        sub.pause_all(stream)
-        return render_template('commands.html', id=id, action='Paused all Channels')
-
-    #restart channel: restart receiving data from the channel
-    @app.route('/update/<id>/restart')
-    def restart(id):
-        sub.restart(stream, int(id))
-        return render_template('commands.html', id=id, action='Restarted this channel')
-
-    #restart all channels
-    @app.route('/update/<id>/restartall')
-    def restart_all(id):
-        sub.restart_all(stream)
-        return render_template('commands.html', id=id, action='Restarted all Channels')
-
-    #reset:
-    @app.route('/update/<id>/reset')
-    def reset(id):
-        sub.reset(stream, int(id))
-        return render_template('commands.html', id=id, action='Reseted channel data')
-    #reset all channels
-    @app.route('/update/<id>/resetall')
-    def reset_all(id):
-        sub.reset_all(stream)
-        return render_template('commands.html', id=id, action='Reseted all channels data')
-
-    @app.route('/update/<id>/unsubscribe')
-    def unsubscribe(id):
-        sub.unsubscribe(stream)
-        return render_template('commands.html', id=id, action='Unsubscribed all channels')
+    @app.route('/update/<id>/<action>/action')
+    def unsubscribe(id, action):
+        if action == "unsubscribe":
+            sub.unsubscribe(stream)
+        else if action == "resetall":
+            sub.reset_all(stream)
+        else if action == "mute":
+            sub.mute(stream, int(id))
+        else if action == "unmute":
+            sub.unmute(stream, int(id))
+        else if action == "muteall":
+            sub.mute_all(stream)
+        else if action == "unmuteall":
+            sub.unmute_all(stream)
+        else if action == "pause":
+            sub.pause(stream, int(id))
+        else if action == "pauseall":
+            sub.pause_all(stream)
+        else if action == "restart":
+            sub.restart(stream, int(id))
+        else if action == "restartall":
+            sub.restart_all(stream)
+        else if action == "reset":
+            sub.reset(stream, int(id))
+        return ''
 
     app.run(host='0.0.0.0', debug=True)
     logger.info('closing')
