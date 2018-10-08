@@ -55,6 +55,7 @@ def pid_poller_loop(sub_addr, queue):
     last_msg = time.time()
     sub_list = {}
     time.sleep(2)
+    stream_filter = ''
     while True:
         # process new command messages from the parent process
         try:
@@ -73,7 +74,7 @@ def pid_poller_loop(sub_addr, queue):
             log.exception("error encountered")
 
         # process data from the stream
-        actionHandler.PID_Handler(sub_sock, global_err_state, last_msg, log, pids, subscriptions, PWM, pwm_ch)
+        stream_filter = actionHandler.PID_Handler(sub_sock, global_err_state, last_msg, log, pids, subscriptions, PWM, pwm_ch, stream_filter)
 
     log.info('Shutting down poller loop.')
     sub_sock.close()

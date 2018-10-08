@@ -9,7 +9,7 @@ from worker_DAC8532 import WDAC8532
 import logging
 import requests
 stream_filter = ''
-def genericHandler(sub_sock, cmd, log, subscriptions, sub_list):
+def genericHandler(sub_sock, cmd, log, subscriptions, sub_list, stream_filter):
 
     if cmd['action'] == 'SUBSCRIBE':
         msg = 'Subscribing with stream filter: [{}]'
@@ -127,6 +127,7 @@ def genericHandler(sub_sock, cmd, log, subscriptions, sub_list):
                 }
     sub_list_json = json.dumps(sub_list)
     requests.put('http://127.0.0.1:5000/monitor', json=sub_list_json)
+    return stream_filter
 
 
 def PID_Handler(sub_sock, global_err_state, last_msg, log, pids, subscriptions, PWM, pwm_ch):
