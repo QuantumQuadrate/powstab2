@@ -97,7 +97,7 @@ def runServer(sub, stream):
         elif action == "reset":
             sub.reset(stream, int(id))
         else:
-
+            return 'error'
         return ''
 
     app.run(host='0.0.0.0', debug=True)
