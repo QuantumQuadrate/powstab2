@@ -75,6 +75,8 @@ if __name__ == '__main__':
         with open(sub_file, 'r') as f:
             sub_list = json.load(f)
 
+
+        print "Here is the sub list"
         print sub_list
         #sub_list = {1:{'kwargs':{kwargs}, 'control':{control}}
         num_ch = len(sub_list)
