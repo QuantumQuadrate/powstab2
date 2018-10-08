@@ -130,7 +130,7 @@ def genericHandler(sub_sock, cmd, log, subscriptions, sub_list):
     requests.put('http://127.0.0.1:5000/monitor', json=sub_list_json)
 
 
-def PID_Handler(sub_sock, global_err_state, last_msg, log, pids, subscriptions):
+def PID_Handler(sub_sock, global_err_state, last_msg, log, pids, subscriptions, PWM, pwm_ch):
 
     try:
         [streamID, content] = sub_sock.recv_multipart()
