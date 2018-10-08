@@ -8,7 +8,7 @@ from worker_K10CR1 import WK10CR1
 from worker_DAC8532 import WDAC8532
 import logging
 
-def genericHandler(sub_sock, cmd, log):
+def genericHandler(sub_sock, cmd, log, subscriptions):
 
     if cmd['action'] == 'SUBSCRIBE':
         msg = 'Subscribing with stream filter: [{}]'
@@ -131,7 +131,7 @@ def genericHandler(sub_sock, cmd, log):
     requests.put('http://127.0.0.1:5000/monitor', json=sub_list_json)
 
 
-def PID_Handler(sub_sock, global_err_state, last_msg, log, pids):
+def PID_Handler(sub_sock, global_err_state, last_msg, log, pids, subscriptions):
 
     try:
         [streamID, content] = sub_sock.recv_multipart()
