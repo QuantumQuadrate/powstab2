@@ -15,17 +15,9 @@ from flask import render_template
 from flask import request
 from origin.client.origin_subscriber import Subscriber
 
-sub = ""
-
-def setSub(sub):
-    self.sub = sub
-
-if __name__ == '__main__':
+def runServer(sub):
 #web server
     app = Flask(__name__)
-
-
-
 
     #commands & webpage
     #home page "monitor"
@@ -148,5 +140,4 @@ if __name__ == '__main__':
         return render_template('commands.html', id=id, action='Unsubscribed all channels')
 
     app.run(host='0.0.0.0', debug=True)
-    sub.close()
     logger.info('closing')
