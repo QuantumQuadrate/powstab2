@@ -8,8 +8,9 @@ from worker_K10CR1 import WK10CR1
 from worker_DAC8532 import WDAC8532
 import logging
 import requests
-
+stream_filter = ''
 def genericHandler(sub_sock, cmd, log, subscriptions, sub_list):
+
     if cmd['action'] == 'SUBSCRIBE':
         msg = 'Subscribing with stream filter: [{}]'
         stream_filter = cmd['stream_filter']
