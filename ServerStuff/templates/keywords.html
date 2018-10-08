@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <link rel="stylesheet" href="{{ url_for('static',filename='styles.css') }}">
-<form action="{{ url_for('update',id=id) }}" method=post>
+<form action="{{ url_for('update',id=id) }}" method=post id="form">
   <div class="table-title">
     <h3>Keywords Setting</h3>
   </div>
@@ -20,7 +20,7 @@
       </tr>
       {% endfor %}
       <tr>
-        <td class="text-center" type="submit" colspan="2"><input type=submit value="Update" style="width:100%"></td>
+        <td class="text-center" onclick="document.getElementById('form').submit();" colspan="2">Update</td>
       </tr>
     </tbody>
   </table>
