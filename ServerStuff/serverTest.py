@@ -24,7 +24,7 @@ def runServer(sub, stream):
     sub_file = 'subscriptions.json'
     with open(sub_file, 'w') as f:
         f.write('{}')
-
+        f.close()
     #commands & webpage
     #home page "monitor"
     @app.route('/monitor', methods=['GET','PUT'])
