@@ -15,7 +15,7 @@ from flask import render_template
 from flask import request
 from origin.client.origin_subscriber import Subscriber
 
-def runServer(sub):
+def runServer(sub, stream):
 #web server
     app = Flask(__name__)
 
