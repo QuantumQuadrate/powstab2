@@ -55,7 +55,44 @@ def pid_poller_loop(sub_addr, queue):
     last_msg = time.time()
     while True:
         # process new command messages from the parent process
-        actionHandler.genericHandler(sub_sock, queue, log)
+        try:
+            #get command from command queue
+            cmd = queue.get_nowait()
+            if cmd['action'] == 'SHUTDOWN':
+                break
+            actionHandler.genericHandler(sub_sock, queue, log)
+
+        except multiprocessing.queues.Empty:
+            pass
+        except IOError:
+            log.error('IOError, probably a broken pipe. Exiting..')
+            sys.exit(1)
+        except:
+            log.exception("error encountered")
+
+        try:
+            [streamID, content] = sub_sock.recv_multipart()
+            try:
+                log.debug("new data")
+                for cb in subscriptions[streamID]:
+                    if cb['control']['pause'] == False:
+                        cb['state'] = cb['callback'](
+                            streamID, json.loads(content),
+                            cb['state'], log, cb['control'], **cb['kwargs']
+                        )
+                    else:
+                        pass
+
+            except KeyError:
+                msg = "An unrecognized streamID `{}` was encountered"
+                log.error(msg.format(streamID))
+                log.error(subscriptions)
+        except zmq.ZMQError as e:
+            if e.errno != zmq.EAGAIN:
+                log.exception("zmq error encountered")
+        except:
+            log.exception("error encountered")
+
         # process data from the stream
         try:
             [streamID, content] = sub_sock.recv_multipart()
