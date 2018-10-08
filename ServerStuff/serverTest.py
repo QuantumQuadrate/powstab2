@@ -15,47 +15,18 @@ from flask import render_template
 from flask import request
 from origin.client.origin_subscriber import Subscriber
 
+sub = ""
 
-def test(stream_id, data, state, log, control, buflen=100, trigstd=3, init=30, ch=None ,filename=None,adrs=None):
-    """
-    buflen is the length of the circular buffer
-    trigstd is units of std deviation from average
-    init is the index of initial elements filled in buffer before sending alarm
-    ch is the channel number,ch=str,data[ch]=float,
-    filename is name of saved csv file
-    """
-
-    adrs = str(adrs)
-
-    try:
-        print data
-    except KeyError:
-        log.error('Problem accessing key. Are you subscribed to the right stream?')
-    return state
+def setSub(sub):
+    self.sub = sub
 
 if __name__ == '__main__':
 #web server
     app = Flask(__name__)
 
-    config = ConfigParser.ConfigParser()
-    config.read('config.cfg')
-    # get all the activated channels from config file
-    channels = []
-    for section in config.sections():
-        if 'CHANNEL' not in section:
-            continue  # not a channel definition
-        fb_type = config.get(section, 'FeedbackDevice')
-        # get the channel number from the section title
-        ch_num = int(section.rsplit('CHANNEL')[1])
-        # callback has to be fully defined before Subscriber is initialized, since it starts
-        # a new process and won't know about anything in the main process after it starts
-        channels.append({
-            'number': ch_num,
-            'kwargs': {
-                'field': config.get(section, 'FieldName'),
-                'channel': ch_num
-                }
-        })
+
+
+
     #commands & webpage
     #home page "monitor"
     sub_file = 'subscriptions.json'

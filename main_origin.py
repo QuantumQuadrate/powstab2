@@ -98,6 +98,8 @@ if __name__ == '__main__':
             callback=channel['callback'],
             **channel['kwargs']
         )
-    os.system('python ServerStuff/serverTest.py')
+    import serverTest
+    serverTest.setSub(sub)
+    
     sub.close()
     logger.info('closing')
