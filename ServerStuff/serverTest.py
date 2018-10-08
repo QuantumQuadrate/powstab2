@@ -71,9 +71,10 @@ if __name__ == '__main__':
             sub_list_json = request.get_json()
             with open(sub_file, 'w') as f:
                 f.write(sub_list_json)
+                f.close()
         with open(sub_file, 'r') as f:
             sub_list = json.load(f)
-            
+
         print sub_list
         #sub_list = {1:{'kwargs':{kwargs}, 'control':{control}}
         num_ch = len(sub_list)
