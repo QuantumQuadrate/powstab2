@@ -56,7 +56,6 @@ if __name__ == '__main__':
                 'channel': ch_num
                 }
         })
-    print channels
     #commands & webpage
     #home page "monitor"
     sub_file = 'subscriptions.json'
@@ -75,7 +74,7 @@ if __name__ == '__main__':
         with open(sub_file, 'r') as f:
             sub_list = json.load(f)
         print sub_list
-        
+
         #sub_list = {1:{'kwargs':{kwargs}, 'control':{control}}
         num_ch = len(sub_list)
         return render_template('index.html', id_list = sub_list.keys(), **sub_list)

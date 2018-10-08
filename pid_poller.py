@@ -54,6 +54,7 @@ def pid_poller_loop(sub_addr, queue):
     global_err_state = False
     last_msg = time.time()
     sub_list = []
+    time.sleep(2)
     while True:
         # process new command messages from the parent process
         try:
@@ -67,7 +68,7 @@ def pid_poller_loop(sub_addr, queue):
             pass
         except IOError:
             log.error('IOError, probably a broken pipe. Exiting..')
-            sys.exit(1)
+            #sys.exit(1)
         except:
             log.exception("error encountered")
 
