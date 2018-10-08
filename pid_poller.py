@@ -61,7 +61,7 @@ def pid_poller_loop(sub_addr, queue):
             cmd = queue.get_nowait()
             if cmd['action'] == 'SHUTDOWN':
                 break
-
+            print cmd
             actionHandler.genericHandler(sub_sock, cmd, log, subscriptions)
 
         except multiprocessing.queues.Empty:
