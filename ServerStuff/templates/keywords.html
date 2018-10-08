@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 
+<link rel="stylesheet" href="{{ url_for('static',filename='styles.css') }}">
+
 <script>
     window.onload = function() {
         var anchors = document.getElementsByClassName("button");
@@ -16,8 +18,6 @@
     }
 </script>
 
-
-<link rel="stylesheet" href="{{ url_for('static',filename='styles.css') }}">
 <form action="{{ url_for('update',id=id) }}" method=post id="form">
   <div class="table-title">
     <h3>Keywords Setting</h3>
