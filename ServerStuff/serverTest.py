@@ -75,7 +75,7 @@ def runServer(sub, stream):
     @app.route('/update/<id>/<action>/action')
     def unsubscribe(id, action):
         if action == "unsubscribe":
-            sub.unsubscribe(stream)
+            sub.unsubscribe(stream, 'weird')
         elif action == "resetall":
             sub.reset_all(stream)
         elif action == "mute":

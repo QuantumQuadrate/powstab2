@@ -8,7 +8,7 @@
             anchor.onclick = function() {
                 var name = anchor.getAttribute("name");
                 var xmlHttp = new XMLHttpRequest();
-                xmlHttp.open( "GET", '/update/{{id}}/'+name+'/action', false ); // false for synchronous request
+                xmlHttp.open( "GET", '/update/{{id}}/'+name+'/action', false );
                 xmlHttp.send( null );
               }
         }
