@@ -76,26 +76,28 @@ def runServer(sub, stream):
     def unsubscribe(id, action):
         if action == "unsubscribe":
             sub.unsubscribe(stream)
-        else if action == "resetall":
+        elif action == "resetall":
             sub.reset_all(stream)
-        else if action == "mute":
+        elif action == "mute":
             sub.mute(stream, int(id))
-        else if action == "unmute":
+        elif action == "unmute":
             sub.unmute(stream, int(id))
-        else if action == "muteall":
+        elif action == "muteall":
             sub.mute_all(stream)
-        else if action == "unmuteall":
+        elif action == "unmuteall":
             sub.unmute_all(stream)
-        else if action == "pause":
+        elif action == "pause":
             sub.pause(stream, int(id))
-        else if action == "pauseall":
+        elif action == "pauseall":
             sub.pause_all(stream)
-        else if action == "restart":
+        elif action == "restart":
             sub.restart(stream, int(id))
-        else if action == "restartall":
+        elif action == "restartall":
             sub.restart_all(stream)
-        else if action == "reset":
+        elif action == "reset":
             sub.reset(stream, int(id))
+        else:
+
         return ''
 
     app.run(host='0.0.0.0', debug=True)
