@@ -53,7 +53,7 @@ def pid_poller_loop(sub_addr, queue):
     sub_sock.connect(sub_addr)
     global_err_state = False
     last_msg = time.time()
-
+    sub_list = []
     while True:
         # process new command messages from the parent process
         try:
@@ -62,7 +62,7 @@ def pid_poller_loop(sub_addr, queue):
             if cmd['action'] == 'SHUTDOWN':
                 break
             print cmd
-            actionHandler.genericHandler(sub_sock, cmd, log, subscriptions)
+            actionHandler.genericHandler(sub_sock, cmd, log, subscriptions, sub_list)
 
         except multiprocessing.queues.Empty:
             pass

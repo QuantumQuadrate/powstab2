@@ -7,9 +7,9 @@ import RPi.GPIO as GPIO
 from worker_K10CR1 import WK10CR1
 from worker_DAC8532 import WDAC8532
 import logging
-sub_list = []
-def genericHandler(sub_sock, cmd, log, subscriptions):
-    print cmd
+
+def genericHandler(sub_sock, cmd, log, subscriptions, sub_list):
+
     if cmd['action'] == 'SUBSCRIBE':
         msg = 'Subscribing with stream filter: [{}]'
         stream_filter = cmd['stream_filter']
