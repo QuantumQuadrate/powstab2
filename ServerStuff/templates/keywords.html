@@ -5,11 +5,12 @@
         var anchors = document.getElementsByClassName("button");
         for(var i = 0; i < anchors.length; i++) {
             var anchor = anchors[i];
-            anchor.onclick = function() {
-                var name = anchor.getAttribute("name");
+            anchor.onclick = function(this) {
+                var name = this.getAttribute("name");
                 var xmlHttp = new XMLHttpRequest();
                 xmlHttp.open( "GET", '/update/{{id}}/'+name+'/action', false );
                 xmlHttp.send( null );
+                location.reload();
               }
         }
     }
