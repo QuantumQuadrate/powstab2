@@ -7,6 +7,7 @@ import RPi.GPIO as GPIO
 from worker_K10CR1 import WK10CR1
 from worker_DAC8532 import WDAC8532
 import logging
+import requests
 
 def genericHandler(sub_sock, cmd, log, subscriptions, sub_list):
     print sub_list
