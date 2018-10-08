@@ -77,7 +77,7 @@ if __name__ == '__main__':
 
 
         print "Here is the sub list"
-        print sub_list
+        sub_list = sub_list[0]
         #sub_list = {1:{'kwargs':{kwargs}, 'control':{control}}
         num_ch = len(sub_list)
         return render_template('index.html', id_list = sub_list.keys(), **sub_list)
