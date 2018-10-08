@@ -7,6 +7,7 @@ import RPi.GPIO as GPIO
 from worker_K10CR1 import WK10CR1
 from worker_DAC8532 import WDAC8532
 import logging
+import actionHandler
 PWM = True
 
 def pid_poller_loop(sub_addr, queue):
@@ -54,47 +55,7 @@ def pid_poller_loop(sub_addr, queue):
     last_msg = time.time()
     while True:
         # process new command messages from the parent process
-        try:
-            cmd = queue.get_nowait()
-            log.info(cmd)
-            if cmd['action'] == 'SHUTDOWN':
-                break
-
-            if cmd['action'] == 'SUBSCRIBE':
-                msg = 'Subscribing with stream filter: [{}]'
-                stream_filter = cmd['stream_filter']
-                stream_filter = 'toy'
-                log.info(msg.format(stream_filter))
-                # add the callback to the list of things to do for the stream
-                if stream_filter not in subscriptions:
-                    subscriptions[stream_filter] = []
-                    sub_sock.setsockopt_string(zmq.SUBSCRIBE, stream_filter)
-                subscriptions[stream_filter].append({
-                    'callback': cmd['callback'],
-                    'kwargs': cmd['kwargs']
-                })
-
-                log.info("subscriptions: {}".format(subscriptions))
-
-            if (cmd['action'] == 'UNSUBSCRIBE' or
-                    cmd['action'] == 'REMOVE_ALL_CBS'):
-                msg = 'Unsubscribing to stream filter: [{}]'
-                log.info(msg.format(cmd['stream_filter']))
-                sub_sock.setsockopt_string(zmq.UNSUBSCRIBE, stream_filter)
-
-            if cmd['action'] == 'REMOVE_ALL_CBS':
-                msg = 'Removing all callbacks for stream filter: [{}]'
-                log.info(msg.format(cmd['stream_filter']))
-                del subscriptions[cmd['stream_filter']]
-
-        except multiprocessing.queues.Empty:
-            pass
-        except IOError:
-            log.error('IOError, probably a broken pipe. Exiting..')
-            sys.exit(1)
-        except:
-            log.exception("error encountered")
-
+        actionHandler.genericHandler(sub_sock, queue, log)
         # process data from the stream
         try:
             [streamID, content] = sub_sock.recv_multipart()
