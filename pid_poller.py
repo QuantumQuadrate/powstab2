@@ -55,7 +55,22 @@ def pid_poller_loop(sub_addr, queue):
     last_msg = time.time()
     while True:
         # process new command messages from the parent process
-        actionHandler.genericHandler(sub_sock, queue, log)
+        try:
+            #get command from command queue
+            cmd = queue.get_nowait()
+            if cmd['action'] == 'SHUTDOWN':
+                break
+
+            actionHandler.genericHandler(sub_sock, cmd, log)
+
+        except multiprocessing.queues.Empty:
+            pass
+        except IOError:
+            log.error('IOError, probably a broken pipe. Exiting..')
+            sys.exit(1)
+        except:
+            log.exception("error encountered")
+
 
         try:
             [streamID, content] = sub_sock.recv_multipart()
@@ -81,62 +96,7 @@ def pid_poller_loop(sub_addr, queue):
             log.exception("error encountered")
 
         # process data from the stream
-        try:
-            [streamID, content] = sub_sock.recv_multipart()
 
-            last_msg = time.time()
-            try:
-                log.debug("new data")
-                for cb in subscriptions[streamID]:
-                    result = cb['callback'](streamID, json.loads(content), log, **cb['kwargs'])
-                    pid_ctrl_name = result['name']
-                    # check if pid controller exists
-                    if pid_ctrl_name not in pids:
-                        # if it doesn't make a new controller
-                        pids[pid_ctrl_name] = {'err_state': False}
-                        fb_type = result['config'].get(result['name'], 'FeedbackDevice')
-                        log.debug('recieved first instance from channel: {} type: {}'.format(pid_ctrl_name, fb_type))
-                        if fb_type == WK10CR1.type:
-                            pids[pid_ctrl_name]['pid'] = WK10CR1(result['channel'], result['config'], logger=log)
-                        if fb_type == WDAC8532.type:
-                            pids[pid_ctrl_name]['pid'] = WDAC8532(result['channel'], result['config'], logger=log)
-                    # update with new info, save error state
-                    try:
-                        pids[pid_ctrl_name]['err_state'] = pids[pid_ctrl_name]['pid'].update(result)
-                    except:
-                        log.exception('Unhandled server exception in pid: `{}`'.format(pid_ctrl_name))
-
-            except KeyError:
-                msg = "An unrecognized streamID `{}` was encountered"
-                log.error(msg.format(streamID))
-                log.error(subscriptions)
-
-            # or all pid error states and set error pin accordingly
-            last_g_err_state = global_err_state
-            global_err_state = False
-            for ch in pids:
-                global_err_state = global_err_state or pids[ch]['err_state']
-                if pids[ch]['err_state']:
-                    log.info('{} is bad and should feel bad: err {:05.3f}'.format(ch, pids[ch]['pid'].pid.last_error))
-
-            if global_err_state != last_g_err_state:
-                if not PWM:
-                    GPIO.output(error_pin, global_err_state)
-                else:
-                    if global_err_state:
-                        log.info('trying to turn on the pwm output')
-                        pwm_ch.ChangeDutyCycle(50.)  # 50% duty cycle pwm output
-                    else:
-                        pwm_ch.ChangeDutyCycle(0.)  # 0% duty cycle pwm output for no error
-
-        except zmq.ZMQError as e:
-            if e.errno != zmq.EAGAIN:
-                log.exception("zmq error encountered")
-            elif time.time() - last_msg > 20:
-                pwm_ch.ChangeDutyCycle(50.)  # 50% duty cycle pwm output
-
-        except:
-            log.exception("error encountered")
 
     log.info('Shutting down poller loop.')
     sub_sock.close()
