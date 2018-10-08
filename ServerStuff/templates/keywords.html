@@ -24,6 +24,7 @@
       </tr>
     </tbody>
   </table>
+</form>
 
 
   <div class="table-title">
@@ -32,30 +33,36 @@
   <table class="table-fill">
     <tbody class="table-hover">
       <tr>
-        <td class="text-left" onclick="window.location.href='/update/{{id}}/reset'">Reset</td>
-        <td class="text-left" onclick="window.location.href='/update/{{id}}/resetall'">Reset All Channels</td>
-        <td class="text-left" onclick="window.location.href='/update/{{id}}/mute'">Mute Channel Alert</td>
-        <td class="text-left" onclick="window.location.href='/update/{{id}}/muteall'">Mute All Alert</td>
+        <td class="text-left button" name='reset'>Reset</td>
+        <td class="text-left button" name='resetall'>Reset All Channels</td>
+        <td class="text-left button" name='mute'>Mute Channel Alert</td>
+        <td class="text-left button" name='muteall'>Mute All Alert</td>
       </tr>
 
 
       <tr>
-        <td class="text-left" onclick="window.location.href='/update/{{id}}/muteall'">Mute All Alert</td>
-        <td class="text-left" onclick="window.location.href='/update/{{id}}/unmuteall'">Unmute All Alert</td>
-        <td class="text-left" onclick="window.location.href='/update/{{id}}/pause'">Pause</td>
-        <td class="text-left" onclick="window.location.href='/update/{{id}}/pauseall'">Pause All Channels</td>
+        <td class="text-left button" name='muteall'>Mute All Alert</td>
+        <td class="text-left button" name='unmuteall'>Unmute All Alert</td>
+        <td class="text-left button" name='pause'>Pause</td>
+        <td class="text-left button" name='pauseall'>Pause All Channels</td>
       </tr>
 
       <tr>
-        <td class="text-left" onclick="window.location.href='/update/{{id}}/restart'">Restart</td>
-        <td class="text-left" onclick="window.location.href='/update/{{id}}/restartall'">Restart All Channels</td>
-        <td class="text-left" onclick="window.location.href='/update/{{id}}/unsubscribe'"> Unsubscribe </td>
+        <td class="text-left button" name='restart'>Restart</td>
+        <td class="text-left button" name='restartall'>Restart All Channels</td>
+        <td class="text-left button" name='unsubscribe'> Unsubscribe </td>
         <td class="text-left" onclick="window.location.href='/monitor'"> Back </td>
       </tr>
-
     </tbody>
   </table>
 
-
+  <script>
+  function sendAction() {
+    var name = element.getAttribute("name");
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", '/update/{{id}}/'+name+'/action', false ); // false for synchronous request
+    xmlHttp.send( null );
+  }
+  </script>
 
 </form>
