@@ -30,10 +30,9 @@ def genericHandler(sub_sock, cmd, log, subscriptions, sub_list):
 
         # add subscribed channel info to dict
         #sub_list = {1:{'kwargs':{kwargs}, 'control':{control}}
-        sub_list.append(cmd['id'] : {
+        sub_list[cmd['id']] = {
             'kwargs': cmd['kwargs'],
-            'control': {'alert': True, 'pause': False}
-        })
+            'control': {'alert': True, 'pause': False}}
         log.info("subscriptions: {}".format(subscriptions[stream_filter]))
 
     if cmd['action'] == 'UPDATE_KW':
