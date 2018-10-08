@@ -37,7 +37,7 @@ def stream_callback(stream_id, data, log, calibration=1, field='', name='', chan
 if __name__ == '__main__':
     # setup a catch for SIGTERM so process can be killed gracefully in the background
     signal.signal(signal.SIGTERM, sigterm_handler)
-    subprocess.run(['python', 'ServerStuff/serverTest.py')
+    subprocess.run(['python', 'ServerStuff/serverTest.py'])
     time.sleep(1000)
     # setup logging
     logger = logging.getLogger(__name__)
