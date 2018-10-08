@@ -138,6 +138,7 @@ def PID_Handler(sub_sock, global_err_state, last_msg, log, pids, subscriptions, 
             log.debug("new data")
             for cb in subscriptions[streamID]:
                 result = cb['callback'](streamID, json.loads(content), log, **cb['kwargs'])
+                print result
                 pid_ctrl_name = result['name']
                 # check if pid controller exists
                 if pid_ctrl_name not in pids:
