@@ -127,7 +127,6 @@ def genericHandler(sub_sock, cmd, log, subscriptions):
                 }
 
     sub_list_json = json.dumps(sub_list)
-    print sub_list_json
     requests.put('http://127.0.0.1:5000/monitor', json=sub_list_json)
 
 

@@ -38,6 +38,7 @@ if __name__ == '__main__':
     # setup a catch for SIGTERM so process can be killed gracefully in the background
     signal.signal(signal.SIGTERM, sigterm_handler)
     os.system('python ServerStuff/serverTest.py')
+    time.sleep(1000)
     # setup logging
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.INFO)
@@ -92,7 +93,7 @@ if __name__ == '__main__':
     # read channels from feedback config file
     for channel in channels:
         streamName = config.get('CHANNEL{}'.format(channel['number']), 'StreamName')
-        print streamName 
+        print streamName
         sub.subscribe(
             streamName,
             callback=channel['callback'],
