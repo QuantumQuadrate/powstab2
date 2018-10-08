@@ -11,7 +11,7 @@ import pid_poller
 from worker_K10CR1 import WK10CR1
 from worker_DAC8532 import WDAC8532
 import os
-
+import subprocess
 def sigterm_handler(_signo, _stack_frame):
     # from https://stackoverflow.com/a/24574672
     sys.exit(0)
@@ -37,7 +37,7 @@ def stream_callback(stream_id, data, log, calibration=1, field='', name='', chan
 if __name__ == '__main__':
     # setup a catch for SIGTERM so process can be killed gracefully in the background
     signal.signal(signal.SIGTERM, sigterm_handler)
-    os.system('python ServerStuff/serverTest.py')
+    subprocess.run(['python', 'ServerStuff/serverTest.py')
     time.sleep(1000)
     # setup logging
     logger = logging.getLogger(__name__)
