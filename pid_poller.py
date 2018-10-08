@@ -53,7 +53,7 @@ def pid_poller_loop(sub_addr, queue):
     sub_sock.connect(sub_addr)
     global_err_state = False
     last_msg = time.time()
-    sub_list = []
+    sub_list = {}
     time.sleep(2)
     while True:
         # process new command messages from the parent process
