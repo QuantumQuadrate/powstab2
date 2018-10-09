@@ -60,7 +60,7 @@ class configManager():
                     'callback': stream_callback,
                     'kwargs': {
                         'calibration': calib,
-                        'field': config.get(section, 'FieldName'),
+                        'field': self.config.get(section, 'FieldName'),
                         'name': section,
                         'channel': ch_num
                     }
