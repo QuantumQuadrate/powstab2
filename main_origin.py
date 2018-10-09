@@ -13,7 +13,7 @@ from worker_DAC8532 import WDAC8532
 import os
 import subprocess
 import ServerStuff.serverTest as server
-import configManager
+import configManager.configManager
 
 def sigterm_handler(_signo, _stack_frame):
     # from https://stackoverflow.com/a/24574672
@@ -62,9 +62,9 @@ if __name__ == '__main__':
     calib = v_ref/((2**adc_word)-1)
 
     # get the feedback config files
-    configMan = configManager('config.cfg')
-    channels = configManager.getChannels()
-    print configMan.getChannelConfigInfo()
+    conMan = configManager.configManager('config.cfg')
+    channels = conMan.getChannels()
+    print conMan.getChannelConfigInfo()
     # get the origin config file
     origin_config = ConfigParser.ConfigParser()
     origin_config.read('origin-server.cfg')
