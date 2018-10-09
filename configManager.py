@@ -55,8 +55,8 @@ def updateConfig(channels):
         ErrorPin: 36 ;""")
         for channel in channels:
             f.write('[CHANNEL'+channel['number']+']')
-            for values channel.keys()
-            f.close()
+            for values in channel.keys():
+                f.close()
     return ''
 
 
