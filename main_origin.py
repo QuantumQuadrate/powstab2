@@ -41,10 +41,7 @@ if __name__ == '__main__':
     logger.addHandler(fh)
     logger.info('Started logging')
 
-    # 12b 5V ADC calibration
-    adc_word = 12
-    v_ref = 5.0
-    calib = v_ref/((2**adc_word)-1)
+
 
     # get the feedback config files
     conMan = configManager.configManager('config.cfg')
@@ -59,7 +56,7 @@ if __name__ == '__main__':
     # read channels from feedback config file
     streamName = ''
     for channel in channels:
-        streamName = config.get('CHANNEL{}'.format(channel['number']), 'StreamName')
+        streamName = conMan.config.get('CHANNEL{}'.format(channel['number']), 'StreamName')
         sub.subscribe(
             streamName,
             callback=channel['callback'],
