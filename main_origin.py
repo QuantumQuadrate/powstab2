@@ -61,31 +61,9 @@ if __name__ == '__main__':
     calib = v_ref/((2**adc_word)-1)
 
     # get the feedback config files
-    config = ConfigParser.ConfigParser()
-    config.read('config.cfg')
-    # get all the activated channels from config file
-    channels = []
-    for section in config.sections():
-        if 'CHANNEL' not in section:
-            continue  # not a channel definition
-        fb_type = config.get(section, 'FeedbackDevice')
-        if fb_type in [WDAC8532.type, WK10CR1.type]:
-            # get the channel number from the section title
-            ch_num = int(section.rsplit('CHANNEL')[1])
-            # callback has to be fully defined before Subscriber is initialized, since it starts
-            # a new process and won't know about anything in the main process after it starts
-            channels.append({
-                'number': ch_num,
-                'callback': stream_callback,
-                'kwargs': {
-                    'calibration': calib,
-                    'field': config.get(section, 'FieldName'),
-                    'name': section,
-                    'channel': ch_num
-                }
-            })
-    logger.info('Detected {} channel definitions from config file.'.format(len(channels)))
-
+    configMan = configManager('config.cfg')
+    channels = configManager.getChannels()
+    print configMan.getChannelConfigInfo()
     # get the origin config file
     origin_config = ConfigParser.ConfigParser()
     origin_config.read('origin-server.cfg')
