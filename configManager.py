@@ -70,10 +70,9 @@ class configManager():
     def getChannelConfigInfo(self):
         return self.config
 
-    def updateConfig(self, channelNum, parameter, value):
+    def updateConfig(self):
         fileName = "configs/config"+str(datetime.now())+".cfg"
         f= open(fileName,"w+")
-        self.config.set("CHANNEL"+str(channelNum), parameter, value)
         with f as configfile:
             self.config.write(configfile)
         f.close()
