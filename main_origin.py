@@ -14,6 +14,8 @@ import os
 import subprocess
 import ServerStuff.serverTest as server
 import configManager
+import glob
+
 
 def sigterm_handler(_signo, _stack_frame):
     # from https://stackoverflow.com/a/24574672
@@ -44,7 +46,11 @@ if __name__ == '__main__':
 
 
     # get the feedback config files
-    conMan = configManager.configManager('config.cfg')
+
+    list_of_files = glob.glob('/configs/*') # * means all if need specific format then *.csv
+    latestConfig = max(list_of_files, key=os.path.getctime)
+    print latestConfig
+    conMan = configManager.configManager(latestConfig)
     channels = conMan.getChannels()
     conMan.updateConfig(1, "StreamName", "toy")
     # get the origin config file
