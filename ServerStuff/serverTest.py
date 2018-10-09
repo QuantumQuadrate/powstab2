@@ -15,7 +15,7 @@ from flask import render_template
 from flask import request
 from origin.client.origin_subscriber import Subscriber
 
-def runServer(sub, stream):
+def runServer(sub, stream, conMan):
 #web server
     app = Flask(__name__)
 
@@ -68,6 +68,9 @@ def runServer(sub, stream):
             pause = 'Paused'
         else:
             pause = 'Started'
+
+        configStuff = conMan.get('CHANNEL'+str(id))
+        print configStuff
 
         return render_template('keywords.html', id=id, kw_dict=kwargs, alert=alert, pause=pause)
 

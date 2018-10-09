@@ -45,6 +45,32 @@
 </form>
 
 
+<form action="{{ url_for('updateConfig',id=id) }}" method=post id="configForm">
+  <div class="table-title">
+    <h3>Keywords Setting</h3>
+  </div>
+  <table class="table-fill">
+    <thead>
+      <tr>
+        <th class="text-left">Keyword</th>
+        <th class="text-left">Value</th>
+      </tr>
+    </thead>
+    <tbody class="table-hover">
+
+      {% for config in config_dict %}
+      <tr>
+        <td class="text-left">{{kw}}</td>
+        <td class="text-left"><input type=text name={{config}} value={{config_dict[config]}}></td>
+      </tr>
+      {% endfor %}
+      <tr>
+        <td class="text-center" onclick="document.getElementById('configForm').submit();" colspan="2">Update</td>
+      </tr>
+    </tbody>
+  </table>
+</form>
+
   <div class="table-title">
     <h3>Actions</h3>
   </div>
