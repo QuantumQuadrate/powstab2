@@ -60,8 +60,8 @@
 
       {% for config in config_dict %}
       <tr>
-        <td class="text-left">{{kw}}</td>
-        <td class="text-left"><input type=text name={{config[0]}} value={{config[2]}}></td>
+        <td class="text-left">{{config[0]}}</td>
+        <td class="text-left"><input type=text name={{config[0]}} value={{config[1]}}></td>
       </tr>
       {% endfor %}
       <tr>
