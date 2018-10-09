@@ -1,17 +1,12 @@
 #!/usr/bin/python
 
 from origin.client.origin_subscriber import Subscriber
-from origin import TIMESTAMP
 import time
 import logging
 import signal
 import sys
-import ConfigParser
 import pid_poller
-from worker_K10CR1 import WK10CR1
-from worker_DAC8532 import WDAC8532
 import os
-import subprocess
 import ServerStuff.serverTest as server
 import configManager
 
@@ -51,7 +46,6 @@ if __name__ == '__main__':
     latestConfig = max(paths, key=os.path.getctime)
     conMan = configManager.configManager(latestConfig)
     channels = conMan.getChannels()
-    conMan.updateConfig(1, "StreamName", "toy")
     # get the origin config file
     origin_config = ConfigParser.ConfigParser()
     origin_config.read('origin-server.cfg')

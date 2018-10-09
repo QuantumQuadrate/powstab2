@@ -1,17 +1,9 @@
-from origin.client.origin_subscriber import Subscriber
 from origin import TIMESTAMP
-import time
-import logging
-import signal
-import sys
 import ConfigParser
-import pid_poller
 from worker_K10CR1 import WK10CR1
 from worker_DAC8532 import WDAC8532
-import os
-import subprocess
-import ServerStuff.serverTest as server
 from datetime import datetime
+
 
 def stream_callback(stream_id, data, log, calibration=1, field='', name='', channel=''):
     log.debug('Stream data for `{}` recieved.'.format(name))

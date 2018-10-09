@@ -2,6 +2,7 @@ import logging
 import time
 from ivPID import PID
 import ConfigParser
+import os
 
 
 class Worker(object):
@@ -25,15 +26,15 @@ class Worker(object):
     def setup(self):
         "override for actuator specific initilization"
         pass
+
     def updateConfig(self):
         configPath = 'configs/'
         configFiles = os.listdir(configPath)
         paths = [os.path.join(configPath, basename) for basename in configFiles]
         latestConfig = max(paths, key=os.path.getctime)
-        conMan = ConfigParser.ConfigParser(latestConfig)
-        setup_pid()
+        self.config = ConfigParser.ConfigParser(latestConfig)
+        self.setup_pid()
         return ''
-
 
     def setup_pid(self):
         section = 'CHANNEL{}'.format(self.channel)
@@ -84,13 +85,11 @@ class Worker(object):
             self.logger.debug('[{}] error {:05.3f}, max error {:05.3f}'.format(self.wname, self.pid.last_error, self.max_error))
         else:
             self.logger.warning('[{}] Recieved new input while busy updating the setpoint.'.format(self.wname))
-
         if abs(input - self.pid.SetPoint) > self.max_error:
             self.error_sig = True
         else:
             self.error_sig = False
         return self.error_sig
-
 
     def update_setpoint(self, sp):
         self.pid.SetPoint = sp
