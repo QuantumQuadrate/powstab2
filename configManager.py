@@ -58,6 +58,7 @@ def updateConfig(channels):
             f.write('[CHANNEL'+channel['number']+']')
             for values channel.keys()
             f.close()
+    return ''
 
 
 

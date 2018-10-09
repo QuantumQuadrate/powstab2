@@ -67,6 +67,7 @@ def pid_poller_loop(sub_addr, queue):
 
         except multiprocessing.queues.Empty:
             pass
+
         except IOError:
             log.error('IOError, probably a broken pipe. Exiting..')
             #sys.exit(1)
