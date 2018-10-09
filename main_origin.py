@@ -15,14 +15,14 @@ def sigterm_handler(_signo, _stack_frame):
     # from https://stackoverflow.com/a/24574672
     sys.exit(0)
 
-
 # I could open a subscriber object for each channel which would multi-process
 # the actuators
 if __name__ == '__main__':
+
     # setup a catch for SIGTERM so process can be killed gracefully in the background
     signal.signal(signal.SIGTERM, sigterm_handler)
-
     time.sleep(1)
+
     # setup logging
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.INFO)
@@ -36,8 +36,6 @@ if __name__ == '__main__':
     logger.addHandler(ch)
     logger.addHandler(fh)
     logger.info('Started logging')
-
-
 
     # get the feedback config files
     configPath = 'configs/'

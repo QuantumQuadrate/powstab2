@@ -8,7 +8,16 @@ import requests
 stream_filter = ''
 
 
-def genericHandler(sub_sock, cmd, log, subscriptions, sub_list, stream_filter):
+
+class genericHandler(object):
+    """docstring for genericHandler."""
+    def __init__(self, arg):
+         self.sub_sock = sub_sock,
+         self.cmd = cmd
+         self.log = log
+         self.subscriptions = subscriptions
+         self.sub_list = {}
+         self.stream_filter = ''
 
     if cmd['action'] == 'SUBSCRIBE':
         msg = 'Subscribing with stream filter: [{}]'
@@ -128,62 +137,80 @@ def genericHandler(sub_sock, cmd, log, subscriptions, sub_list, stream_filter):
     return stream_filter
 
 
-def PID_Handler(sub_sock, global_err_state, last_msg, log, pids, subscriptions, PWM, pwm_ch):
+class ClassName(object):
+    """docstring for ."""
+    def __init__(self, sub_sock, log, pwm_ch):
+        # a hash table (dict) of callbacks to perform when a message is recieved
+        # the hash is the data stream filter, the value is a list of callbacks
+        self.PWM = True
+        self.subscriptions = {}
+        self.pids = {}
 
-    try:
-        [streamID, content] = sub_sock.recv_multipart()
+        # listen for one second, before doing housekeeping
+        self.global_err_state = False
+        self.last_msg = time.time()
+        self.sub_list = {}
+        time.sleep(2)
+        self.stream_filter = ''
+        self.sub_sock = sub_sock
+        self.log = log
+        self.pwm_ch = pwm_ch
 
-        last_msg = time.time()
+    def handle(self, streamID, content):
         try:
-            log.debug("new data")
-            for cb in subscriptions[streamID]:
-                result = cb['callback'](streamID, json.loads(content), log, **cb['kwargs'])
-                pid_ctrl_name = result['name']
-                # check if pid controller exists
-                if pid_ctrl_name not in pids:
-                    # if it doesn't make a new controller
-                    pids[pid_ctrl_name] = {'err_state': False}
-                    fb_type = result['config'].get(result['name'], 'FeedbackDevice')
-                    log.debug('recieved first instance from channel: {} type: {}'.format(pid_ctrl_name, fb_type))
-                    if fb_type == WK10CR1.type:
-                        pids[pid_ctrl_name]['pid'] = WK10CR1(result['channel'], result['config'], logger=log)
-                    if fb_type == WDAC8532.type:
-                        pids[pid_ctrl_name]['pid'] = WDAC8532(result['channel'], result['config'], logger=log)
-                # update with new info, save error state
-                try:
-                    pids[pid_ctrl_name]['pid'].updateConfig()
-                    pids[pid_ctrl_name]['err_state'] = pids[pid_ctrl_name]['pid'].update(result)
-                except:
-                    log.exception('Unhandled server exception in pid: `{}`'.format(pid_ctrl_name))
+            [streamID, content] = sub_sock.recv_multipart()
 
-        except KeyError:
-            msg = "An unrecognized streamID `{}` was encountered"
-            log.error(msg.format(streamID))
-            log.error(subscriptions)
+            self.last_msg = time.time()
+            try:
+                self.log.debug("new data")
+                for cb in subscriptions[streamID]:
+                    result = cb['callback'](streamID, json.loads(content), self.log, **cb['kwargs'])
+                    pid_ctrl_name = result['name']
+                    # check if pid controller exists
+                    if pid_ctrl_name not in self.pids:
+                        # if it doesn't make a new controller
+                        self.pids[pid_ctrl_name] = {'err_state': False}
+                        fb_type = result['config'].get(result['name'], 'FeedbackDevice')
+                        log.debug('recieved first instance from channel: {} type: {}'.format(pid_ctrl_name, fb_type))
+                        if fb_type == WK10CR1.type:
+                            self.pids[pid_ctrl_name]['pid'] = WK10CR1(result['channel'], result['config'], logger=self.log)
+                        if fb_type == WDAC8532.type:
+                            self.pids[pid_ctrl_name]['pid'] = WDAC8532(result['channel'], result['config'], logger=self.log)
+                    # update with new info, save error state
+                    try:
+                        self.pids[pid_ctrl_name]['pid'].updateConfig()
+                        self.pids[pid_ctrl_name]['err_state'] = self.pids[pid_ctrl_name]['pid'].update(result)
+                    except:
+                        log.exception('Unhandled server exception in pid: `{}`'.format(pid_ctrl_name))
 
-        # or all pid error states and set error pin accordingly
-        last_g_err_state = global_err_state
-        global_err_state = False
-        for ch in pids:
-            global_err_state = global_err_state or pids[ch]['err_state']
-            if pids[ch]['err_state']:
-                log.info('{} is bad and should feel bad: err {:05.3f}'.format(ch, pids[ch]['pid'].pid.last_error))
+            except KeyError:
+                msg = "An unrecognized streamID `{}` was encountered"
+                log.error(msg.format(streamID))
+                log.error(self.subscriptions)
 
-        if global_err_state != last_g_err_state:
-            if not PWM:
-                GPIO.output(error_pin, global_err_state)
-            else:
-                if global_err_state:
-                    log.info('trying to turn on the pwm output')
-                    pwm_ch.ChangeDutyCycle(50.)  # 50% duty cycle pwm output
+            # or all pid error states and set error pin accordingly
+            self.global_err_state = False
+            self.self.self. = self.global_err_state
+            for ch in self.pids:
+                self.global_err_state = self.global_err_state or self.pids[ch]['err_state']
+                if self.pids[ch]['err_state']:
+                    log.info('{} is bad and should feel bad: err {:05.3f}'.format(ch, self.pids[ch]['pid'].pid.last_error))
+
+            if self.global_err_state != self.last_g_err_state:
+                if not self.PWM:
+                    GPIO.output(error_pin, self.global_err_state)
                 else:
-                    pwm_ch.ChangeDutyCycle(0.)  # 0% duty cycle pwm output for no error
+                    if self.global_err_state:
+                        self.log.info('trying to turn on the pwm output')
+                        self.pwm_ch.ChangeDutyCycle(50.)  # 50% duty cycle pwm output
+                    else:
+                        self.pwm_ch.ChangeDutyCycle(0.)  # 0% duty cycle pwm output for no error
 
-    except zmq.ZMQError as e:
-        if e.errno != zmq.EAGAIN:
-            log.exception("zmq error encountered")
-        elif time.time() - last_msg > 20:
-            pwm_ch.ChangeDutyCycle(50.)  # 50% duty cycle pwm output
+        except zmq.ZMQError as e:
+            if e.errno != zmq.EAGAIN:
+                self.log.exception("zmq error encountered")
+            elif time.time() - self.last_msg > 20:
+                self.pwm_ch.ChangeDutyCycle(50.)  # 50% duty cycle pwm output
 
-    except:
-        log.exception("error encountered")
+        except:
+            self.log.exception("error encountered")
