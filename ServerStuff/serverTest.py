@@ -74,7 +74,7 @@ def runServer(sub, stream, conMan):
         return render_template('keywords.html', id=id, kw_dict=kwargs, alert=alert, pause=pause, config_dict=configStuff)
 
     #subscribe
-    @app.route('/update/<id>/config', methods=['GET', 'POST'])
+    @app.route('/update/<id>/config')
     def updateConfig(id):
         print request.form.to_dict()
         return ''
