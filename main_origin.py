@@ -47,7 +47,8 @@ if __name__ == '__main__':
 
     # get the feedback config files
 
-    list_of_files = glob.glob('/configs/*') # * means all if need specific format then *.csv
+    list_of_files = glob.glob('/configs/*')
+    print list_of_files
     latestConfig = max(list_of_files, key=os.path.getctime)
     print latestConfig
     conMan = configManager.configManager(latestConfig)
