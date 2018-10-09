@@ -71,6 +71,7 @@ def runServer(sub, stream, conMan):
 
         configStuff = conMan.config.items('CHANNEL'+str(id))
         print configStuff
+        print configStuff[1][1]
 
         return render_template('keywords.html', id=id, kw_dict=kwargs, alert=alert, pause=pause)
 
