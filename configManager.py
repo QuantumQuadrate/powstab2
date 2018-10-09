@@ -49,11 +49,10 @@ def getChannelConfigInfo():
 
 def updateConfig(channels):
     newfile = "config"+str(datetime.now())+".cfg"
-    with open(sub_file, 'w') as f:
+    with open(newfile, 'w') as f:
         f.write("""[MAIN]
         MaxChannels: 4 ;
-        ErrorPin: 36 ;"""
-
+        ErrorPin: 36 ;""")
         for channel in channels:
             f.write('[CHANNEL'+channel['number']+']')
             for values channel.keys()
