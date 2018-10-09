@@ -21,10 +21,10 @@ class configManager():
         # get all the activated channels from config file
     def getChannels(self):
         channels = []
-        for section in config.sections():
+        for section in self.config.sections():
             if 'CHANNEL' not in section:
                 continue  # not a channel definition
-            fb_type = config.get(section, 'FeedbackDevice')
+            fb_type = self.config.get(section, 'FeedbackDevice')
             if fb_type in [WDAC8532.type, WK10CR1.type]:
                 # get the channel number from the section title
                 ch_num = int(section.rsplit('CHANNEL')[1])
@@ -43,7 +43,7 @@ class configManager():
         return channels
 
     def getChannelConfigInfo(self):
-        return config
+        return self.config
 
 
 
