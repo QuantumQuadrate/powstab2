@@ -1,21 +1,18 @@
 import zmq
 import multiprocessing
-import sys
 import time
-import json
 import RPi.GPIO as GPIO
-from worker_K10CR1 import WK10CR1
-from worker_DAC8532 import WDAC8532
-import logging
 import actionHandler
+import logging
 PWM = True
 
-def pid_poller_loop(sub_addr, queue):
-    '''This is a modified version of the default subscription poller loop that adds in feedback
-    functionality.
 
-    Callbacks must return a processed measurement result which is fed into a PID controller.
-    The measurement object needs to be formatted as:
+def pid_poller_loop(sub_addr, queue):
+    '''This is a modified version of the default subscription poller
+     loop that adds in feedback functionality.
+
+    Callbacks must return a processed measurement result which is fed into a
+    PID controller. The measurement object needs to be formatted as:
     {
         time: (measurement time stamp (s))
         measurement: (data),
@@ -59,7 +56,7 @@ def pid_poller_loop(sub_addr, queue):
     while True:
         # process new command messages from the parent process
         try:
-            #get command from command queue
+            # get command from command queue
             cmd = queue.get_nowait()
             if cmd['action'] == 'SHUTDOWN':
                 break
@@ -70,7 +67,7 @@ def pid_poller_loop(sub_addr, queue):
 
         except IOError:
             log.error('IOError, probably a broken pipe. Exiting..')
-            #sys.exit(1)
+            # sys.exit(1)
         except:
             log.exception("error encountered")
 

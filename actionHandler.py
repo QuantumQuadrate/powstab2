@@ -1,14 +1,13 @@
 import zmq
-import multiprocessing
-import sys
 import time
 import json
 import RPi.GPIO as GPIO
 from worker_K10CR1 import WK10CR1
 from worker_DAC8532 import WDAC8532
-import logging
 import requests
 stream_filter = ''
+
+
 def genericHandler(sub_sock, cmd, log, subscriptions, sub_list, stream_filter):
 
     if cmd['action'] == 'SUBSCRIBE':
@@ -19,7 +18,7 @@ def genericHandler(sub_sock, cmd, log, subscriptions, sub_list, stream_filter):
         # add the callback to the list of things to do for the stream
         if stream_filter not in subscriptions:
             subscriptions[stream_filter] = []
-            #stream_filter is assigned as a key with an empty list
+            # stream_filter is assigned as a key with an empty list
             sub_sock.setsockopt_string(zmq.SUBSCRIBE, stream_filter)
         subscriptions[stream_filter].append({
             'callback': cmd['callback'],
@@ -30,7 +29,7 @@ def genericHandler(sub_sock, cmd, log, subscriptions, sub_list, stream_filter):
         })
 
         # add subscribed channel info to dict
-        #sub_list = {1:{'kwargs':{kwargs}, 'control':{control}}
+        # sub_list = {1:{'kwargs':{kwargs}, 'control':{control}}
         sub_list[cmd['id']] = {
             'kwargs': cmd['kwargs'],
             'control': {'alert': True, 'pause': False}}
@@ -42,13 +41,12 @@ def genericHandler(sub_sock, cmd, log, subscriptions, sub_list, stream_filter):
         for cb in subscriptions[stream_filter]:
             if cb['id'] == cmd['id']:
                 cb['kwargs'] = cmd['kwargs']
-                #sub_list = {1:{'kwargs':{kwargs}, 'control':{control}}
-                sub_list[cmd['id']]={
+                # sub_list = {1:{'kwargs':{kwargs}, 'control':{control}}
+                sub_list[cmd['id']] = {
                     'control': cb['control'],
                     'kwargs': cmd['kwargs']
                 }
         log.info("subscriptions: {}".format(subscriptions[stream_filter]))
-
 
     if (cmd['action'] == 'UNSUBSCRIBE' or
             cmd['action'] == 'REMOVE_ALL_CBS'):
@@ -65,19 +63,19 @@ def genericHandler(sub_sock, cmd, log, subscriptions, sub_list, stream_filter):
         msg = 'Resetting channel'
         log.info(msg.format(cmd['stream_filter']))
         for cb in subscriptions[stream_filter]:
-            #cb is a dict with all the info of each channel subscribed
-            #stream_filter is a list of all the cb dict.
+            # cb is a dict with all the info of each channel subscribed
+            # stream_filter is a list of all the cb dict.
             if cb['id'] == cmd['id']:
-                cb['state']={}
+                cb['state'] = {}
         log.info("subscriptions: {}".format(subscriptions[stream_filter]))
 
     if cmd['action'] == 'RESET_ALL':
         msg = 'Resetting all channels'
         log.info(msg.format(cmd['stream_filter']))
         for cb in subscriptions[stream_filter]:
-            #cb is a dict with all the info of each channel subscribed
-            #stream_filter is a list of all the cb dict.
-            cb['state']={}
+            # cb is a dict with all the info of each channel subscribed
+            # stream_filter is a list of all the cb dict.
+            cb['state'] = {}
         log.info("subscriptions: {}".format(subscriptions[stream_filter]))
 
     if (cmd['action'] == 'MUTE' or
@@ -87,7 +85,7 @@ def genericHandler(sub_sock, cmd, log, subscriptions, sub_list, stream_filter):
         for cb in subscriptions[stream_filter]:
             if cb['id'] == cmd['id']:
                 cb['control']['alert'] = (cmd['action'] == 'UNMUTE')
-                sub_list[cmd['id']]={
+                sub_list[cmd['id']] = {
                     'control': cb['control'],
                     'kwargs': cb['kwargs']
                 }
@@ -98,7 +96,7 @@ def genericHandler(sub_sock, cmd, log, subscriptions, sub_list, stream_filter):
         log.info(msg.format(cmd['stream_filter']))
         for cb in subscriptions[stream_filter]:
             cb['control']['alert'] = (cmd['action'] == 'UNMUTE_ALL')
-            sub_list[cb['id']]={
+            sub_list[cb['id']] = {
                 'control': cb['control'],
                 'kwargs': cb['kwargs']
             }
@@ -109,7 +107,7 @@ def genericHandler(sub_sock, cmd, log, subscriptions, sub_list, stream_filter):
         log.info(msg.format(cmd['stream_filter']))
         for cb in subscriptions[stream_filter]:
             cb['control']['pause'] = (cmd['action'] == 'PAUSE_ALL')
-            sub_list[cb['id']]={
+            sub_list[cb['id']] = {
                 'control': cb['control'],
                 'kwargs': cb['kwargs']
             }
@@ -121,7 +119,7 @@ def genericHandler(sub_sock, cmd, log, subscriptions, sub_list, stream_filter):
         for cb in subscriptions[stream_filter]:
             if cb['id'] == cmd['id']:
                 cb['control']['pause'] = (cmd['action'] == 'PAUSE')
-                sub_list[cmd['id']]={
+                sub_list[cmd['id']] = {
                     'control': cb['control'],
                     'kwargs': cb['kwargs']
                 }
