@@ -13,7 +13,7 @@ import subprocess
 import ServerStuff.serverTest as server
 from datetime import datetime
 
-class configManager(self):
+class configManager():
     config = ''
     def __init__(self, configFile):
         self.config = ConfigParser.ConfigParser()
