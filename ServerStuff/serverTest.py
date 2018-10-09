@@ -77,7 +77,7 @@ def runServer(sub, stream, conMan):
     @app.route('/update/<id>/config', methods=['POST'])
     def updateConfig(id):
         configDict = request.form.to_dict()
-        for key in dict.keys():
+        for key in configDict.keys():
             conMan.config.set('CHANNEL'+str(id), key, configDict[key])
         conMan.updateConfig()
         return ''
