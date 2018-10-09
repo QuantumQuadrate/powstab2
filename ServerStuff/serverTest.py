@@ -73,7 +73,7 @@ def runServer(sub, stream, conMan):
         print configStuff
         print configStuff[1][1]
 
-        return render_template('keywords.html', id=id, kw_dict=kwargs, alert=alert, pause=pause)
+        return render_template('keywords.html', id=id, kw_dict=kwargs, alert=alert, pause=pause, config_dict=configStuff)
 
     #subscribe
     @app.route('/update/<id>/config', methods=['GET', 'POST'])
