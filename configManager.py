@@ -33,7 +33,7 @@ class configManager():
 
 
     def __init__(self, configFile):
-        self.config = ConfigParser.ConfigParser()
+        self.config = ConfigParser()
         self.config.read(configFile)
         # get all the activated channels from config file
 
