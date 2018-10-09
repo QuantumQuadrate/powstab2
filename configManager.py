@@ -72,7 +72,7 @@ class configManager():
 
     def updateConfig(self, channelNum, parameter, value):
         fileName = "configs/config"+str(datetime.now())+".cfg"
-        self.config["CHANNEL"+str(channelNum)][parameter] = value
+        self.config.set("CHANNEL"+str(channelNum), parameter, value)
         with open(fileName, 'w') as configfile:
             self.config.write(configfile)
         return ''
