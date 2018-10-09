@@ -1,6 +1,7 @@
 import logging
 import time
 from ivPID import PID
+import ConfigParser
 
 
 class Worker(object):
@@ -24,6 +25,15 @@ class Worker(object):
     def setup(self):
         "override for actuator specific initilization"
         pass
+    def updateConfig(self):
+        configPath = 'configs/'
+        configFiles = os.listdir(configPath)
+        paths = [os.path.join(configPath, basename) for basename in configFiles]
+        latestConfig = max(paths, key=os.path.getctime)
+        conMan = ConfigParser.ConfigParser(latestConfig)
+        setup_pid()
+        return ''
+
 
     def setup_pid(self):
         section = 'CHANNEL{}'.format(self.channel)

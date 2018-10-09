@@ -49,7 +49,6 @@ if __name__ == '__main__':
     configFiles = os.listdir(configPath)
     paths = [os.path.join(configPath, basename) for basename in configFiles]
     latestConfig = max(paths, key=os.path.getctime)
-    print latestConfig
     conMan = configManager.configManager(latestConfig)
     channels = conMan.getChannels()
     conMan.updateConfig(1, "StreamName", "toy")

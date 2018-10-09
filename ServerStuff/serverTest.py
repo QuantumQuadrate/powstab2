@@ -80,6 +80,7 @@ def runServer(sub, stream, conMan):
         for key in dict.keys():
             conMan.config.set('CHANNEL'+str(id), key, configDict[key])
         conMan.updateConfig()
+
         return ''
 
 

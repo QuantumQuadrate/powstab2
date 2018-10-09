@@ -134,11 +134,6 @@ def PID_Handler(sub_sock, global_err_state, last_msg, log, pids, subscriptions, 
 
     try:
         [streamID, content] = sub_sock.recv_multipart()
-        print "\n \n \n"
-        print "DATA ACQUIRED"
-        print streamID
-        print content
-        print "\n \n \n"
 
         last_msg = time.time()
         try:
@@ -158,6 +153,7 @@ def PID_Handler(sub_sock, global_err_state, last_msg, log, pids, subscriptions, 
                         pids[pid_ctrl_name]['pid'] = WDAC8532(result['channel'], result['config'], logger=log)
                 # update with new info, save error state
                 try:
+                    pids[pid_ctrl_name]['pid'].updateConfig()
                     pids[pid_ctrl_name]['err_state'] = pids[pid_ctrl_name]['pid'].update(result)
                 except:
                     log.exception('Unhandled server exception in pid: `{}`'.format(pid_ctrl_name))
