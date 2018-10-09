@@ -46,7 +46,7 @@ if __name__ == '__main__':
 
     # get the feedback config files
     configFiles = os.listdir('configs/')
-    paths = [os.path.join(path, basename) for basename in files]
+    paths = [os.path.join(path, basename) for basename in configFiles]
     latestConfig = max(paths, key=os.path.getctime)
     print latestConfig
     conMan = configManager.configManager(latestConfig)
