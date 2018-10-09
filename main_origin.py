@@ -14,7 +14,6 @@ import os
 import subprocess
 import ServerStuff.serverTest as server
 import configManager
-import glob
 
 
 def sigterm_handler(_signo, _stack_frame):
@@ -46,10 +45,9 @@ if __name__ == '__main__':
 
 
     # get the feedback config files
-
-    list_of_files = glob.glob('configs/')
-    print list_of_files
-    latestConfig = max(list_of_files, key=os.path.getctime)
+    configFiles = os.listdir('/config/')
+    paths = [os.path.join(path, basename) for basename in files]
+    latestConfig = max(paths, key=os.path.getctime)
     print latestConfig
     conMan = configManager.configManager(latestConfig)
     channels = conMan.getChannels()
