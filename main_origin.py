@@ -6,7 +6,7 @@ import time
 import logging
 import signal
 import sys
-from configparser import ConfigParser
+import ConfigParser
 import pid_poller
 from worker_K10CR1 import WK10CR1
 from worker_DAC8532 import WDAC8532
@@ -54,7 +54,7 @@ if __name__ == '__main__':
     channels = conMan.getChannels()
     conMan.updateConfig(1, "StreamName", "toy")
     # get the origin config file
-    origin_config = ConfigParser()
+    origin_config = ConfigParser.ConfigParser()
     origin_config.read('origin-server.cfg')
 
     # setup subcription object with special pid poller loop

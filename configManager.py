@@ -4,7 +4,7 @@ import time
 import logging
 import signal
 import sys
-from configparser import ConfigParser
+import ConfigParser
 import pid_poller
 from worker_K10CR1 import WK10CR1
 from worker_DAC8532 import WDAC8532
@@ -30,8 +30,10 @@ def stream_callback(stream_id, data, log, calibration=1, field='', name='', chan
 class configManager():
     config = ''
 
+
+
     def __init__(self, configFile):
-        self.config = ConfigParser()
+        self.config = ConfigParser.ConfigParser()
         self.config.read(configFile)
         # get all the activated channels from config file
 
@@ -80,5 +82,5 @@ class configManager():
 
 
     def setConfig(self, configFile):
-            self.config = ConfigParser()
+            self.config = ConfigParser.ConfigParser()
             self.config.read(configFile)
