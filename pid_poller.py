@@ -1,10 +1,8 @@
 import zmq
 import multiprocessing
-import time
 import RPi.GPIO as GPIO
 import actionHandler
 import logging
-PWM = True
 
 
 def pid_poller_loop(sub_addr, queue):
@@ -21,6 +19,7 @@ def pid_poller_loop(sub_addr, queue):
         config: (channel configParser obj)
     }
     '''
+
     log = logging.getLogger('poller')
     log.setLevel(logging.DEBUG)
     ch = logging.StreamHandler()
@@ -28,10 +27,12 @@ def pid_poller_loop(sub_addr, queue):
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     ch.setFormatter(formatter)
     log.addHandler(ch)
-    # a hash table (dict) of callbacks to perform when a message is recieved
-    # the hash is the data stream filter, the value is a list of callbacks
-    subscriptions = {}
-    pids = {}
+
+    context = zmq.Context()
+    sub_sock = context.socket(zmq.SUB)
+    sub_sock.setsockopt(zmq.RCVTIMEO, 1000)
+    sub_sock.connect(sub_addr)
+
     GPIO.setmode(GPIO.BOARD)  # define the pin numbering (i think)
     # TODO: read off of config [MAIN]
     if not PWM:
@@ -43,16 +44,9 @@ def pid_poller_loop(sub_addr, queue):
         GPIO.setup(error_pin, GPIO.OUT)
         pwm_ch = GPIO.PWM(error_pin, 1000)  # GPIO pin number for hardware PWM
         pwm_ch.start(0.)
-    context = zmq.Context()
-    sub_sock = context.socket(zmq.SUB)
-    # listen for one second, before doing housekeeping
-    sub_sock.setsockopt(zmq.RCVTIMEO, 1000)
-    sub_sock.connect(sub_addr)
-    global_err_state = False
-    last_msg = time.time()
-    sub_list = {}
-    time.sleep(2)
-    stream_filter = ''
+
+    genHandler = actionHandler.generic_Handler(sub_sock, log)
+    pidHandler = actionHandler.PID_Handler(sub_sock, log, pwm_ch)
     while True:
         # process new command messages from the parent process
         try:
@@ -60,8 +54,7 @@ def pid_poller_loop(sub_addr, queue):
             cmd = queue.get_nowait()
             if cmd['action'] == 'SHUTDOWN':
                 break
-            stream_filter = actionHandler.genericHandler(sub_sock, cmd, log, subscriptions, sub_list, stream_filter)
-
+            genHandler.handle(cmd)
         except multiprocessing.queues.Empty:
             pass
 
@@ -72,7 +65,7 @@ def pid_poller_loop(sub_addr, queue):
             log.exception("error encountered")
 
         # process data from the stream
-        actionHandler.PID_Handler(sub_sock, global_err_state, last_msg, log, pids, subscriptions, PWM, pwm_ch)
+        pidHandler.handle(genHandler.subscriptions)
 
     log.info('Shutting down poller loop.')
     sub_sock.close()
