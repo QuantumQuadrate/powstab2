@@ -2,7 +2,7 @@
 
 import sys
 import os.path
-import ConfigParser
+from configparser import ConfigParser
 import pprint
 import logging
 import time
@@ -69,7 +69,7 @@ def runServer(sub, stream, conMan):
         else:
             pause = 'Started'
 
-        configStuff = (conMan.config)['CHANNEL'+str(id))]
+        configStuff = (conMan.config'CHANNEL'+str(id))]
         print configStuff
 
         return render_template('keywords.html', id=id, kw_dict=kwargs, alert=alert, pause=pause)

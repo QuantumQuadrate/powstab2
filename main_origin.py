@@ -6,7 +6,7 @@ import time
 import logging
 import signal
 import sys
-import ConfigParser
+from configparser import ConfigParser
 import pid_poller
 from worker_K10CR1 import WK10CR1
 from worker_DAC8532 import WDAC8532
