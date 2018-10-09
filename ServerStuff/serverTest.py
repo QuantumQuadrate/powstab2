@@ -1,35 +1,24 @@
 #!/usr/bin/env python
-
-import sys
-import os.path
-from configparser import ConfigParser
-import pprint
-import logging
-import time
-import numpy as np
-import requests
-import json
-import ast
 from flask import Flask
 from flask import render_template
 from flask import request
-from origin.client.origin_subscriber import Subscriber
+import
 
 def runServer(sub, stream, conMan):
-#web server
+# web server
     app = Flask(__name__)
 
-    #commands & webpage
-    #home page "monitor"
+    # commands & webpage
+    # home page "monitor"
     sub_file = 'subscriptions.json'
     with open(sub_file, 'w') as f:
         f.write('{}')
         f.close()
-    #commands & webpage
-    #home page "monitor"
+    # commands & webpage
+    # home page "monitor"
     @app.route('/monitor', methods=['GET','PUT'])
     def monitor():
-        #GET request string(json) needs to be save as file, to be read by flask template
+        # GET request string(json) needs to be save as file, to be read by flask template
         if request.method == "PUT":
             sub_list_json = request.get_json()
             with open(sub_file, 'w') as f:
@@ -37,8 +26,7 @@ def runServer(sub, stream, conMan):
                 f.close()
         with open(sub_file, 'r') as f:
             sub_list = json.load(f)
-        #sub_list = {1:{'kwargs':{kwargs}, 'control':{control}}
-        num_ch = len(sub_list)
+        # sub_list = {1:{'kwargs':{kwargs}, 'control':{control}}
         return render_template('index.html', id_list = sub_list.keys(), **sub_list)
         # except Exception:
         #     return 'Unable to load page'
