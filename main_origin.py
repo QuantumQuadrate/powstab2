@@ -20,21 +20,6 @@ def sigterm_handler(_signo, _stack_frame):
     sys.exit(0)
 
 
-def stream_callback(stream_id, data, log, calibration=1, field='', name='', channel=''):
-    log.debug('Stream data for `{}` recieved.'.format(name))
-    # send the necessary information so that the poller loop can sort the data to the
-    # correct pid controller channel
-    result = {
-        'time': float(data[TIMESTAMP])/2**32,
-        'measurement': calibration*data[field],
-        'name': name,
-        'channel': channel,
-        'config': config,
-    }
-    log.debug('Origin result `{}`.'.format(result))
-    return result
-
-
 # I could open a subscriber object for each channel which would multi-process
 # the actuators
 if __name__ == '__main__':
