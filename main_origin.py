@@ -54,7 +54,7 @@ if __name__ == '__main__':
     channels = conMan.getChannels()
     conMan.updateConfig(1, "StreamName", "toy")
     # get the origin config file
-    origin_config = ConfigParser.ConfigParser()
+    origin_config = ConfigParser()
     origin_config.read('origin-server.cfg')
 
     # setup subcription object with special pid poller loop

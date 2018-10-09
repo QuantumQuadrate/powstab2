@@ -30,8 +30,6 @@ def stream_callback(stream_id, data, log, calibration=1, field='', name='', chan
 class configManager():
     config = ''
 
-
-
     def __init__(self, configFile):
         self.config = ConfigParser()
         self.config.read(configFile)
@@ -82,5 +80,5 @@ class configManager():
 
 
     def setConfig(self, configFile):
-            self.config = ConfigParser.ConfigParser()
+            self.config = ConfigParser()
             self.config.read(configFile)
