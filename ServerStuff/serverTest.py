@@ -44,8 +44,8 @@ def runServer(sub, stream, conMan):
         #     return 'Unable to load page'
 
     #subscribe
-    @app.route('/update/config/<id>', methods=['GET', 'POST'])
-    def updateConfig(id):
+    @app.route('/update/<id>', methods=['GET', 'POST'])
+    def update(id):
         id=id.encode('ascii','ignore')
         with open(sub_file, 'r') as f:
             sub_list = json.load(f)
@@ -75,34 +75,8 @@ def runServer(sub, stream, conMan):
         return render_template('keywords.html', id=id, kw_dict=kwargs, alert=alert, pause=pause)
 
     #subscribe
-    @app.route('/update/<id>', methods=['GET', 'POST'])
-    def update(id):
-        id=id.encode('ascii','ignore')
-        with open(sub_file, 'r') as f:
-            sub_list = json.load(f)
-            #sub_list = {1:{'kwargs':{kwargs}, 'control':{control}}
-
-        if request.method == 'POST':
-            sub_list[id]['kwargs'] = request.form.to_dict()
-            sub.update(stream, int(id), **sub_list[id]['kwargs'])
-
-        id_dict = sub_list[id]
-        control = id_dict['control']
-        kwargs = id_dict['kwargs']
-
-        if control['alert'] == True:
-            alert = 'On'
-        else:
-            alert = 'Off'
-
-        if control['pause'] == True:
-            pause = 'Paused'
-        else:
-            pause = 'Started'
-
-        configStuff = conMan.get('CHANNEL'+str(id))
-        print configStuff
-
+    @app.route('/update/<id>/config', methods=['GET', 'POST'])
+    def updateConfig(id):
         return render_template('keywords.html', id=id, kw_dict=kwargs, alert=alert, pause=pause)
 
 
