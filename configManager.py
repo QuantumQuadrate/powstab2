@@ -16,7 +16,14 @@ from datetime import datetime
 class configManager():
     config = ''
 
-    def stream_callback(stream_id, data, log, calibration=1, field='', name='', channel=''):
+
+
+    def __init__(self, configFile):
+        self.config = ConfigParser.ConfigParser()
+        self.config.read(configFile)
+        # get all the activated channels from config file
+
+    def stream_callback(self, stream_id, data, log, calibration=1, field='', name='', channel=''):
         log.debug('Stream data for `{}` recieved.'.format(name))
         # send the necessary information so that the poller loop can sort the data to the
         # correct pid controller channel
@@ -30,10 +37,7 @@ class configManager():
         log.debug('Origin result `{}`.'.format(result))
         return result
 
-    def __init__(self, configFile):
-        self.config = ConfigParser.ConfigParser()
-        self.config.read(configFile)
-        # get all the activated channels from config file
+
     def getChannels(self):
         channels = []
         for section in self.config.sections():
