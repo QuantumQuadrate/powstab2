@@ -70,18 +70,11 @@ class configManager():
     def getChannelConfigInfo(self):
         return self.config
 
-
-
-    def updateConfig(self, channels):
-        newfile = "config"+str(datetime.now())+".cfg"
-        with open(newfile, 'w') as f:
-            f.write("""[MAIN]
-            MaxChannels: 4 ;
-            ErrorPin: 36 ;""")
-            for channel in channels:
-                f.write('[CHANNEL'+channel['number']+']')
-                for values in channel.keys():
-                    f.close()
+    def updateConfig(self, channelNum, parameter, value):
+        fileName = "configs/config"+str(datetime.now())+".cfg"
+        self.config["CHANNEL"+str(channelNum)][parameter] = value
+        with open(fileName, 'w') as configfile:
+            self.config.write(configfile)
         return ''
 
 

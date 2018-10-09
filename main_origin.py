@@ -46,7 +46,7 @@ if __name__ == '__main__':
     # get the feedback config files
     conMan = configManager.configManager('config.cfg')
     channels = conMan.getChannels()
-    print conMan.getChannelConfigInfo()
+    conMan.updateConfig(1, "StreamName", "toy")
     # get the origin config file
     origin_config = ConfigParser.ConfigParser()
     origin_config.read('origin-server.cfg')
