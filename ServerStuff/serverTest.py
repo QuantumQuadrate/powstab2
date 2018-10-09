@@ -70,11 +70,15 @@ def runServer(sub, stream, conMan):
             pause = 'Started'
 
         configStuff = conMan.config.items('CHANNEL'+str(id))
+
         return render_template('keywords.html', id=id, kw_dict=kwargs, alert=alert, pause=pause, config_dict=configStuff)
 
     #subscribe
     @app.route('/update/<id>/config', methods=['GET', 'POST'])
     def updateConfig(id):
+        print request.form.to_dict()
+
+
         return render_template('keywords.html', id=id, kw_dict=kwargs, alert=alert, pause=pause)
 
 
