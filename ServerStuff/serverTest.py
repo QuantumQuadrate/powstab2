@@ -2,10 +2,10 @@
 from flask import Flask
 from flask import render_template
 from flask import request
-import
+import json
 
 def runServer(sub, stream, conMan):
-# web server
+    # web server
     app = Flask(__name__)
 
     # commands & webpage
