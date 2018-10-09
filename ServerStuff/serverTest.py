@@ -74,17 +74,16 @@ def runServer(sub, stream, conMan):
         return render_template('keywords.html', id=id, kw_dict=kwargs, alert=alert, pause=pause, config_dict=configStuff)
 
     #subscribe
-    @app.route('/update/<id>/config')
+    @app.route('/update/<id>/config', methods=['POST'])
     def updateConfig(id):
         configDict = request.form.to_dict()
         for key in dict.keys():
             conMan.config.set('CHANNEL'+str(id), key, configDict[key])
         conMan.updateConfig()
-
         return ''
 
 
-    @app.route('/update/<id>/<action>/action')
+    @app.route('/update/<id>/<action>/action', methods=['POST'])
     def unsubscribe(id, action):
         if action == "unsubscribe":
             sub.unsubscribe(stream, int(id))
