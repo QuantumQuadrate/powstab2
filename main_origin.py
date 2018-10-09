@@ -13,6 +13,7 @@ from worker_DAC8532 import WDAC8532
 import os
 import subprocess
 import ServerStuff.serverTest as server
+import configManager
 
 def sigterm_handler(_signo, _stack_frame):
     # from https://stackoverflow.com/a/24574672

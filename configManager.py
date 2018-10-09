@@ -12,7 +12,7 @@ import os
 import subprocess
 import ServerStuff.serverTest as server
 from datetime import datetime
-import configManager
+
 config = ''
 def __init__(configFile):
 
