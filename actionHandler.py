@@ -186,6 +186,7 @@ class PID_Handler(object):
                             self.pids[pid_ctrl_name]['pid'] = WDAC8532(result['channel'], result['config'], logger=self.log)
                     # update with new info, save error state
                     try:
+                        print pids
                         self.pids[pid_ctrl_name]['pid'].updateConfig()
                         self.pids[pid_ctrl_name]['err_state'] = self.pids[pid_ctrl_name]['pid'].update(result)
                     except:
