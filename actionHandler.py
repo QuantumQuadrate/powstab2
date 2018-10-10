@@ -174,6 +174,7 @@ class PID_Handler(object):
                 for cb in subscriptions[streamID]:
                     result = cb['callback'](streamID, json.loads(content), self.log, **cb['kwargs'])
                     pid_ctrl_name = result['name']
+                    print result
                     # check if pid controller exists
                     if pid_ctrl_name not in self.pids:
                         # if it doesn't make a new controller
