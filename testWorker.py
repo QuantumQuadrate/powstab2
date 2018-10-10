@@ -13,7 +13,9 @@ def makeTempMeasurement():
 
 def makeTestMeasurement():
     f = open("outputValue.txt", "r")
+    print f.read()
     output = float(f.read())
+    f.close()
     return math.exp(output)
 
 
