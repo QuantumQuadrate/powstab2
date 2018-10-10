@@ -32,7 +32,7 @@ class testWorker(object):
     def makeTempMeasurement(self):
         return random.random()
 
-    def makeTestMeasurement(self, output):
+    def makeTestMeasurement(self):
         if self.worker != '':
             return math.exp(self.worker.output)
         return 1
