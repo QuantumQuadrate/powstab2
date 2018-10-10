@@ -31,7 +31,7 @@ class testWorker(object):
                 "testMeasurement2": "float",
                 })
 
-    def makeTempMeasurement():
+    def makeTempMeasurement(self):
         return random.random()
 
     def makeTestMeasurement(self, output):
@@ -39,7 +39,7 @@ class testWorker(object):
 
     def streamData(self):
         while True:
-            t1, t2, t3, t4 = (makeTempMeasurement(), makeTempMeasurement(), makeTestMeasurement(self.worker.output), makeTestMeasurement(self.worker.output))
+            t1, t2, t3, t4 = (self.makeTempMeasurement(), self.makeTempMeasurement(), self.makeTestMeasurement(self.worker.output), self.makeTestMeasurement(self.worker.output))
             ts = current_time(self.config)
             data = {TIMESTAMP: ts, "toy1": t1, "toy2": t2, "testMeasurement1": t3, "testMeasurement2": t4}
             self.connection.send(**data)
