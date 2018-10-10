@@ -3,7 +3,7 @@ import multiprocessing
 import RPi.GPIO as GPIO
 import actionHandler
 import logging
-
+PWM = False
 
 def pid_poller_loop(sub_addr, queue):
     '''This is a modified version of the default subscription poller

@@ -12,9 +12,14 @@ class Worker(object):
         self.channel = channel
         self.wname = 'NE_CH{}_{}'.format(channel, self.type)
         self.config = config
+        configPath = 'configs/'
+        configFiles = os.listdir(configPath)
+        paths = [os.path.join(configPath, basename) for basename in configFiles]
+        latestConfig = max(paths, key=os.path.getctime)
+        self.currentConfig = latestConfig
         self.logger = logger or logging.getLogger(__name__)
         self.setup_pid()
-        self.ready = True
+        self.ready = Trues
         self.output = 0  # TODO: initialize with reasonable start value from config
         # could also read current state from device
         self.delta = 0  # in case an actuator needs a differential output
@@ -32,8 +37,9 @@ class Worker(object):
         configFiles = os.listdir(configPath)
         paths = [os.path.join(configPath, basename) for basename in configFiles]
         latestConfig = max(paths, key=os.path.getctime)
-        self.config = ConfigParser.ConfigParser(latestConfig)
-        self.setup_pid()
+        if latestConfig != self.currentConfig:
+            self.config = ConfigParser.ConfigParser(latestConfig)
+            self.setup_pid()
         return ''
 
     def setup_pid(self):
@@ -89,6 +95,7 @@ class Worker(object):
             self.error_sig = True
         else:
             self.error_sig = False
+        print self.output
         return self.error_sig
 
     def update_setpoint(self, sp):
