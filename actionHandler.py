@@ -10,17 +10,16 @@ stream_filter = ''
 
 class generic_Handler(object):
     """docstring for genericHandler."""
-    sub_sock = ''
 
-    def __init__(self, sub_sock, log):
-        self.sub_sock = sub_sock,
+    def __init__(self, log):
         self.log = log
         self.subscriptions = {}
         self.sub_list = {}
         self.stream_filter = ''
 
-    def handle(self, cmd):
-        print self.sub_sock
+    def handle(self, cmd, sub_sock):
+        print sub_sock
+        self.sub_sock = sub_sock
         if cmd['action'] == 'SUBSCRIBE':
             msg = 'Subscribing with stream filter: [{}]'
             stream_filter = cmd['stream_filter']
@@ -141,7 +140,7 @@ class generic_Handler(object):
 
 class PID_Handler(object):
     """docstring for ."""
-    def __init__(self, sub_sock, log):
+    def __init__(self, log):
         # a hash table (dict) of callbacks to perform when a message is recieved
         # the hash is the data stream filter, the value is a list of callbacks
         self.PWM = True
@@ -150,7 +149,6 @@ class PID_Handler(object):
         self.last_msg = time.time()
         time.sleep(2)
         self.stream_filter = ''
-        self.sub_sock = sub_sock
         self.log = log
         self.pwm_ch = False
         GPIO.setmode(GPIO.BOARD)  # define the pin numbering (i think)
@@ -166,9 +164,9 @@ class PID_Handler(object):
             self.pwm_ch.start(0.)
 
 
-    def handle(self, subscriptions):
+    def handle(self, subscriptions, sub_sock):
         try:
-            [streamID, content] = self.sub_sock.recv_multipart()
+            [streamID, content] = sub_sock.recv_multipart()
 
             self.last_msg = time.time()
             try:
