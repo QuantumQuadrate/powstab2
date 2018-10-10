@@ -35,8 +35,9 @@ def pid_poller_loop(sub_addr, queue):
 
     testClient = testWorker()
     testClient.startServer()
+    print "SETUP SERVER"
     t1 = threading.Thread(target=testClient.streamData())
-    t1.start()
+    t1.run()
     print "SETUP CLIENT"
     conMan = configManager.configManager()
 
