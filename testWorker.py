@@ -43,4 +43,4 @@ class testWorker(object):
             ts = current_time(self.config)
             data = {TIMESTAMP: ts, "toy1": t1, "toy2": t2, "testMeasurement1": t3, "testMeasurement2": t4}
             self.connection.send(**data)
-            
+            time.sleep(2)
