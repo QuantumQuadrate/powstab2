@@ -6,7 +6,7 @@ import logging
 import time
 import configManager
 from testWorker import testWorker
-import thread
+import threading
 PWM = True
 
 
@@ -35,7 +35,8 @@ def pid_poller_loop(sub_addr, queue):
 
     testClient = testWorker()
     testClient.startServer()
-    thread.start_new_thread(testClient.streamData(), ())
+    t1 = threading.Thread(target=testClient.streamData())
+    t1.start()
     print "SETUP CLIENT"
     conMan = configManager.configManager()
 
