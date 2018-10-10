@@ -18,7 +18,7 @@ def sigterm_handler(_signo, _stack_frame):
 
 if __name__ == '__main__':
     f = open("outputValue.txt", "w+")
-    f.write('0')
+    f.write('0.0')
     f.close()
     # setup a catch for SIGTERM so process can be killed gracefully in the background
     signal.signal(signal.SIGTERM, sigterm_handler)
