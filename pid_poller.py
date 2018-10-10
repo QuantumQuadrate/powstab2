@@ -34,9 +34,10 @@ def pid_poller_loop(sub_addr, queue):
     sub_sock = context.socket(zmq.SUB)
     sub_sock.setsockopt(zmq.RCVTIMEO, 1000)
     sub_sock.connect(sub_addr)
+    print sub_sock
     time.sleep(1)
     genHandler = actionHandler.generic_Handler(sub_sock, log)
-    pidHandler = actionHandler.PID_Handler(sub_sock, log)
+    pidHandler = actionHandler.PID_Handler(genHandler.sub_sock, log)
     while True:
         # process new command messages from the parent process
         try:
