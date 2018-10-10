@@ -5,8 +5,6 @@ import RPi.GPIO as GPIO
 from worker_K10CR1 import WK10CR1
 from worker_DAC8532 import WDAC8532
 import requests
-import thread
-from testWorker import testWorker
 stream_filter = ''
 
 

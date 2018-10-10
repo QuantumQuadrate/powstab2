@@ -33,6 +33,10 @@ def pid_poller_loop(sub_addr, queue):
     ch.setFormatter(formatter)
     log.addHandler(ch)
 
+    testClient = testWorker()
+    testClient.startServer()
+    thread.start_new_thread(testClient.streamData(), ())
+    print "SETUP CLIENT"
     conMan = configManager.configManager()
 
     context = zmq.Context()
@@ -42,9 +46,7 @@ def pid_poller_loop(sub_addr, queue):
     time.sleep(1)
     genHandler = actionHandler.generic_Handler(log)
     pidHandler = actionHandler.PID_Handler(log)
-    testClient = testWorker()
-    testClient.startServer()
-    thread.start_new_thread(testClient.streamData(), ())
+
     while True:
         # process new command messages from the parent process
         try:
