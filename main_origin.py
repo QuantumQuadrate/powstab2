@@ -52,7 +52,7 @@ if __name__ == '__main__':
     testClient.startServer()
     t1 = threading.Thread(target=testClient.streamData())
     t1.start()
-    
+    print "SETUP SERVER"
     # setup subcription object with special pid poller loop
     sub = Subscriber(origin_config, logger, loop=pid_poller.pid_poller_loop)
     # read channels from feedback config file
