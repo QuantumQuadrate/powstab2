@@ -23,7 +23,7 @@ class testWorker(object):
         serv = server(self.config)
 
         self.connection = serv.registerStream(
-            stream="toy",
+            stream="PIDtoy",
             records={
                 "toy1": "float",
                 "toy2": "float",
