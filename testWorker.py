@@ -14,7 +14,6 @@ class testWorker(object):
 
     def __init__(self, worker):
         self.worker = worker[0]
-        startServer()
 
     def startServer(self):
         # first find ourself
