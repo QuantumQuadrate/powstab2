@@ -60,7 +60,7 @@ class generic_Handler(object):
                 cmd['action'] == 'REMOVE_ALL_CBS'):
             msg = 'Unsubscribing to stream filter: [{}]'
             self.log.info(msg.format(cmd['stream_filter']))
-            sub_sock.setsockopt_string(zmq.UNSUBSCRIBE, stream_filter)
+            self.sub_sock.setsockopt_string(zmq.UNSUBSCRIBE, stream_filter)
 
         if cmd['action'] == 'REMOVE_ALL_CBS':
             msg = 'Removing all callbacks for stream filter: [{}]'
