@@ -15,7 +15,6 @@ class testWorker(object):
     def __init__(self):
         startServer()
 
-
     def startServer(self):
         # first find ourself
         fullBinPath = os.path.abspath(os.getcwd() + "/" + sys.argv[0])
