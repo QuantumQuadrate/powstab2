@@ -141,7 +141,7 @@ class PID_Handler(object):
     def __init__(self, sub_sock, log):
         # a hash table (dict) of callbacks to perform when a message is recieved
         # the hash is the data stream filter, the value is a list of callbacks
-        self.PWM = False
+        self.PWM = True
         self.pids = {}
         self.global_err_state = False
         self.last_msg = time.time()
