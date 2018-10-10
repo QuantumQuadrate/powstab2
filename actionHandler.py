@@ -10,25 +10,25 @@ stream_filter = ''
 
 class generic_Handler(object):
     """docstring for genericHandler."""
-    def __init__(self, sub_sock, cmd, log, subscriptions):
+    def __init__(self, sub_sock, log):
         self.sub_sock = sub_sock,
         self.log = log
         self.subscriptions = {}
         self.sub_list = {}
         self.stream_filter = ''
 
-    def handle(cmd):
+    def handle(self, cmd):
         if cmd['action'] == 'SUBSCRIBE':
             msg = 'Subscribing with stream filter: [{}]'
             stream_filter = cmd['stream_filter']
-            log.info(msg.format(stream_filter))
+            self.log.info(msg.format(stream_filter))
 
             # add the callback to the list of things to do for the stream
-            if stream_filter not in subscriptions:
-                subscriptions[stream_filter] = []
+            if stream_filter not in self.subscriptions:
+                self.subscriptions[stream_filter] = []
                 # stream_filter is assigned as a key with an empty list
                 sub_sock.setsockopt_string(zmq.SUBSCRIBE, stream_filter)
-            subscriptions[stream_filter].append({
+            self.subscriptions[stream_filter].append({
                 'callback': cmd['callback'],
                 'kwargs': cmd['kwargs'],
                 'state': {},
@@ -38,62 +38,62 @@ class generic_Handler(object):
 
             # add subscribed channel info to dict
             # sub_list = {1:{'kwargs':{kwargs}, 'control':{control}}
-            sub_list[cmd['id']] = {
+            self.sub_list[cmd['id']] = {
                 'kwargs': cmd['kwargs'],
                 'control': {'alert': True, 'pause': False}}
-            log.info("subscriptions: {}".format(subscriptions[stream_filter]))
+            self.log.info("subscriptions: {}".format(self.subscriptions[stream_filter]))
 
         if cmd['action'] == 'UPDATE_KW':
             msg = 'Updating channel...'
-            log.info(msg.format(cmd['stream_filter']))
-            for cb in subscriptions[stream_filter]:
+            self.log.info(msg.format(cmd['stream_filter']))
+            for cb in self.subscriptions[stream_filter]:
                 if cb['id'] == cmd['id']:
                     cb['kwargs'] = cmd['kwargs']
-                    # sub_list = {1:{'kwargs':{kwargs}, 'control':{control}}
-                    sub_list[cmd['id']] = {
+                    # self.sub_list = {1:{'kwargs':{kwargs}, 'control':{control}}
+                    self.sub_list[cmd['id']] = {
                         'control': cb['control'],
                         'kwargs': cmd['kwargs']
                     }
-            log.info("subscriptions: {}".format(subscriptions[stream_filter]))
+            self.log.info("subscriptions: {}".format(self.subscriptions[stream_filter]))
 
         if (cmd['action'] == 'UNSUBSCRIBE' or
                 cmd['action'] == 'REMOVE_ALL_CBS'):
             msg = 'Unsubscribing to stream filter: [{}]'
-            log.info(msg.format(cmd['stream_filter']))
+            self.log.info(msg.format(cmd['stream_filter']))
             sub_sock.setsockopt_string(zmq.UNSUBSCRIBE, stream_filter)
 
         if cmd['action'] == 'REMOVE_ALL_CBS':
             msg = 'Removing all callbacks for stream filter: [{}]'
-            log.info(msg.format(cmd['stream_filter']))
-            del subscriptions[cmd['stream_filter']]
+            self.log.info(msg.format(cmd['stream_filter']))
+            del self.subscriptions[cmd['stream_filter']]
 
         if cmd['action'] == 'RESET':
             msg = 'Resetting channel'
-            log.info(msg.format(cmd['stream_filter']))
-            for cb in subscriptions[stream_filter]:
+            self.log.info(msg.format(cmd['stream_filter']))
+            for cb in self.subscriptions[stream_filter]:
                 # cb is a dict with all the info of each channel subscribed
                 # stream_filter is a list of all the cb dict.
                 if cb['id'] == cmd['id']:
                     cb['state'] = {}
-            log.info("subscriptions: {}".format(subscriptions[stream_filter]))
+            self.log.info("subscriptions: {}".format(self.subscriptions[stream_filter]))
 
         if cmd['action'] == 'RESET_ALL':
             msg = 'Resetting all channels'
-            log.info(msg.format(cmd['stream_filter']))
-            for cb in subscriptions[stream_filter]:
+            self.log.info(msg.format(cmd['stream_filter']))
+            for cb in self.subscriptions[stream_filter]:
                 # cb is a dict with all the info of each channel subscribed
                 # stream_filter is a list of all the cb dict.
                 cb['state'] = {}
-            log.info("subscriptions: {}".format(subscriptions[stream_filter]))
+            self.log.info("subscriptions: {}".format(self.subscriptions[stream_filter]))
 
         if (cmd['action'] == 'MUTE' or
                 cmd['action'] == 'UNMUTE'):
             msg = 'Muted channel alert'
-            log.info(msg.format(cmd['stream_filter']))
-            for cb in subscriptions[stream_filter]:
+            self.log.info(msg.format(cmd['stream_filter']))
+            for cb in self.subscriptions[stream_filter]:
                 if cb['id'] == cmd['id']:
                     cb['control']['alert'] = (cmd['action'] == 'UNMUTE')
-                    sub_list[cmd['id']] = {
+                    self.sub_list[cmd['id']] = {
                         'control': cb['control'],
                         'kwargs': cb['kwargs']
                     }
@@ -101,10 +101,10 @@ class generic_Handler(object):
         if (cmd['action'] == 'MUTE_ALL' or
                 cmd['action'] == 'UNMUTE_ALL'):
             msg = 'Muted/Unmuted all channel alert'
-            log.info(msg.format(cmd['stream_filter']))
-            for cb in subscriptions[stream_filter]:
+            self.log.info(msg.format(cmd['stream_filter']))
+            for cb in self.subscriptions[stream_filter]:
                 cb['control']['alert'] = (cmd['action'] == 'UNMUTE_ALL')
-                sub_list[cb['id']] = {
+                self.sub_list[cb['id']] = {
                     'control': cb['control'],
                     'kwargs': cb['kwargs']
                 }
@@ -112,10 +112,10 @@ class generic_Handler(object):
         if (cmd['action'] == 'PAUSE_ALL' or
                 cmd['action'] == 'RESTART_ALL'):
             msg = 'Paused/ Restarted all channels'
-            log.info(msg.format(cmd['stream_filter']))
-            for cb in subscriptions[stream_filter]:
+            self.log.info(msg.format(cmd['stream_filter']))
+            for cb in self.subscriptions[stream_filter]:
                 cb['control']['pause'] = (cmd['action'] == 'PAUSE_ALL')
-                sub_list[cb['id']] = {
+                self.sub_list[cb['id']] = {
                     'control': cb['control'],
                     'kwargs': cb['kwargs']
                 }
@@ -123,15 +123,15 @@ class generic_Handler(object):
         if (cmd['action'] == 'PAUSE' or
                 cmd['action'] == 'RESTART'):
             msg = 'Paused/Restarted this channel'
-            log.info(msg.format(cmd['stream_filter']))
-            for cb in subscriptions[stream_filter]:
+            self.log.info(msg.format(cmd['stream_filter']))
+            for cb in self.subscriptions[stream_filter]:
                 if cb['id'] == cmd['id']:
                     cb['control']['pause'] = (cmd['action'] == 'PAUSE')
-                    sub_list[cmd['id']] = {
+                    self.sub_list[cmd['id']] = {
                         'control': cb['control'],
                         'kwargs': cb['kwargs']
                     }
-        sub_list_json = json.dumps(sub_list)
+        sub_list_json = json.dumps(self.sub_list)
         requests.put('http://127.0.0.1:5000/monitor', json=sub_list_json)
         return stream_filter
 
@@ -153,7 +153,7 @@ class PID_Handler(object):
 
     def handle(self, subscriptions):
         try:
-            [streamID, content] = sub_sock.recv_multipart()
+            [streamID, content] = self.sub_sock.recv_multipart()
 
             self.last_msg = time.time()
             try:
