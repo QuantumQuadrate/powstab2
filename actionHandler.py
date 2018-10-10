@@ -182,8 +182,6 @@ class PID_Handler(object):
                         self.log.debug('recieved first instance from channel: {} type: {}'.format(pid_ctrl_name, fb_type))
                         print "\n \n \n"
                         print result
-                        print fb_type
-                        print WK10CR1.type
                         print "\n \n \n"
                         if fb_type == WK10CR1.type:
                             self.pids[pid_ctrl_name]['pid'] = WK10CR1(result['channel'], conMan.config, logger=self.log)

@@ -6,7 +6,6 @@ import logging
 import signal
 import sys
 import pid_poller
-import os
 import ServerStuff.serverTest as server
 import configManager
 import ConfigParser
@@ -40,7 +39,7 @@ if __name__ == '__main__':
     # get the feedback config files
     conMan = configManager.configManager()
     channels = conMan.getChannels()
-    
+
     # get the origin config file
     origin_config = ConfigParser.ConfigParser()
     origin_config.read('origin-server.cfg')
