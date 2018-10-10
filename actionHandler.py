@@ -141,8 +141,6 @@ class generic_Handler(object):
 
 class PID_Handler(object):
     """docstring for ."""
-    flag = 0
-
     def __init__(self, log):
         # a hash table (dict) of callbacks to perform when a message is recieved
         # the hash is the data stream filter, the value is a list of callbacks
@@ -186,14 +184,14 @@ class PID_Handler(object):
                         self.log.debug('recieved first instance from channel: {} type: {}'.format(pid_ctrl_name, fb_type))
                         if fb_type == WK10CR1.type:
                             self.pids[pid_ctrl_name]['pid'] = WK10CR1(result['channel'], conMan.config, logger=self.log)
-                            if self.flag == 0:
-                                print "\n\n\n\n\n"
-                                print "reached this point"
-                                print "\n\n\n\n\n"
-                                self.flag = 1
-                                testClient = testWorker([self.pids[pid_ctrl_name]['pid']])
-                                testClient.startServer()
-                                thread.start_new_thread(testClient.streamData(), ())
+                            # if self.flag == 0:
+                            #     print "\n\n\n\n\n"
+                            #     print "reached this point"
+                            #     print "\n\n\n\n\n"
+                            #     self.flag = 1
+                            #     testClient = testWorker([self.pids[pid_ctrl_name]['pid']])
+                            #     testClient.startServer()
+                            #     thread.start_new_thread(testClient.streamData(), ())
                         if fb_type == WDAC8532.type:
                             self.pids[pid_ctrl_name]['pid'] = WDAC8532(result['channel'], conMan.config, logger=self.log)
                     # update with new info, save error state
