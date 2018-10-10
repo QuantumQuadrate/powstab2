@@ -138,10 +138,10 @@ class generic_Handler(object):
 
 class PID_Handler(object):
     """docstring for ."""
-    def __init__(self, sub_sock, log, pwm_ch):
+    def __init__(self, sub_sock, log):
         # a hash table (dict) of callbacks to perform when a message is recieved
         # the hash is the data stream filter, the value is a list of callbacks
-        self.PWM = True
+        self.PWM = False
         self.pids = {}
         self.global_err_state = False
         self.last_msg = time.time()
@@ -149,7 +149,19 @@ class PID_Handler(object):
         self.stream_filter = ''
         self.sub_sock = sub_sock
         self.log = log
-        self.pwm_ch = pwm_ch
+        self.pwm_ch = False
+        GPIO.setmode(GPIO.BOARD)  # define the pin numbering (i think)
+        # TODO: read off of config [MAIN]
+        if not self.PWM:
+            self.error_pin = 10  # GPIO pin number for error signal output
+            GPIO.setup(self.error_pin, GPIO.OUT)
+            GPIO.output(self.error_pin, False)
+        else:
+            self.error_pin = 12  # GPIO pin number for error signal output
+            GPIO.setup(self.error_pin, GPIO.OUT)
+            pwm_ch = GPIO.PWM(self.error_pin, 1000)  # GPIO pin number for hardware PWM
+            pwm_ch.start(0.)
+
 
     def handle(self, subscriptions):
         try:
@@ -193,7 +205,7 @@ class PID_Handler(object):
 
             if self.global_err_state != self.last_g_err_state:
                 if not self.PWM:
-                    GPIO.output(error_pin, self.global_err_state)
+                    GPIO.output(self.error_pin, self.global_err_state)
                 else:
                     if self.global_err_state:
                         self.log.info('trying to turn on the pwm output')

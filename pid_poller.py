@@ -33,21 +33,9 @@ def pid_poller_loop(sub_addr, queue):
     sub_sock = context.socket(zmq.SUB)
     sub_sock.setsockopt(zmq.RCVTIMEO, 1000)
     sub_sock.connect(sub_addr)
-    pwm_ch = ''
-    GPIO.setmode(GPIO.BOARD)  # define the pin numbering (i think)
-    # TODO: read off of config [MAIN]
-    if not PWM:
-        error_pin = 10  # GPIO pin number for error signal output
-        GPIO.setup(error_pin, GPIO.OUT)
-        GPIO.output(error_pin, False)
-    else:
-        error_pin = 12  # GPIO pin number for error signal output
-        GPIO.setup(error_pin, GPIO.OUT)
-        pwm_ch = GPIO.PWM(error_pin, 1000)  # GPIO pin number for hardware PWM
-        pwm_ch.start(0.)
 
     genHandler = actionHandler.generic_Handler(sub_sock, log)
-    pidHandler = actionHandler.PID_Handler(sub_sock, log, pwm_ch)
+    pidHandler = actionHandler.PID_Handler(sub_sock, log)
     while True:
         # process new command messages from the parent process
         try:
