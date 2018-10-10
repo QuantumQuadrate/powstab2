@@ -27,7 +27,7 @@ class generic_Handler(object):
             if stream_filter not in self.subscriptions:
                 self.subscriptions[stream_filter] = []
                 # stream_filter is assigned as a key with an empty list
-                sub_sock.setsockopt_string(zmq.SUBSCRIBE, stream_filter)
+                self.sub_sock.setsockopt_string(zmq.SUBSCRIBE, stream_filter)
             self.subscriptions[stream_filter].append({
                 'callback': cmd['callback'],
                 'kwargs': cmd['kwargs'],
