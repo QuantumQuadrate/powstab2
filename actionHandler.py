@@ -163,7 +163,6 @@ class PID_Handler(object):
             self.pwm_ch = GPIO.PWM(self.error_pin, 1000)  # GPIO pin number for hardware PWM
             self.pwm_ch.start(0.)
 
-
     def handle(self, subscriptions, sub_sock):
         try:
             [streamID, content] = sub_sock.recv_multipart()
@@ -174,7 +173,10 @@ class PID_Handler(object):
                 for cb in subscriptions[streamID]:
                     result = cb['callback'](streamID, json.loads(content), self.log, **cb['kwargs'])
                     pid_ctrl_name = result['name']
+                    print "\n \n \n"
+                    print "results"
                     print result
+                    print "\n \n \n"
                     # check if pid controller exists
                     if pid_ctrl_name not in self.pids:
                         # if it doesn't make a new controller
