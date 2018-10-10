@@ -19,7 +19,6 @@ class generic_Handler(object):
         self.stream_filter = ''
 
     def handle(self, cmd, sub_sock):
-        print sub_sock
         self.sub_sock = sub_sock
         if cmd['action'] == 'SUBSCRIBE':
             msg = 'Subscribing with stream filter: [{}]'

@@ -95,7 +95,6 @@ class Worker(object):
             self.error_sig = True
         else:
             self.error_sig = False
-        print self.output
         return self.error_sig
 
     def update_setpoint(self, sp):
