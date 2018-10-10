@@ -163,7 +163,7 @@ class PID_Handler(object):
             self.pwm_ch = GPIO.PWM(self.error_pin, 1000)  # GPIO pin number for hardware PWM
             self.pwm_ch.start(0.)
 
-    def handle(self, subscriptions, sub_sock):
+    def handle(self, subscriptions, sub_sock, conMan):
         try:
             [streamID, content] = sub_sock.recv_multipart()
 
@@ -173,22 +173,19 @@ class PID_Handler(object):
                 for cb in subscriptions[streamID]:
                     result = cb['callback'](streamID, json.loads(content), self.log, **cb['kwargs'])
                     pid_ctrl_name = result['name']
-                    print "\n \n \n"
-                    print "results"
-                    print result
-                    print "\n \n \n"
+
                     # check if pid controller exists
                     if pid_ctrl_name not in self.pids:
                         # if it doesn't make a new controller
                         self.pids[pid_ctrl_name] = {'err_state': False}
-                        fb_type = result['config'].get(result['name'], 'FeedbackDevice')
+                        fb_type = conMan.config.get(result['name'], 'FeedbackDevice')
                         self.log.debug('recieved first instance from channel: {} type: {}'.format(pid_ctrl_name, fb_type))
                         print ('recieved first instance from channel: {} type: {}'.format(pid_ctrl_name, fb_type))
 
                         if fb_type == WK10CR1.type:
-                            self.pids[pid_ctrl_name]['pid'] = WK10CR1(result['channel'], result['config'], logger=self.log)
+                            self.pids[pid_ctrl_name]['pid'] = WK10CR1(result['channel'], conMan.config, logger=self.log)
                         if fb_type == WDAC8532.type:
-                            self.pids[pid_ctrl_name]['pid'] = WDAC8532(result['channel'], result['config'], logger=self.log)
+                            self.pids[pid_ctrl_name]['pid'] = WDAC8532(result['channel'], conMan.config, logger=self.log)
                     # update with new info, save error state
                     try:
                         print self.pids

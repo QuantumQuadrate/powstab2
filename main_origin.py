@@ -38,12 +38,9 @@ if __name__ == '__main__':
     logger.info('Started logging')
 
     # get the feedback config files
-    configPath = 'configs/'
-    configFiles = os.listdir(configPath)
-    paths = [os.path.join(configPath, basename) for basename in configFiles]
-    latestConfig = max(paths, key=os.path.getctime)
-    conMan = configManager.configManager(latestConfig)
+    conMan = configManager.configManager()
     channels = conMan.getChannels()
+    
     # get the origin config file
     origin_config = ConfigParser.ConfigParser()
     origin_config.read('origin-server.cfg')

@@ -4,6 +4,7 @@ import RPi.GPIO as GPIO
 import actionHandler
 import logging
 import time
+import configManager
 PWM = True
 
 
@@ -29,6 +30,8 @@ def pid_poller_loop(sub_addr, queue):
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     ch.setFormatter(formatter)
     log.addHandler(ch)
+
+    conMan = configManager.configManager()
 
     context = zmq.Context()
     sub_sock = context.socket(zmq.SUB)
@@ -56,7 +59,7 @@ def pid_poller_loop(sub_addr, queue):
             log.exception("error encountered")
 
         # process data from the stream
-        pidHandler.handle(genHandler.subscriptions, sub_sock)
+        pidHandler.handle(genHandler.subscriptions, sub_sock, conMan)
 
     log.info('Shutting down poller loop.')
     sub_sock.close()

@@ -3,9 +3,9 @@ import ConfigParser
 from worker_K10CR1 import WK10CR1
 from worker_DAC8532 import WDAC8532
 from datetime import datetime
+import os
 
-
-def stream_callback(stream_id, data, log, calibration=1, field='', name='', channel=''):
+def stream_callback(stream_id, data, log, calibration=1, field='', name='', channel='', config=''):
     log.debug('Stream data for `{}` recieved.'.format(name))
     # send the necessary information so that the poller loop can sort the data to the
     # correct pid controller channel
@@ -13,7 +13,8 @@ def stream_callback(stream_id, data, log, calibration=1, field='', name='', chan
         'time': float(data[TIMESTAMP])/2**32,
         'measurement': calibration*data[field],
         'name': name,
-        'channel': channel
+        'channel': channel,
+        'config': config
     }
     log.debug('Origin result `{}`.'.format(result))
     return result
@@ -22,9 +23,13 @@ def stream_callback(stream_id, data, log, calibration=1, field='', name='', chan
 class configManager():
     config = ''
 
-    def __init__(self, configFile):
+    def __init__(self):
+        configPath = 'configs/'
+        configFiles = os.listdir(configPath)
+        paths = [os.path.join(configPath, basename) for basename in configFiles]
+        latestConfig = max(paths, key=os.path.getctime)
         self.config = ConfigParser.ConfigParser()
-        self.config.read(configFile)
+        self.config.read(latestConfig)
         # get all the activated channels from config file
 
     def getChannels(self):
