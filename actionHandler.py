@@ -184,8 +184,8 @@ class PID_Handler(object):
                 log.error(subscriptions)
 
             # or all pid error states and set error pin accordingly
+            self.last_g_err_state = self.global_err_state
             self.global_err_state = False
-            self.self.self. = self.global_err_state
             for ch in self.pids:
                 self.global_err_state = self.global_err_state or self.pids[ch]['err_state']
                 if self.pids[ch]['err_state']:
