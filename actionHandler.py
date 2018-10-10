@@ -10,6 +10,8 @@ stream_filter = ''
 
 class generic_Handler(object):
     """docstring for genericHandler."""
+    sub_sock = ''
+
     def __init__(self, sub_sock, log):
         self.sub_sock = sub_sock,
         self.log = log
@@ -159,8 +161,8 @@ class PID_Handler(object):
         else:
             self.error_pin = 12  # GPIO pin number for error signal output
             GPIO.setup(self.error_pin, GPIO.OUT)
-            pwm_ch = GPIO.PWM(self.error_pin, 1000)  # GPIO pin number for hardware PWM
-            pwm_ch.start(0.)
+            self.pwm_ch = GPIO.PWM(self.error_pin, 1000)  # GPIO pin number for hardware PWM
+            self.pwm_ch.start(0.)
 
 
     def handle(self, subscriptions):
