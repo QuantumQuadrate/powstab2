@@ -57,16 +57,20 @@ def runServer(sub, stream, conMan):
         else:
             pause = 'Started'
 
-        configStuff = conMan.config.items('CHANNEL'+str(id))
+        configStuff = conMan.config.items('CHANNEL'+str(kwargs['channel']))
 
         return render_template('keywords.html', id=id, kw_dict=kwargs, alert=alert, pause=pause, config_dict=configStuff)
 
     # subscribe
     @app.route('/update/<id>/config', methods=['POST'])
     def updateConfig(id):
+        with open(sub_file, 'r') as f:
+            sub_list = json.load(f)
+        id_dict = sub_list[id]
+        kwargs = id_dict['kwargs']
         configDict = request.form.to_dict()
         for key in configDict.keys():
-            conMan.config.set('CHANNEL'+str(id), key, configDict[key])
+            conMan.config.set('CHANNEL'+str(kwargs['channel']), key, configDict[key])
         conMan.updateConfig()
         return ''
 
