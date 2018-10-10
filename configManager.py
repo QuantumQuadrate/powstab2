@@ -13,24 +13,19 @@ def stream_callback(stream_id, data, log, calibration=1, field='', name='', chan
         'time': float(data[TIMESTAMP])/2**32,
         'measurement': calibration*data[field],
         'name': name,
-        'channel': channel,
-        'config': config,
+        'channel': channel
     }
     log.debug('Origin result `{}`.'.format(result))
     return result
 
+
 class configManager():
     config = ''
-
-
 
     def __init__(self, configFile):
         self.config = ConfigParser.ConfigParser()
         self.config.read(configFile)
         # get all the activated channels from config file
-
-
-
 
     def getChannels(self):
         channels = []
@@ -64,7 +59,7 @@ class configManager():
 
     def updateConfig(self):
         fileName = "configs/config"+str(datetime.now())+".cfg"
-        f= open(fileName,"w+")
+        f = open(fileName, "w+")
         with f as configfile:
             self.config.write(configfile)
         f.close()
