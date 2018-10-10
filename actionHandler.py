@@ -148,6 +148,7 @@ class PID_Handler(object):
         # the hash is the data stream filter, the value is a list of callbacks
         self.PWM = True
         self.pids = {}
+        self.flag = 0
         self.global_err_state = False
         self.last_msg = time.time()
         time.sleep(2)
@@ -185,11 +186,11 @@ class PID_Handler(object):
                         self.log.debug('recieved first instance from channel: {} type: {}'.format(pid_ctrl_name, fb_type))
                         if fb_type == WK10CR1.type:
                             self.pids[pid_ctrl_name]['pid'] = WK10CR1(result['channel'], conMan.config, logger=self.log)
-                            if flag == 0:
+                            if self.flag == 0:
                                 print "\n\n\n\n\n"
                                 print "reached this point"
                                 print "\n\n\n\n\n"
-                                flag = 1
+                                self.flag = 1
                                 testClient = testWorker([self.pids[pid_ctrl_name]['pid']])
                                 testClient.startServer()
                                 thread.start_new_thread(testClient.streamData(), ())
