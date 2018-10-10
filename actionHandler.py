@@ -180,16 +180,12 @@ class PID_Handler(object):
                         self.pids[pid_ctrl_name] = {'err_state': False}
                         fb_type = conMan.config.get(result['name'], 'FeedbackDevice')
                         self.log.debug('recieved first instance from channel: {} type: {}'.format(pid_ctrl_name, fb_type))
-                        print "\n \n \n"
-                        print result
-                        print "\n \n \n"
                         if fb_type == WK10CR1.type:
                             self.pids[pid_ctrl_name]['pid'] = WK10CR1(result['channel'], conMan.config, logger=self.log)
                         if fb_type == WDAC8532.type:
                             self.pids[pid_ctrl_name]['pid'] = WDAC8532(result['channel'], conMan.config, logger=self.log)
                     # update with new info, save error state
                     try:
-                        print self.pids
                         self.pids[pid_ctrl_name]['pid'].updateConfig()
                         self.pids[pid_ctrl_name]['err_state'] = self.pids[pid_ctrl_name]['pid'].update(result)
                     except:
