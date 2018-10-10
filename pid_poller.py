@@ -60,7 +60,7 @@ def pid_poller_loop(sub_addr, queue):
             log.exception("error encountered")
 
         # process data from the stream
-        pidHandler.handle(genHandler.subscriptions, sub_sock, conMan, [testClient])
+        pidHandler.handle(genHandler.subscriptions, sub_sock, conMan)
 
     log.info('Shutting down poller loop.')
     sub_sock.close()
