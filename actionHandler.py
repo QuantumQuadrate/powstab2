@@ -5,6 +5,7 @@ import RPi.GPIO as GPIO
 from worker_K10CR1 import WK10CR1
 from worker_DAC8532 import WDAC8532
 import requests
+from testWorker import testWorker
 stream_filter = ''
 
 
@@ -140,6 +141,7 @@ class generic_Handler(object):
 
 class PID_Handler(object):
     """docstring for ."""
+    flag = 0
     def __init__(self, log):
         # a hash table (dict) of callbacks to perform when a message is recieved
         # the hash is the data stream filter, the value is a list of callbacks
@@ -182,6 +184,10 @@ class PID_Handler(object):
                         self.log.debug('recieved first instance from channel: {} type: {}'.format(pid_ctrl_name, fb_type))
                         if fb_type == WK10CR1.type:
                             self.pids[pid_ctrl_name]['pid'] = WK10CR1(result['channel'], conMan.config, logger=self.log)
+                            if flag == 0:
+                                flag = 1
+                                testClient = testWorker([self.pids[pid_ctrl_name]['pid']])
+                                thread.start_new_thread(testClient.streamData(), ())
                         if fb_type == WDAC8532.type:
                             self.pids[pid_ctrl_name]['pid'] = WDAC8532(result['channel'], conMan.config, logger=self.log)
                     # update with new info, save error state

@@ -12,7 +12,8 @@ import math
 class testWorker(object):
     """docstring for ."""
 
-    def __init__(self):
+    def __init__(self, worker):
+        self.worker = worker[0]
         startServer()
 
     def startServer(self):
