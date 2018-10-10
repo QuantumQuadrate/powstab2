@@ -5,8 +5,6 @@ import actionHandler
 import logging
 import time
 import configManager
-from testWorker import testWorker
-import threading
 PWM = True
 
 

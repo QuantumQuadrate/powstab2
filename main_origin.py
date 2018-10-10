@@ -15,8 +15,7 @@ def sigterm_handler(_signo, _stack_frame):
     # from https://stackoverflow.com/a/24574672
     sys.exit(0)
 
-# I could open a subscriber object for each channel which would multi-process
-# the actuators
+
 if __name__ == '__main__':
     f = open("outputValue.txt", "w+")
     f.write('0')
