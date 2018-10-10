@@ -18,22 +18,8 @@ class testWorker(object):
 
     def startServer(self):
         # first find ourself
-        fullBinPath = os.path.abspath(os.getcwd() + "/" + sys.argv[0])
-        fullBasePath = os.path.dirname(os.path.dirname(fullBinPath))
-        fullLibPath = os.path.join(fullBasePath, "lib")
-        fullCfgPath = os.path.join(fullBasePath, "config")
-        sys.path.append(fullLibPath)
-
-        if len(sys.argv) > 1:
-            if sys.argv[1] == 'test':
-                configfile = os.path.join(fullCfgPath, "origin-server-test.cfg")
-            else:
-                configfile = os.path.join(fullCfgPath, sys.argv[1])
-        else:
-            configfile = os.path.join(fullCfgPath, "origin-server.cfg")
-
         self.config = ConfigParser.ConfigParser()
-        self.config.read(configfile)
+        self.config.read('origin-server.cfg')
 
         serv = server(self.config)
 
