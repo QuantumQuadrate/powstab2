@@ -33,12 +33,7 @@ def pid_poller_loop(sub_addr, queue):
     ch.setFormatter(formatter)
     log.addHandler(ch)
 
-    testClient = testWorker()
-    testClient.startServer()
-    print "SETUP SERVER"
-    t1 = threading.Thread(target=testClient.streamData())
-    t1.run()
-    print "SETUP CLIENT"
+
     conMan = configManager.configManager()
 
     context = zmq.Context()

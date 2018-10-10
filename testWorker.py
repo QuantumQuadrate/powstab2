@@ -33,9 +33,9 @@ class testWorker(object):
         return random.random()
 
     def makeTestMeasurement(self):
-        if self.worker != '':
-            return math.exp(self.worker.output)
-        return 1
+        f = open("outputValue.txt", "r")
+        output = float(f.read())
+        return math.exp(output)
 
     def streamData(self):
         while True:
