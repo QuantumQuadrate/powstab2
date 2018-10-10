@@ -19,7 +19,7 @@ class Worker(object):
         self.currentConfig = latestConfig
         self.logger = logger or logging.getLogger(__name__)
         self.setup_pid()
-        self.ready = Trues
+        self.ready = True
         self.output = 0  # TODO: initialize with reasonable start value from config
         # could also read current state from device
         self.delta = 0  # in case an actuator needs a differential output
