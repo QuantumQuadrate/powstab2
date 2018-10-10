@@ -166,7 +166,7 @@ class PID_Handler(object):
                         # if it doesn't make a new controller
                         self.pids[pid_ctrl_name] = {'err_state': False}
                         fb_type = result['config'].get(result['name'], 'FeedbackDevice')
-                        log.debug('recieved first instance from channel: {} type: {}'.format(pid_ctrl_name, fb_type))
+                        self.log.debug('recieved first instance from channel: {} type: {}'.format(pid_ctrl_name, fb_type))
                         if fb_type == WK10CR1.type:
                             self.pids[pid_ctrl_name]['pid'] = WK10CR1(result['channel'], result['config'], logger=self.log)
                         if fb_type == WDAC8532.type:
@@ -176,12 +176,12 @@ class PID_Handler(object):
                         self.pids[pid_ctrl_name]['pid'].updateConfig()
                         self.pids[pid_ctrl_name]['err_state'] = self.pids[pid_ctrl_name]['pid'].update(result)
                     except:
-                        log.exception('Unhandled server exception in pid: `{}`'.format(pid_ctrl_name))
+                        self.log.exception('Unhandled server exception in pid: `{}`'.format(pid_ctrl_name))
 
             except KeyError:
                 msg = "An unrecognized streamID `{}` was encountered"
-                log.error(msg.format(streamID))
-                log.error(subscriptions)
+                self.log.error(msg.format(streamID))
+                self.log.error(subscriptions)
 
             # or all pid error states and set error pin accordingly
             self.last_g_err_state = self.global_err_state
@@ -189,7 +189,7 @@ class PID_Handler(object):
             for ch in self.pids:
                 self.global_err_state = self.global_err_state or self.pids[ch]['err_state']
                 if self.pids[ch]['err_state']:
-                    log.info('{} is bad and should feel bad: err {:05.3f}'.format(ch, self.pids[ch]['pid'].pid.last_error))
+                    self.log.info('{} is bad and should feel bad: err {:05.3f}'.format(ch, self.pids[ch]['pid'].pid.last_error))
 
             if self.global_err_state != self.last_g_err_state:
                 if not self.PWM:
