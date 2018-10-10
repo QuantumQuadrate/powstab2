@@ -5,6 +5,7 @@ import actionHandler
 import logging
 PWM = False
 
+
 def pid_poller_loop(sub_addr, queue):
     '''This is a modified version of the default subscription poller
      loop that adds in feedback functionality.
@@ -32,7 +33,7 @@ def pid_poller_loop(sub_addr, queue):
     sub_sock = context.socket(zmq.SUB)
     sub_sock.setsockopt(zmq.RCVTIMEO, 1000)
     sub_sock.connect(sub_addr)
-
+    pwm_ch = ''
     GPIO.setmode(GPIO.BOARD)  # define the pin numbering (i think)
     # TODO: read off of config [MAIN]
     if not PWM:
