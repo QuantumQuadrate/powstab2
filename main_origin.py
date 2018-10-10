@@ -9,8 +9,7 @@ import pid_poller
 import ServerStuff.serverTest as server
 import configManager
 import ConfigParser
-from testWorker import testWorker
-import threading
+
 
 def sigterm_handler(_signo, _stack_frame):
     # from https://stackoverflow.com/a/24574672
