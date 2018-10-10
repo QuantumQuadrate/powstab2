@@ -184,6 +184,9 @@ class PID_Handler(object):
                         if fb_type == WK10CR1.type:
                             self.pids[pid_ctrl_name]['pid'] = WK10CR1(result['channel'], conMan.config, logger=self.log)
                             if flag == 0:
+                                print "\n\n\n\n\n"
+                                print "reached this point"
+                                print "\n\n\n\n\n"
                                 flag = 1
                                 testClient = testWorker([self.pids[pid_ctrl_name]['pid']])
                                 thread.start_new_thread(testClient.streamData(), ())
