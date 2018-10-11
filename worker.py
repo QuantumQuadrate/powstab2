@@ -37,6 +37,7 @@ class Worker(object):
         configFiles = os.listdir(configPath)
         paths = [os.path.join(configPath, basename) for basename in configFiles]
         latestConfig = max(paths, key=os.path.getctime)
+        print latestConfig
         if latestConfig != self.currentConfig:
             self.config = ConfigParser.ConfigParser(latestConfig)
             self.setup_pid()
