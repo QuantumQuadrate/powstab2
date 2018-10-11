@@ -30,15 +30,14 @@ def pid_poller_loop(sub_addr, queue):
     ch.setFormatter(formatter)
     log.addHandler(ch)
 
-
-    conMan = configManager.configManager()
-
     context = zmq.Context()
     sub_sock = context.socket(zmq.SUB)
     sub_sock.setsockopt(zmq.RCVTIMEO, 1000)
     sub_sock.connect(sub_addr)
     genHandler = actionHandler.generic_Handler(log)
     pidHandler = actionHandler.PID_Handler(log)
+
+    conMan = configManager.configManager()
 
     while True:
         # process new command messages from the parent process

@@ -6,7 +6,7 @@ import logging
 import signal
 import sys
 import pid_poller
-import ServerStuff.serverTest as server
+import ServerStuff.server as server
 import configManager
 import ConfigParser
 
@@ -17,9 +17,6 @@ def sigterm_handler(_signo, _stack_frame):
 
 
 if __name__ == '__main__':
-    f = open("outputValue.txt", "w+")
-    f.write('0.0')
-    f.close()
     # setup a catch for SIGTERM so process can be killed gracefully in the background
     signal.signal(signal.SIGTERM, sigterm_handler)
     time.sleep(1)
@@ -51,13 +48,12 @@ if __name__ == '__main__':
     # read channels from feedback config file
     streamName = ''
     for channel in channels:
-        if channel['number'] == 2:
-            streamName = conMan.config.get('CHANNEL{}'.format(channel['number']), 'StreamName')
-            sub.subscribe(
-                streamName,
-                callback=channel['callback'],
-                **channel['kwargs']
-            )
+        streamName = conMan.config.get('CHANNEL{}'.format(channel['number']), 'StreamName')
+        sub.subscribe(
+            streamName,
+            callback=channel['callback'],
+            **channel['kwargs']
+        )
 
     server.runServer(sub, streamName, conMan)
 

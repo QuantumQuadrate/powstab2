@@ -6,7 +6,7 @@ import json
 
 
 def runServer(sub, stream, conMan):
-    # web server
+
     app = Flask(__name__)
 
     # commands & webpage

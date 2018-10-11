@@ -5,6 +5,7 @@ from worker_DAC8532 import WDAC8532
 from datetime import datetime
 import os
 
+
 def stream_callback(stream_id, data, log, calibration=1, field='', name='', channel=''):
     log.debug('Stream data for `{}` recieved.'.format(name))
     # send the necessary information so that the poller loop can sort the data to the
@@ -21,11 +22,13 @@ def stream_callback(stream_id, data, log, calibration=1, field='', name='', chan
 
 class configManager():
     config = ''
+    
     def __init__(self):
         configPath = 'configs/'
         configFiles = os.listdir(configPath)
         paths = [os.path.join(configPath, basename) for basename in configFiles]
         latestConfig = max(paths, key=os.path.getctime)
+        self.configFile = latestConfig
         self.config = ConfigParser.ConfigParser()
         self.config.read(latestConfig)
         # get all the activated channels from config file
@@ -57,9 +60,6 @@ class configManager():
                 })
         return channels
 
-    def getChannelConfigInfo(self):
-        return self.config
-
     def updateConfig(self):
         fileName = "configs/config"+str(datetime.now())+".cfg"
         f = open(fileName, "w+")
@@ -68,7 +68,11 @@ class configManager():
         f.close()
         return ''
 
+    def getConfigFilePath(self):
+        return self.configFile
 
+    def getConfig(self):
+        return self.config
 
     def setConfig(self, configFile):
             self.config = ConfigParser.ConfigParser()
