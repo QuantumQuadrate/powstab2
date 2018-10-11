@@ -8,7 +8,6 @@ import json
 def runServer(sub, stream, conMan):
     # web server
     app = Flask(__name__)
-
     # commands & webpage
     # home page "monitor"
     sub_file = 'subscriptions.json'
