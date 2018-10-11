@@ -117,5 +117,5 @@ class Worker(object):
         self.pid.clear()
 
     def update_output(self):
-        "Override in child class.  Set self.ready to True when complete."
+        "Override in child class. Set self.ready to True when complete."
         raise NotImplementedError
