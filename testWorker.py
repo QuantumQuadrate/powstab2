@@ -36,5 +36,7 @@ while True:
     t1, t2, t3, t4 = (makeTempMeasurement(), makeTempMeasurement(), makeTestMeasurement(), makeTestMeasurement())
     ts = current_time(config)
     data = {TIMESTAMP: ts, "toy1": t1, "toy2": t2, "testMeasurement1": t3, "testMeasurement2": t4}
+    print data
+    print "\n"
     connection.send(**data)
     time.sleep(2)
