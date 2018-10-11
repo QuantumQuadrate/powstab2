@@ -179,7 +179,7 @@ class PID_Handler(object):
                         self.pids[pid_ctrl_name] = {'err_state': False}
                         fb_type = conMan.config.get(result['name'], 'FeedbackDevice')
                         self.log.debug('recieved first instance from channel: {} type: {}'.format(pid_ctrl_name, fb_type))
-                        if fb_type == WK10CR1.type:
+                        #if fb_type == WK10CR1.type:
                             #self.pids[pid_ctrl_name]['pid'] = WK10CR1(result['channel'], conMan.config, logger=self.log)
                         if fb_type == WDAC8532.type:
                             self.pids[pid_ctrl_name]['pid'] = WDAC8532(result['channel'], conMan.config, logger=self.log)
