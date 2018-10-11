@@ -21,7 +21,6 @@ def stream_callback(stream_id, data, log, calibration=1, field='', name='', chan
 
 class configManager():
     config = ''
-
     def __init__(self):
         configPath = 'configs/'
         configFiles = os.listdir(configPath)
