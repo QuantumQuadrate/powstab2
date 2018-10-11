@@ -39,7 +39,8 @@ class Worker(object):
         latestConfig = max(paths, key=os.path.getctime)
         print latestConfig
         if latestConfig != self.currentConfig:
-            self.config = ConfigParser.ConfigParser(latestConfig)
+            self.config = ConfigParser.ConfigParser()
+            self.config.read(latestConfig)
             self.setup_pid()
         return ''
 
