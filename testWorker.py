@@ -16,8 +16,7 @@ def makeTestMeasurement():
     output = float(f.readline())
     f.close()
     return math.exp(output)
-
-
+    
 config = ConfigParser.ConfigParser()
 config.read('origin-server.cfg')
 
