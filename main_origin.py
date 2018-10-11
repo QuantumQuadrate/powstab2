@@ -50,13 +50,19 @@ if __name__ == '__main__':
     sub = Subscriber(origin_config, logger, loop=pid_poller.pid_poller_loop)
     # read channels from feedback config file
     streamName = ''
-    for channel in channels:
-        streamName = conMan.config.get('CHANNEL{}'.format(channel['number']), 'StreamName')
-        sub.subscribe(
-            streamName,
-            callback=channel['callback'],
-            **channel['kwargs']
-        )
+    # for channel in channels:
+    #     streamName = conMan.config.get('CHANNEL{}'.format(channel['number']), 'StreamName')
+    #     sub.subscribe(
+    #         streamName,
+    #         callback=channel['callback'],
+    #         **channel['kwargs']
+    #     )
+    streamName = conMan.config.get('CHANNEL2', 'StreamName')
+    sub.subscribe(
+        streamName,
+        callback=channel['callback'],
+        **channel['kwargs']
+    )
 
     server.runServer(sub, streamName, conMan)
 
