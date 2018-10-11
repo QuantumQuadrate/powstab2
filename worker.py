@@ -96,7 +96,10 @@ class Worker(object):
         else:
             self.error_sig = False
         f = open("outputValue.txt", "w+")
-        f.write(self.output)
+        print "\n\n\n"
+        print "saving value " + str(self.output)
+        print "\n\n\n"
+        f.write(str(self.output))
         f.close()
         return self.error_sig
 
