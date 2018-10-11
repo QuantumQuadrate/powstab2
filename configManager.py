@@ -11,7 +11,7 @@ def stream_callback(stream_id, data, log, calibration=1, field='', name='', chan
     # correct pid controller channel
     result = {
         'time': float(data[TIMESTAMP])/2**32,
-        'measurement': calibration*data[field],
+        'measurement': float(calibration)*float(data[field]),
         'name': name,
         'channel': channel
     }
