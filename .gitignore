@@ -107,3 +107,5 @@ origin-server.cfg
 
 nohup.out
 *.dat
+
+outputValue.txt
