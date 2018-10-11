@@ -67,6 +67,7 @@ def runServer(sub, stream, conMan):
         with open(sub_file, 'r') as f:
             sub_list = json.load(f)
         id_dict = sub_list[id]
+        print id_dict
         kwargs = id_dict['kwargs']
         configDict = request.form.to_dict()
         for key in configDict.keys():
