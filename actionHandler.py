@@ -169,6 +169,7 @@ class PID_Handler(object):
             self.last_msg = time.time()
             try:
                 self.log.debug("new data")
+                print subscriptions
                 for cb in subscriptions[streamID]:
                     result = cb['callback'](streamID, json.loads(content), self.log, **cb['kwargs'])
                     pid_ctrl_name = result['name']
