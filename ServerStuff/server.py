@@ -103,4 +103,4 @@ def runServer(sub, stream, conMan):
             return 'error'
         return ''
 
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', debug=True, use_reloader=False)
