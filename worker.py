@@ -3,6 +3,7 @@ import time
 from ivPID import PID
 import ConfigParser
 import os
+import filecmp
 
 
 class Worker(object):
@@ -37,7 +38,7 @@ class Worker(object):
         configFiles = os.listdir(configPath)
         paths = [os.path.join(configPath, basename) for basename in configFiles]
         latestConfig = max(paths, key=os.path.getctime)
-        if latestConfig != self.currentConfig:
+        if latestConfig != self.currentConfig and not filecmp.cmp(latestConfig, self.currentConfig):
             self.config = ConfigParser.ConfigParser()
             self.config.read(latestConfig)
             self.setup_pid()
