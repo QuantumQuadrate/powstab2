@@ -50,6 +50,7 @@ if __name__ == '__main__':
     sub = Subscriber(origin_config, logger, loop=pid_poller.pid_poller_loop)
     # read channels from feedback config file
     streamName = ''
+    print channels
     for channel in channels:
         if channel['number'] == 2:
             print "made one"
