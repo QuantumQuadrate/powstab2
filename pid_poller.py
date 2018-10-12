@@ -59,6 +59,7 @@ def pid_poller_loop(sub_addr, queue):
 
         # process data from the stream
         pidHandler.handle(genHandler.subscriptions, sub_sock, conMan)
+        print pidHandler
 
     log.info('Shutting down poller loop.')
     sub_sock.close()
