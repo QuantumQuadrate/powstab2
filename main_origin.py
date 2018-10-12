@@ -52,6 +52,7 @@ if __name__ == '__main__':
     streamName = ''
     for channel in channels:
         if channel['number'] == 2:
+            print "made one"
             streamName = conMan.config.get('CHANNEL{}'.format(channel['number']), 'StreamName')
             sub.subscribe(
                 streamName,
