@@ -30,7 +30,6 @@ def pid_poller_loop(sub_addr, queue):
     ch.setFormatter(formatter)
     log.addHandler(ch)
 
-
     conMan = configManager.configManager()
 
     context = zmq.Context()
