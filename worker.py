@@ -97,13 +97,11 @@ class Worker(object):
         else:
             self.error_sig = False
         f = open("outputValue.txt", "w+")
-        print "\n"
-        print "saving value " + str(self.output)
-        print "Set Point value " + str(self.pid.SetPoint)
-        print 'input ' + str(input)
-        print "\n"
         f.write(str(self.output))
         f.close()
+        dataTracker = open("data.txt", "a")
+        dataTracker.writeline(str(self.output)+'\n')
+        dataTracker.close()
         return self.error_sig
 
     def update_setpoint(self, sp):
