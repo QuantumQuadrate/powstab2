@@ -100,7 +100,7 @@ class Worker(object):
         f.write(str(self.output))
         f.close()
         dataTracker = open("ServerStuff/static/data.txt", "a")
-        dataTracker.write(str(self.output)+'\n')
+        dataTracker.write(str(self.input)+'\n')
         dataTracker.close()
         return self.error_sig
 
