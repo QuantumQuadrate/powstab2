@@ -39,4 +39,4 @@ while True:
     print data
     print "\n"
     connection.send(**data)
-    time.sleep(2)
+    time.sleep(.5)
