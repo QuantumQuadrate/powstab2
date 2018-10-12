@@ -15,7 +15,7 @@ def makeTestMeasurement():
     f = open("outputValue.txt", "r")
     output = float(f.readline())
     f.close()
-    return math.exp(output)
+    return math.exp(output) + random.random()
 
 
 config = ConfigParser.ConfigParser()
