@@ -99,8 +99,8 @@ class Worker(object):
         f = open("outputValue.txt", "w+")
         f.write(str(self.output))
         f.close()
-        dataTracker = open("data.txt", "a")
-        dataTracker.writeline(str(self.output)+'\n')
+        dataTracker = open("ServerStuff/static/data.txt", "a")
+        dataTracker.write(str(self.output)+'\n')
         dataTracker.close()
         return self.error_sig
 

@@ -20,7 +20,7 @@ if __name__ == '__main__':
     f = open("outputValue.txt", "w+")
     f.write('0.0')
     f.close()
-    dataTracker = open("data.txt", "w+")
+    dataTracker = open("ServerStuff/static/data.txt", "w+")
     dataTracker.close()
     # setup a catch for SIGTERM so process can be killed gracefully in the background
     signal.signal(signal.SIGTERM, sigterm_handler)
