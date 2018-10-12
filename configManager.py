@@ -5,22 +5,22 @@ from worker_DAC8532 import WDAC8532
 from datetime import datetime
 import os
 
+def stream_callback(stream_id, data, log, calibration=1, field='', name='', channel=''):
+    log.debug('Stream data for `{}` recieved.'.format(name))
+    # send the necessary information so that the poller loop can sort the data to the
+    # correct pid controller channel
+    result = {
+        'time': float(data[TIMESTAMP])/2**32,
+        'measurement': float(calibration)*float(data[field]),
+        'name': name,
+        'channel': channel
+    }
+    log.debug('Origin result `{}`.'.format(result))
+    return result
+
 
 class configManager():
     config = ''
-
-    def stream_callback(stream_id, data, log, calibration=1, field='', name='', channel=''):
-        log.debug('Stream data for `{}` recieved.'.format(name))
-        # send the necessary information so that the poller loop can sort the data to the
-        # correct pid controller channel
-        result = {
-            'time': float(data[TIMESTAMP])/2**32,
-            'measurement': float(calibration)*float(data[field]),
-            'name': name,
-            'channel': channel
-        }
-        log.debug('Origin result `{}`.'.format(result))
-        return result
 
     def __init__(self):
         configPath = 'configs/'
@@ -48,7 +48,7 @@ class configManager():
                 # a new process and won't know about anything in the main process after it starts
                 channels.append({
                     'number': ch_num,
-                    'callback': self.stream_callback,
+                    'callback': stream_callback,
                     'kwargs': {
                         'calibration': calib,
                         'field': self.config.get(section, 'FieldName'),
