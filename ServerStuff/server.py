@@ -226,7 +226,7 @@ class MatrixTransformServer(Server):
         print('')
         pprint.pprint(self.sub.known_streams.keys())
 
-        if dataStream not in sub.known_streams:
+        if dataStream not in self.sub.known_streams:
             print("stream not recognized")
             self.sub.close()
             sys.exit(1)
