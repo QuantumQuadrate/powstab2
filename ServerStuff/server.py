@@ -167,8 +167,33 @@ class PIDServer(Server):
 
 class MatrixTransformServer(Server):
 
-    def runServer(self, sub, stream, conMan):
-        super(PIDServer, self).runServer(sub, stream, conMan)
+    def runServer(self):
+            app = Flask(__name__)
+
+            # commands & webpage
+            # home page "monitor"
+            sub_file = 'subscriptions.json'
+            with open(sub_file, 'w') as f:
+                f.write('{}')
+                f.close()
+
+            # commands & webpage
+            # home page "monitor"
+            @app.route('/monitor', methods=['GET', 'PUT'])
+            def monitor():
+                # GET request string(json) needs to be save as file, to be read by flask template
+                if request.method == "PUT":
+                    sub_list_json = request.get_json()
+                    with open(sub_file, 'w') as f:
+                        f.write(sub_list_json)
+                        f.close()
+                with open(sub_file, 'r') as f:
+                    sub_list = json.load(f)
+
+                # sub_list = {1:{'kwargs':{kwargs}, 'control':{control}}
+                return render_template('index.html', id_list= sub_list.keys(), sub_list= sub_list, **sub_list)
+            app.run(host='0.0.0.0', debug=True, use_reloader=False)
+            self.sub.close()
 
     def setOriginConfig(self, config_file):
         self.origin_config = ConfigParser.ConfigParser()
@@ -195,22 +220,22 @@ class MatrixTransformServer(Server):
         ch.setFormatter(formatter)
         self.logger.addHandler(ch)
 
-        sub = Subscriber(self.origin_config, self.logger)
+        self.sub = Subscriber(self.origin_config, self.logger)
 
         self.logger.info("streams")
         print('')
-        pprint.pprint(sub.known_streams.keys())
+        pprint.pprint(self.sub.known_streams.keys())
 
         if dataStream not in sub.known_streams:
             print("stream not recognized")
-            sub.close()
+            self.sub.close()
             sys.exit(1)
 
         print("subscribing to stream: %s" % (dataStream,))
         # can use arbitrary callback
         # if you need to use the same base callback for multiple streams pass in specific
         # parameters through kwargs
-        sub.subscribe(dataStream, callback=sendOutput, inputFields='A', matrix="B", config_file='origin-client.cfg', outputFields="C")
+        self.sub.subscribe(dataStream, callback=sendOutput, inputFields='A', matrix="B", config_file='origin-client.cfg', outputFields="C")
 
     def setup(self, matrix, dataStream, inputs, outputs, outputStream):
         self.inputs = inputs
