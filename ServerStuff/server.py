@@ -119,6 +119,7 @@ class PIDServer(Server):
 
     def runServer(self, sub, stream, conMan):
 
+        app = Flask(__name__)
         @app.route('/update/<id>/config', methods=['POST'])
         def updateConfig(id):
             with open(sub_file, 'r') as f:
@@ -138,6 +139,7 @@ class PIDServer(Server):
 class MatrixTransformServer(Server):
 
     def runServer(self, sub, stream, conMan):
+        app = Flask(__name__)
         super(PIDServer, self).runServer()
 
     def setup(self, matrix, dataStream):
