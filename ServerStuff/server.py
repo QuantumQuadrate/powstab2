@@ -13,7 +13,7 @@ import pprint
 import sys
 
 
-def sendOutput(stream_id, data, state, log, inputs=[], matrix=[], config_file='', outputs=[], connection=''):
+def sendOutput(stream_id, data, state, log, inputs=[], matrix=[], config_file='', outputs=[]):
     # convert temp from mC to C
     print "made it this far"
     origin_config = ConfigParser.ConfigParser()
@@ -31,7 +31,7 @@ def sendOutput(stream_id, data, state, log, inputs=[], matrix=[], config_file=''
         data.update({outputs[iter]: output})
         iter += 1
 
-    connection.send(**data)
+    #connection.send(**data)
     print "\n"
     print data
     print "\n"
@@ -210,7 +210,7 @@ class MatrixTransformServer(Server):
         # can use arbitrary callback
         # if you need to use the same base callback for multiple streams pass in specific
         # parameters through kwargs
-        sub.subscribe(dataStream, callback=sendOutput, inputs=self.inputs, matrix=self.matrix, config_file='origin-client.cfg', outputs=self.outputs, connection=self.connection)
+        sub.subscribe(dataStream, callback=sendOutput, inputs=self.inputs, matrix=self.matrix, config_file='origin-client.cfg', outputs=self.outputs)
 
     def setup(self, matrix, dataStream, inputs, outputs, outputStream):
         self.inputs = inputs
