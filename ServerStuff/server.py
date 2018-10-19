@@ -31,7 +31,11 @@ def sendOutput(self, stream_id, data, state, log, inputs=[], matrix=[], config_f
         iter += 1
 
     self.connection.send(**data)
+    print "\n"
     print data
+    print "\n"
+    print data
+
     return state
 
 
