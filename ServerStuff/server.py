@@ -211,7 +211,7 @@ class MatrixTransformServer(Server):
         # can use arbitrary callback
         # if you need to use the same base callback for multiple streams pass in specific
         # parameters through kwargs
-        sub.subscribe(dataStream, callback=sendOutput, inputs=self.inputs, matrix=self.matrix, config_file='origin-client.cfg', outputs=self.outputs)
+        sub.subscribe(dataStream, callback=sendOutput, inputValues=self.inputs, matrix=self.matrix, config_file='origin-client.cfg', outputs=self.outputs)
 
     def setup(self, matrix, dataStream, inputs, outputs, outputStream):
         self.inputs = inputs
