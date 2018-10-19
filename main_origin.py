@@ -55,7 +55,7 @@ if __name__ == '__main__':
             **channel['kwargs']
         )
 
-    server.runServer(sub, streamName, conMan)
+    server.PIDServer.runServer(sub, streamName, conMan)
 
     sub.close()
     logger.info('closing')
