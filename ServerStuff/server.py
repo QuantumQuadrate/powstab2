@@ -19,7 +19,7 @@ def sendOutput(stream_id, data, state, log, control, inputFields='A', matrix="B"
     origin_config.read(config_file)
     print data
     input_vector = []
-    for input in inputs:
+    for input in inputFields:
         input_vector.append(data[input])
 
     output_vector = np.matmul(np.asarray(matrix), np.asarray(input_vector))
@@ -27,7 +27,7 @@ def sendOutput(stream_id, data, state, log, control, inputFields='A', matrix="B"
     ts = current_time(origin_config)
     data = {TIMESTAMP: ts}
     for output in output_vector:
-        data.update({outputs[iter]: output})
+        data.update({outputFields[iter]: output})
         iter += 1
 
     #connection.send(**data)
@@ -234,7 +234,7 @@ class MatrixTransformServer(Server):
         # can use arbitrary callback
         # if you need to use the same base callback for multiple streams pass in specific
         # parameters through kwargs
-        self.sub.subscribe(dataStream, callback=sendOutput, inputFields='A', matrix="B", config_file='origin-client.cfg', outputFields="C")
+        self.sub.subscribe(dataStream, callback=sendOutput, inputFields=self.inputs, matrix=self.matrix, config_file='origin-client.cfg', outputFields=self.outputs)
 
     def setup(self, matrix, dataStream, inputs, outputs, outputStream):
         self.inputs = inputs
