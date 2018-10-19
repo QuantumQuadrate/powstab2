@@ -179,17 +179,17 @@ class MatrixTransformServer(Server):
 
     def startSub(self, dataStream):
 
-        logger = logging.getLogger(__name__)
-        logger.setLevel(logging.DEBUG)
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.DEBUG)
         ch = logging.StreamHandler()
         ch.setLevel(logging.DEBUG)
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         ch.setFormatter(formatter)
-        logger.addHandler(ch)
+        self.logger.addHandler(ch)
 
         sub = Subscriber(self.origin_config, self.logger)
 
-        logger.info("streams")
+        self.logger.info("streams")
         print('')
         pprint.pprint(sub.known_streams.keys())
 
