@@ -13,7 +13,7 @@ import pprint
 import sys
 
 
-def sendOutput(stream_id, data, log, **kwargs):
+def sendOutput(stream_id, data, state, log, inputFields='A', matrix="B", config_file='origin-client.cfg', outputFields="C"):
     # convert temp from mC to C
     print kwargs
     print "made it this far"
