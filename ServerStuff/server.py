@@ -13,8 +13,9 @@ import pprint
 import sys
 
 
-def sendOutput(stream_id, data, log, inputFields=[], matrix=[], config_file='', outputFields=[]):
+def sendOutput(stream_id, data, log, **kwargs):
     # convert temp from mC to C
+    print kwargs
     print "made it this far"
     origin_config = ConfigParser.ConfigParser()
     origin_config.read(config_file)
