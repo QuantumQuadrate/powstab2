@@ -187,11 +187,7 @@ class MatrixTransformServer(Server):
         ch.setFormatter(formatter)
         logger.addHandler(ch)
 
-        origin_config = 'origin-client.cfg'
-        self.origin_config = ConfigParser.ConfigParser()
-        self.origin_config.read(config_file)
-
-        sub = Subscriber(origin_config, self.logger)
+        sub = Subscriber(self.origin_config, self.logger)
 
         logger.info("streams")
         print('')
