@@ -14,3 +14,4 @@ myServer = server.MatrixTransformServer()
 myServer.setup(a, dataStream, inputs, outputs, outputStream)
 while True:
     time.sleep(1)
+sub.close()
