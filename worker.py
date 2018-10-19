@@ -4,6 +4,9 @@ from ivPID import PID
 import ConfigParser
 import os
 import filecmp
+from origin.client import server
+from origin import current_time, TIMESTAMP
+import ConfigParser
 
 
 class Worker(object):
@@ -28,6 +31,8 @@ class Worker(object):
         self.setup()
         self.last_update = time.time()
         self.last_pos_log = time.time()
+        self.connection = ''
+        self.origin_config = ''
 
     def setup(self):
         "override for actuator specific initilization"
@@ -68,9 +73,6 @@ class Worker(object):
         input = input_obj['measurement']
         # if we end up in a wierd state where the ready pin does get set back then just continue
         if self.ready or (time.time()-self.last_update) > 10:
-            if input < 0:  # not allowed for this system, update to define a settable range
-                self.error_sig = True
-                return True
             self.ready = False
             self.last_update = time.time()
             out = self.pid.update(input)
@@ -115,3 +117,22 @@ class Worker(object):
     def update_output(self):
         "Override in child class. Set self.ready to True when complete."
         raise NotImplementedError
+
+    def sendOutput(self):
+        ts = current_time(self.origin_config)
+        data = {TIMESTAMP: ts, "Output": self.output}
+        self.connection.send(**data)
+
+    def startClient(self):
+        config_file = 'origin-client.cfg'
+        self.origin_config = ConfigParser.ConfigParser()
+        self.origin_config.read(config_file)
+
+        serv = server(self.origin_config)
+
+        self.connection = serv.registerStream(
+            stream="PIDworker",
+            records={
+                "Output": "float",
+                "Output": "float"
+                })
