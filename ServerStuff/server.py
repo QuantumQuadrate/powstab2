@@ -13,6 +13,26 @@ import pprint
 import sys
 
 
+def sendOutput(self, stream_id, data, state, log, inputs=[], matrix=[], origin_config='', outputs=[]):
+    # convert temp from mC to C
+    print data
+    input_vector = []
+    for input in inputs:
+        input_vector.append(data[input])
+
+    output_vector = np.matmul(matrix, np.asarray(input_vector))
+    iter = 0
+    ts = current_time(origin_config)
+    data = {TIMESTAMP: ts}
+    for output in output_vector:
+        data.update({outputs[iter]: output})
+        iter += 1
+
+    self.connection.send(**data)
+    print data
+    return state
+
+
 class Server(object):
 
     def runServer(self, sub, stream, conMan):
@@ -143,24 +163,7 @@ class MatrixTransformServer(Server):
     def runServer(self, sub, stream, conMan):
         super(PIDServer, self).runServer(sub, stream, conMan)
 
-    def sendOutput(self, stream_id, data, state, log, foo=None):
-        # convert temp from mC to C
-        print data
-        input_vector = []
-        for input in self.inputs:
-            input_vector.append(data[input])
 
-        output_vector = np.matmul(self.matrix, np.asarray(input_vector))
-        iter = 0
-        ts = current_time(self.origin_config)
-        data = {TIMESTAMP: ts}
-        for output in output_vector:
-            data.update({self.outputs[iter]: output})
-            iter += 1
-
-        self.connection.send(**data)
-        print data
-        return state
 
     def setOriginConfig(self, config_file):
         self.origin_config = ConfigParser.ConfigParser()
@@ -203,7 +206,7 @@ class MatrixTransformServer(Server):
         # can use arbitrary callback
         # if you need to use the same base callback for multiple streams pass in specific
         # parameters through kwargs
-        sub.subscribe(dataStream, callback=self.sendOutput)
+        sub.subscribe(dataStream, callback=sendOutput, inputs=self.inputs, matrix=self.matrix, origin_config=self.origin_config, outputs=self.outputs)
 
     def setup(self, matrix, dataStream, inputs, outputs, outputStream):
         self.inputs = inputs
