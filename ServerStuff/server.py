@@ -22,7 +22,7 @@ def sendOutput(self, stream_id, data, state, log, inputs=[], matrix=[], config_f
     for input in inputs:
         input_vector.append(data[input])
 
-    output_vector = np.matmul(matrix, np.asarray(input_vector))
+    output_vector = np.matmul(np.asarray(matrix), np.asarray(input_vector))
     iter = 0
     ts = current_time(origin_config)
     data = {TIMESTAMP: ts}
@@ -164,8 +164,6 @@ class MatrixTransformServer(Server):
 
     def runServer(self, sub, stream, conMan):
         super(PIDServer, self).runServer(sub, stream, conMan)
-
-
 
     def setOriginConfig(self, config_file):
         self.origin_config = ConfigParser.ConfigParser()

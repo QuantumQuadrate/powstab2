@@ -3,7 +3,7 @@ import ServerStuff.server as server
 import numpy as np
 import time
 
-a = np.matrix('0 1; 1 0')
+a = [[0, 1],[1, 0]]
 dataStream = 'toy'
 outputStream = "BGTest"
 inputs = ['toy1', 'toy2']
