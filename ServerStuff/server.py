@@ -193,19 +193,17 @@ class MatrixTransformServer(Server):
         print('')
         pprint.pprint(sub.known_streams.keys())
 
-        stream = raw_input("stream to subscribe to: ")
-
-        if stream not in sub.known_streams:
+        if dataStream not in sub.known_streams:
             print("stream not recognized")
             sub.close()
             sys.exit(1)
 
-        print("subscribing to stream: %s" % (stream,))
-        sub.subscribe(stream)
+        print("subscribing to stream: %s" % (dataStream,))
+        sub.subscribe(dataStream)
         # can use arbitrary callback
         # if you need to use the same base callback for multiple streams pass in specific
         # parameters through kwargs
-        sub.subscribe(stream, callback=self.sendOutput)
+        sub.subscribe(dataStream, callback=self.sendOutput)
 
     def setup(self, matrix, dataStream, inputs, outputs, outputStream):
         self.inputs = inputs
