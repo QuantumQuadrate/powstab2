@@ -9,6 +9,8 @@ import ConfigParser
 from origin.client.origin_subscriber import Subscriber
 from origin.client import server
 from origin import current_time, TIMESTAMP
+import pprint
+import sys
 
 
 class Server(object):
@@ -38,7 +40,7 @@ class Server(object):
                 sub_list = json.load(f)
 
             # sub_list = {1:{'kwargs':{kwargs}, 'control':{control}}
-            return render_template('index.html', id_list = sub_list.keys(), sub_list = sub_list, **sub_list)
+            return render_template('index.html', id_list= sub_list.keys(), sub_list= sub_list, **sub_list)
             # except Exception:
             #     return 'Unable to load page'
 
@@ -139,32 +141,41 @@ class PIDServer(Server):
 class MatrixTransformServer(Server):
 
     def runServer(self, sub, stream, conMan):
-        app = Flask(__name__)
         super(PIDServer, self).runServer(sub, stream, conMan)
 
-    def setup(self, matrix, dataStream):
-        self.matrix = matrix
-        startSub(dataStream)
+    def sendOutput(self, stream_id, data, state, log, foo=None):
+        # convert temp from mC to C
+        print data
+        input_vector = []
+        for input in self.inputs:
+            input_vector.append(data[input])
 
-    def sendOutput(self):
-        np.matmul(self.matrix, measurements)
+        output_vector = np.matmul(self.matrix, np.asarray(input_vector))
+        iter = 0
         ts = current_time(self.origin_config)
-        data = {TIMESTAMP: ts, "Output1": self.output, "Output1": self.output}
-        self.connection.send(**data)
+        data = {TIMESTAMP: ts}
+        for output in output_vector:
+            data.update({self.outputs[iter]: output})
+            iter += 1
 
-    def startClient(self):
-        config_file = 'origin-client.cfg'
+        self.connection.send(**data)
+        print data
+        return state
+
+    def setOriginConfig(self, config_file):
         self.origin_config = ConfigParser.ConfigParser()
         self.origin_config.read(config_file)
 
+    def startClient(self, outputs, outputStream):
+
         serv = server(self.origin_config)
+        records = {}
+        for output in outputs:
+            records.update({output: 'float'})
 
         self.connection = serv.registerStream(
-            stream="MatrixServer",
-            records={
-                "Output1": "float",
-                "Output2": "float"
-                })
+            stream=outputStream,
+            records=records)
 
     def startSub(self, dataStream):
 
@@ -176,7 +187,7 @@ class MatrixTransformServer(Server):
         ch.setFormatter(formatter)
         logger.addHandler(ch)
 
-        config_file = 'origin-client.cfg'
+        origin_config = 'origin-client.cfg'
         self.origin_config = ConfigParser.ConfigParser()
         self.origin_config.read(config_file)
 
@@ -198,4 +209,14 @@ class MatrixTransformServer(Server):
         # can use arbitrary callback
         # if you need to use the same base callback for multiple streams pass in specific
         # parameters through kwargs
-        sub.subscribe(stream, callback=thermistor_print, foo='hi')
+        sub.subscribe(stream, callback=self.sendOutput)
+
+    def setup(self, matrix, dataStream, inputs, outputs, outputStream):
+        self.inputs = inputs
+        self.outputs = outputs
+        self.matrix = matrix
+        self.dataStream = dataStream
+        self.outputStream = outputStream
+        self.setOriginConfig('origin-client.cfg')
+        self.startClient(outputs, outputStream)
+        self.startSub(dataStream)
