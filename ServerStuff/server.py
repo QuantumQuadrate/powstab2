@@ -15,8 +15,6 @@ import sys
 
 def sendOutput(stream_id, data, state, log, control, inputFields='A', matrix="B", config_file='origin-client.cfg', outputFields="C"):
     # convert temp from mC to C
-    print kwargs
-    print "made it this far"
     origin_config = ConfigParser.ConfigParser()
     origin_config.read(config_file)
     print data
