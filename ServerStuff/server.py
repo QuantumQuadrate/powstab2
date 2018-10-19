@@ -161,7 +161,7 @@ class MatrixTransformServer(Server):
             stream=outputStream,
             records=records)
 
-    def sendOutput(stream_id, data, state, log, self=''):
+    def sendOutput(stream_id, data, state, log, self):
         # convert temp from mC to C
         print "made it this far"
         print data
