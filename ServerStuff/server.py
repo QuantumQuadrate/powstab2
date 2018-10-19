@@ -133,14 +133,14 @@ class PIDServer(Server):
             conMan.updateConfig()
             return ''
 
-        super(PIDServer, self).runServer()
+        super(PIDServer, self).runServer(sub, stream, conMan)
 
 
 class MatrixTransformServer(Server):
 
     def runServer(self, sub, stream, conMan):
         app = Flask(__name__)
-        super(PIDServer, self).runServer()
+        super(PIDServer, self).runServer(sub, stream, conMan)
 
     def setup(self, matrix, dataStream):
         self.matrix = matrix
