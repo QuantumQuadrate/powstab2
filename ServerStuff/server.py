@@ -13,32 +13,7 @@ import pprint
 import sys
 
 
-def sendOutput(stream_id, data, state, log, inputValues, matrix, config_file, outputs):
-    # convert temp from mC to C
-    print "made it this far"
 
-    origin_config = ConfigParser.ConfigParser()
-    origin_config.read(config_file)
-    print data
-    input_vector = []
-    for input in inputValues:
-        input_vector.append(data[input])
-
-    output_vector = np.matmul(np.asarray(matrix), np.asarray(input_vector))
-    iter = 0
-    ts = current_time(origin_config)
-    data = {TIMESTAMP: ts}
-    for output in output_vector:
-        data.update({outputs[iter]: output})
-        iter += 1
-
-    self.connection.send(**data)
-    print "\n"
-    print data
-    print "\n"
-    print data
-
-    return state
 
 
 class Server(object):
@@ -186,6 +161,30 @@ class MatrixTransformServer(Server):
             stream=outputStream,
             records=records)
 
+    def sendOutput(stream_id, data, state, log, self=''):
+        # convert temp from mC to C
+        print "made it this far"
+        print data
+        input_vector = []
+        for input in self.inputs:
+            input_vector.append(data[input])
+
+        output_vector = np.matmul(np.asarray(self.matrix), np.asarray(input_vector))
+        iter = 0
+        ts = current_time(self.origin_config)
+        data = {TIMESTAMP: ts}
+        for output in output_vector:
+            data.update({self.outputs[iter]: output})
+            iter += 1
+
+        self.connection.send(**data)
+        print "\n"
+        print data
+        print "\n"
+        print data
+
+        return state
+
     def startSub(self, dataStream):
 
         self.logger = logging.getLogger(__name__)
@@ -211,7 +210,7 @@ class MatrixTransformServer(Server):
         # can use arbitrary callback
         # if you need to use the same base callback for multiple streams pass in specific
         # parameters through kwargs
-        sub.subscribe(dataStream, callback=sendOutput, inputValues=self.inputs, matrix=self.matrix, config_file='origin-client.cfg', outputs=self.outputs)
+        sub.subscribe(dataStream, callback=self.sendOutput, self=self)
 
     def setup(self, matrix, dataStream, inputs, outputs, outputStream):
         self.inputs = inputs
