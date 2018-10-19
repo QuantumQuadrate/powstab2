@@ -54,8 +54,8 @@ if __name__ == '__main__':
             callback=channel['callback'],
             **channel['kwargs']
         )
-
-    server.PIDServer.runServer(sub, streamName, conMan)
+    myServer = server.PIDServer()
+    myServer.runServer(sub, streamName, conMan)
 
     sub.close()
     logger.info('closing')
