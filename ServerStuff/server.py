@@ -206,7 +206,6 @@ class MatrixTransformServer(Server):
             sys.exit(1)
 
         print("subscribing to stream: %s" % (dataStream,))
-        sub.subscribe(dataStream)
         # can use arbitrary callback
         # if you need to use the same base callback for multiple streams pass in specific
         # parameters through kwargs
