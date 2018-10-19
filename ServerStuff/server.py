@@ -13,7 +13,7 @@ import pprint
 import sys
 
 
-def sendOutput(stream_id, data, state, log, inputs, matrix, config_file, outputs):
+def sendOutput(stream_id, data, state, log, inputValues, matrix, config_file, outputs):
     # convert temp from mC to C
     print "made it this far"
 
@@ -21,7 +21,7 @@ def sendOutput(stream_id, data, state, log, inputs, matrix, config_file, outputs
     origin_config.read(config_file)
     print data
     input_vector = []
-    for input in inputs:
+    for input in inputValues:
         input_vector.append(data[input])
 
     output_vector = np.matmul(np.asarray(matrix), np.asarray(input_vector))
