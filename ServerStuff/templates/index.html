@@ -22,9 +22,9 @@
 
     <tbody class="table-hover">
 
-      {% for (id, name) in (id_list, names) %}
+      {% for id in id_list %}
       <tr>
-        <td class="text-left" onclick="window.location.href='/update/{{id}}'">Channel Name: {{sub_list[ids]['kwargs']['name']}}</td>
+        <td class="text-left" onclick="window.location.href='/update/{{id}}'">Channel Name: {{sub_list[id]['kwargs']['name']}}</td>
       </tr>
       {% endfor %}
 
