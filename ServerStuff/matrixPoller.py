@@ -77,7 +77,10 @@ def matrix_poller_loop(sub_addr, queue):
             try:
                 log.debug("new data")
                 for cb in subscriptions[streamID]:
+<<<<<<< HEAD
                     print cb["kwargs"]
+=======
+>>>>>>> 5277f249632f5ee318cd51ecc72a5afa89d4c270
                     data = cb['callback'](streamID, json.loads(content), origin_config, **cb["kwargs"])
                     clientConn.send(**data)
             except KeyError:
