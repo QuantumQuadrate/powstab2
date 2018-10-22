@@ -10,6 +10,7 @@ from origin.client.origin_subscriber import Subscriber
 from origin import current_time, TIMESTAMP
 import pprint
 import sys
+import matrixPoller
 
 
 def sendOutput(stream_id, data, state, log, control, origin_config, Connection, inputFields='A', outputFields='B', matrix="B"):
@@ -185,15 +186,13 @@ class MatrixTransformServer(Server):
                     sub_list = json.load(f)
 
                 # sub_list = {1:{'kwargs':{kwargs}, 'control':{control}}
-                return render_template('index.html', id_list= sub_list.keys(), sub_list= sub_list, **sub_list)
+                return render_template('index.html', id_list=sub_list.keys(), sub_list=sub_list, **sub_list)
             app.run(host='0.0.0.0', debug=True, use_reloader=False)
             self.sub.close()
 
     def setOriginConfig(self, config_file):
         self.origin_config = ConfigParser.ConfigParser()
         self.origin_config.read(config_file)
-
-
 
     def startSub(self, dataStream):
 
@@ -220,15 +219,12 @@ class MatrixTransformServer(Server):
         # can use arbitrary callback
         # if you need to use the same base callback for multiple streams pass in specific
         # parameters through kwargs
-        sub = Subscriber(origin_config, logger, loop=matrixPoller.matrix_poller_loop)
+        sub = Subscriber(self.origin_config, self.logger, loop=matrixPoller.matrix_poller_loop)
         # read channels from feedback config file
-        streamName = ''
-        for channel in channels:
-            streamName = conMan.config.get('CHANNEL{}'.format(channel['number']), 'StreamName')
-            sub.subscribe(
-                streamName,
-                callback=channel['callback'],
-            )
+        sub.subscribe(
+            dataStream,
+            callback=sendOutput
+        )
 
     def setup(self, matrix, dataStream, inputs, outputs, outputStream):
         self.inputs = inputs
@@ -237,5 +233,4 @@ class MatrixTransformServer(Server):
         self.dataStream = dataStream
         self.outputStream = outputStream
         self.setOriginConfig('origin-client.cfg')
-        self.startClient(outputs, outputStream)
         self.startSub(dataStream)

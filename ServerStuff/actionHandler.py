@@ -140,6 +140,73 @@ class generic_Handler(object):
 class PID_Handler(object):
     """docstring for ."""
     def __init__(self, log):
+        self.last_msg = time.time()
+        self.stream_filter = ''
+        self.log = log
+        self.dataStreams
+
+    def handle(self, subscriptions, sub_sock, origin_config, output):
+
+        serv = server(origin_config)
+        records = {}
+        for output in outputs:
+            records.update({output: 'float'})
+        records = records
+        connection = serv.registerStream(
+            stream=outputStream,
+            records=records)
+        try:
+            [streamID, content] = sub_sock.recv_multipart()
+            self.last_msg = time.time()
+            try:
+                self.log.debug("new data")
+                for cb in subscriptions[streamID]:
+                    cb['callback'](streamID, json.loads(content), self.log, connection, **cb['kwargs'])
+
+                        # if it doesn't make a new controller
+
+                    # update with new info, save error state
+                    try:
+                        self.pids[pid_ctrl_name]['pid'].updateConfig()
+                        self.pids[pid_ctrl_name]['err_state'] = self.pids[pid_ctrl_name]['pid'].update(result)
+                    except:
+                        self.log.exception('Unhandled server exception in pid: `{}`'.format(pid_ctrl_name))
+
+            except KeyError:
+                msg = "An unrecognized streamID `{}` was encountered"
+                self.log.error(msg.format(streamID))
+                self.log.error(subscriptions)
+
+            # or all pid error states and set error pin accordingly
+            self.last_g_err_state = self.global_err_state
+            self.global_err_state = False
+            for ch in self.pids:
+                self.global_err_state = self.global_err_state or self.pids[ch]['err_state']
+                if self.pids[ch]['err_state']:
+                    self.log.info('{} is bad and should feel bad: err {:05.3f}'.format(ch, self.pids[ch]['pid'].pid.last_error))
+
+            if self.global_err_state != self.last_g_err_state:
+                if not self.PWM:
+                    GPIO.output(self.error_pin, self.global_err_state)
+                else:
+                    if self.global_err_state:
+                        self.log.info('trying to turn on the pwm output')
+                        self.pwm_ch.ChangeDutyCycle(50.)  # 50% duty cycle pwm output
+                    else:
+                        self.pwm_ch.ChangeDutyCycle(0.)  # 0% duty cycle pwm output for no error
+
+        except zmq.ZMQError as e:
+            if e.errno != zmq.EAGAIN:
+                self.log.exception("zmq error encountered")
+            elif time.time() - self.last_msg > 20:
+                self.pwm_ch.ChangeDutyCycle(50.)  # 50% duty cycle pwm output
+
+        except:
+            self.log.exception("error encountered")
+
+class matrix_Handler(object):
+    """docstring for ."""
+    def __init__(self, log):
         # a hash table (dict) of callbacks to perform when a message is recieved
         # the hash is the data stream filter, the value is a list of callbacks
         self.PWM = True
