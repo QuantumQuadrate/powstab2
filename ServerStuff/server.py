@@ -119,15 +119,12 @@ class Server(object):
                 return 'error'
             return ''
 
-        app.run(host='0.0.0.0', debug=True, use_reloader=False, port=80)
-
-
 class PIDServer(Server):
 
     def runServer(self, sub, stream, conMan):
 
         app = Flask(__name__)
-        
+
         sub_file = 'subscriptions.json'
         with open(sub_file, 'w') as f:
             f.write('{}')
@@ -175,6 +172,8 @@ class PIDServer(Server):
             return render_template('keywords.html', id=id, kw_dict=kwargs, alert=alert, pause=pause, config_dict=configStuff)
 
         super(PIDServer, self).runServer(sub, stream)
+        app.run(host='0.0.0.0', debug=True, use_reloader=False, port=80)
+
 
 
 class MatrixTransformServer(Server):
