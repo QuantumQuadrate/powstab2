@@ -11,7 +11,7 @@ from origin import current_time, TIMESTAMP
 import matrixPoller
 
 
-def sendOutput(stream_id, data, state, log, control, origin_config, inputFields='A', outputFields='B', matrix="B"):
+def sendOutput(stream_id, data, state, log, origin_config, inputFields='A', outputFields='B', matrix="B"):
     # convert temp from mC to C
     print data
     input_vector = []
