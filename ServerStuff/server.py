@@ -203,19 +203,6 @@ class MatrixTransformServer(Server):
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         ch.setFormatter(formatter)
         self.logger.addHandler(ch)
-
-        self.sub = Subscriber(self.origin_config, self.logger)
-
-        self.logger.info("streams")
-        print('')
-        pprint.pprint(self.sub.known_streams.keys())
-
-        if dataStream not in self.sub.known_streams:
-            print("stream not recognized")
-            self.sub.close()
-            sys.exit(1)
-
-        print("subscribing to stream: %s" % (dataStream,))
         # can use arbitrary callback
         # if you need to use the same base callback for multiple streams pass in specific
         # parameters through kwargs
