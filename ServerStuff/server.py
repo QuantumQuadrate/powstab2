@@ -39,12 +39,6 @@ class Server(object):
 
         app = Flask(__name__)
 
-        # commands & webpage
-        # home page "monitor"
-        sub_file = 'subscriptions.json'
-        with open(sub_file, 'w') as f:
-            f.write('{}')
-            f.close()
 
         # commands & webpage
         # home page "monitor"
@@ -177,7 +171,7 @@ class PIDServer(Server):
 
 class MatrixTransformServer(Server):
 
-    def runMatServer(self):
+    def runServer(self):
             app = Flask(__name__)
 
             # commands & webpage
