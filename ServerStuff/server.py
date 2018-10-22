@@ -215,7 +215,7 @@ class MatrixTransformServer(Server):
             callback=sendOutput,
             inputFields=self.inputs,
             outputFields=self.outputs,
-            matrix=self.matrix}
+            matrix=self.matrix
         )
 
     def setup(self, matrix, dataStream, inputs, outputs, outputStream):
