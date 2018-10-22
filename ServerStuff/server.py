@@ -214,7 +214,10 @@ class MatrixTransformServer(Server):
         # read channels from feedback config file
         self.sub.subscribe(
             stream=dataStream,
-            callback=sendOutput
+            callback=sendOutput,
+            kwargs={"inputFields": self.inputs,
+                    "outputFields": self.outputs,
+                    "matrix": self.matrix}
         )
 
     def setup(self, matrix, dataStream, inputs, outputs, outputStream):

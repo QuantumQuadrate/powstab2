@@ -74,11 +74,11 @@ def matrix_poller_loop(sub_addr, queue):
         # process data from the stream
         try:
             [streamID, content] = sub_sock.recv_multipart()
-
             try:
                 log.debug("new data")
                 for cb in subscriptions[streamID]:
-                    data = cb['callback'](streamID, json.loads(content), origin_config, inputFields=inputs, outputFields=outputs, matrix=matrix)
+                    print cb["kwargs"]
+                    data = cb['callback'](streamID, json.loads(content), origin_config, **cb["kwargs"])
                     clientConn.send(**data)
             except KeyError:
                 msg = "An unrecognized streamID `{}` was encountered"
