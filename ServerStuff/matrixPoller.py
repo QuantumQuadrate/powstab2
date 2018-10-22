@@ -49,7 +49,7 @@ def matrix_poller_loop(sub_addr, queue):
     for output in outputs:
         records.update({output: 'float'})
     records = records
-    connection = serv.registerStream(
+    clientConn = serv.registerStream(
         stream=outputStream,
         records=records)
 
@@ -78,9 +78,8 @@ def matrix_poller_loop(sub_addr, queue):
             try:
                 log.debug("new data")
                 for cb in subscriptions[streamID]:
-                    print streamID, json.loads(content)
                     data = cb['callback'](streamID, json.loads(content), origin_config, inputFields=inputs, outputFields=outputs, matrix=matrix)
-                    connection.send(**data)
+                    clientConn.send(**data)
             except KeyError:
                 msg = "An unrecognized streamID `{}` was encountered"
                 log.error(msg.format(streamID))
