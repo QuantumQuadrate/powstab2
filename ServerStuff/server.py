@@ -215,9 +215,9 @@ class MatrixTransformServer(Server):
         self.sub.subscribe(
             stream=dataStream,
             callback=sendOutput,
-            kwargs={"inputFields": self.inputs,
-                    "outputFields": self.outputs,
-                    "matrix": self.matrix}
+            inputFields=self.inputs,
+            outputFields=self.outputs,
+            matrix=self.matrix
         )
 
     def setup(self, matrix, dataStream, inputs, outputs, outputStream):
