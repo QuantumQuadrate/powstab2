@@ -41,9 +41,7 @@ def matrix_poller_loop(sub_addr, queue):
     sub_sock.connect(sub_addr)
     genHandler = actionHandler.generic_Handler(log)
     subscriptions = {}
-    print outputStream
-    print outputs
-    print origin_config
+
     serv = server(origin_config)
     records = {}
     for output in outputs:

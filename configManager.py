@@ -38,10 +38,6 @@ class configManager():
 
     def getChannels(self):
         channels = []
-        # 12b 5V ADC calibration
-        adc_word = 12
-        v_ref = 5.0
-        calib = v_ref/((2**adc_word)-1)
         for section in self.config.sections():
             if 'CHANNEL' not in section:
                 continue  # not a channel definition
@@ -55,7 +51,7 @@ class configManager():
                     'number': ch_num,
                     'callback': stream_callback,
                     'kwargs': {
-                        'calibration': calib,
+                        'calibration': 1,
                         'field': self.config.get(section, 'FieldName'),
                         'name': section,
                         'channel': ch_num
