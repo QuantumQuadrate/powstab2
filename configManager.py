@@ -4,6 +4,7 @@ from worker_K10CR1 import WK10CR1
 from worker_DAC8532 import WDAC8532
 from datetime import datetime
 import os
+from shutil import copyfile
 
 
 def stream_callback(stream_id, data, log, calibration=1, field='', name='', channel=''):
@@ -22,10 +23,12 @@ def stream_callback(stream_id, data, log, calibration=1, field='', name='', chan
 
 class configManager():
     config = ''
-    
+
     def __init__(self):
         configPath = 'configs/'
         configFiles = os.listdir(configPath)
+        if len(configFiles) == 0:
+            copyfile('config.cfg', configPath+"config.cfg")
         paths = [os.path.join(configPath, basename) for basename in configFiles]
         latestConfig = max(paths, key=os.path.getctime)
         self.configFile = latestConfig
