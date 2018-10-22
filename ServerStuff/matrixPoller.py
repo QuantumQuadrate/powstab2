@@ -57,7 +57,7 @@ def matrix_poller_loop(sub_addr, queue):
             if cmd['action'] == 'SHUTDOWN':
                 break
             genHandler.handle(cmd, sub_sock)
-            subscriptions = genHandler.subscriptions()
+            subscriptions = genHandler.subscriptions
         except multiprocessing.queues.Empty:
             pass
 
