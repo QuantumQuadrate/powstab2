@@ -6,9 +6,12 @@ import logging
 import json
 from origin.client.origin_server import server
 PWM = True
+outputStream = ''
+outputs = ''
+origin_config = ''
 
 
-def matrix_poller_loop(sub_addr, queue, outputStream, outputs, origin_config):
+def matrix_poller_loop(sub_addr, queue):
     '''This is a modified version of the default subscription poller
      loop that adds in feedback functionality.
 

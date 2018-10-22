@@ -219,6 +219,9 @@ class MatrixTransformServer(Server):
         # can use arbitrary callback
         # if you need to use the same base callback for multiple streams pass in specific
         # parameters through kwargs
+        matrixPoller.outputStream = self.outputStream
+        matrixPoller.outputs = self.outputs
+        matrixPoller.origin_config = self.origin_config
         sub = Subscriber(self.origin_config, self.logger, loop=matrixPoller.matrix_poller_loop)
         # read channels from feedback config file
         sub.subscribe(
