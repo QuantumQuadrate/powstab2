@@ -60,7 +60,7 @@ class Server(object):
                 sub_list = json.load(f)
 
             # sub_list = {1:{'kwargs':{kwargs}, 'control':{control}}
-            return render_template('index.html', id_list= sub_list.keys(), sub_list= sub_list, **sub_list)
+            return render_template('index.html', id_list=sub_list.keys(), sub_list=sub_list, **sub_list)
             # except Exception:
             #     return 'Unable to load page'
 
@@ -142,6 +142,7 @@ class PIDServer(Server):
     def runServer(self, sub, stream, conMan):
 
         app = Flask(__name__)
+
         @app.route('/update/<id>/config', methods=['POST'])
         def updateConfig(id):
             with open(sub_file, 'r') as f:
@@ -211,7 +212,10 @@ class MatrixTransformServer(Server):
         # read channels from feedback config file
         self.sub.subscribe(
             dataStream,
-            callback=sendOutput
+            callback=sendOutput,
+            kwargs={"inputFields": self.inputs,
+                    "outputFields": self.outputs,
+                    "matrix": self.matrix}
         )
 
     def setup(self, matrix, dataStream, inputs, outputs, outputStream):
