@@ -127,6 +127,11 @@ class PIDServer(Server):
     def runServer(self, sub, stream, conMan):
 
         app = Flask(__name__)
+        
+        sub_file = 'subscriptions.json'
+        with open(sub_file, 'w') as f:
+            f.write('{}')
+            f.close()
 
         @app.route('/update/<id>/config', methods=['POST'])
         def updateConfig(id):
