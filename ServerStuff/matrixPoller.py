@@ -9,6 +9,8 @@ from origin.client.origin_server import server
 PWM = True
 outputStream = ''
 outputs = ''
+inputs = ''
+matrix = ''
 origin_config = ''
 
 
@@ -76,7 +78,7 @@ def matrix_poller_loop(sub_addr, queue):
             try:
                 log.debug("new data")
                 for cb in subscriptions[streamID]:
-                    data = cb['callback'](streamID, json.loads(content), log, origin_config, **cb['kwargs'])
+                    data = cb['callback'](streamID, json.loads(content), log, origin_config, inputFields=inputs, outputFields=outputs, matrix=matrix)
                     connection.send(**data)
             except KeyError:
                 msg = "An unrecognized streamID `{}` was encountered"

@@ -207,15 +207,14 @@ class MatrixTransformServer(Server):
         # parameters through kwargs
         matrixPoller.outputStream = self.outputStream
         matrixPoller.outputs = self.outputs
+        matrixPoller.inputs = self.inputs
+        matrixPoller.matrix = self.matrix
         matrixPoller.origin_config = self.origin_config
         self.sub = Subscriber(self.origin_config, self.logger, loop=matrixPoller.matrix_poller_loop)
         # read channels from feedback config file
         self.sub.subscribe(
             stream=dataStream,
-            callback=sendOutput,
-            inputFields=self.inputs,
-            outputFields=self.outputs,
-            matrix=self.matrix
+            callback=sendOutput
         )
 
     def setup(self, matrix, dataStream, inputs, outputs, outputStream):
