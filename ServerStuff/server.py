@@ -105,21 +105,21 @@ class PIDServer(Server):
             f.write('{}')
             f.close()
 
-                @app.route('/monitor', methods=['GET', 'PUT'])
-                def monitor():
-                    # GET request string(json) needs to be save as file, to be read by flask template
-                    if request.method == "PUT":
-                        sub_list_json = request.get_json()
-                        with open(sub_file, 'w') as f:
-                            f.write(sub_list_json)
-                            f.close()
-                    with open(sub_file, 'r') as f:
-                        sub_list = json.load(f)
+        @app.route('/monitor', methods=['GET', 'PUT'])
+        def monitor():
+            # GET request string(json) needs to be save as file, to be read by flask template
+            if request.method == "PUT":
+                sub_list_json = request.get_json()
+                with open(sub_file, 'w') as f:
+                    f.write(sub_list_json)
+                    f.close()
+            with open(sub_file, 'r') as f:
+                sub_list = json.load(f)
 
-                    # sub_list = {1:{'kwargs':{kwargs}, 'control':{control}}
-                    return render_template('index.html', id_list=sub_list.keys(), sub_list=sub_list, **sub_list)
-                    # except Exception:
-                    #     return 'Unable to load page'
+            # sub_list = {1:{'kwargs':{kwargs}, 'control':{control}}
+            return render_template('index.html', id_list=sub_list.keys(), sub_list=sub_list, **sub_list)
+            # except Exception:
+            #     return 'Unable to load page'
 
                 # subscribe
 
