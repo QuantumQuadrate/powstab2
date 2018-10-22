@@ -7,13 +7,14 @@ import numpy as np
 import logging
 import ConfigParser
 from origin.client.origin_subscriber import Subscriber
-from origin.client import server
+from origin.client import server, server_connection
 from origin import current_time, TIMESTAMP
 import pprint
 import sys
+import zmq
 
 
-def sendOutput(stream_id, data, state, log, control, inputFields='A', matrix="B", config_file='origin-client.cfg', outputFields="C"):
+def sendOutput(stream_id, data, state, log, control, streamName='', inputFields='A', matrix="B", config_file='origin-client.cfg', outputFields="C", host='', msgport='', records=''):
     # convert temp from mC to C
     origin_config = ConfigParser.ConfigParser()
     origin_config.read(config_file)
@@ -30,7 +31,15 @@ def sendOutput(stream_id, data, state, log, control, inputFields='A', matrix="B"
         data.update({outputFields[iter]: output})
         iter += 1
 
-    #connection.send(**data)
+    host = origin_config.get('Server', "ip")
+    msgport = origin_config.get('Server', "measure_port")
+    context = zmq.Context()
+    socket_data = context.socket(zmq.PUSH)
+    socket_data.connect("tcp://%s:%s" % (host, msgport))
+    keyOrder = records.keys()
+    connection = server_connection(origin_config, streamName, stream_id, keyOrder, format, records, context, socket_data)
+
+    connection.send(**data)
     print "\n"
     print data
     print "\n"
@@ -204,7 +213,7 @@ class MatrixTransformServer(Server):
         records = {}
         for output in outputs:
             records.update({output: 'float'})
-
+        self.records = records
         self.connection = serv.registerStream(
             stream=outputStream,
             records=records)
@@ -234,7 +243,8 @@ class MatrixTransformServer(Server):
         # can use arbitrary callback
         # if you need to use the same base callback for multiple streams pass in specific
         # parameters through kwargs
-        self.sub.subscribe(dataStream, callback=sendOutput, inputFields=self.inputs, matrix=self.matrix, config_file='origin-client.cfg', outputFields=self.outputs)
+
+        self.sub.subscribe(dataStream, callback=sendOutput, streamName=datastream, inputFields=self.inputs, matrix=self.matrix, config_file='origin-client.cfg', outputFields=self.outputs, records=self.records)
 
     def setup(self, matrix, dataStream, inputs, outputs, outputStream):
         self.inputs = inputs
