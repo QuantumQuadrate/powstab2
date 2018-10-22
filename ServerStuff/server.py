@@ -7,17 +7,13 @@ import numpy as np
 import logging
 import ConfigParser
 from origin.client.origin_subscriber import Subscriber
-from origin.client import server, server_connection
 from origin import current_time, TIMESTAMP
 import pprint
 import sys
-import zmq
 
 
-def sendOutput(stream_id, data, state, log, control, streamName='', inputFields='A', matrix="B", config_file='origin-client.cfg', outputFields="C", host='', msgport='', records=''):
+def sendOutput(stream_id, data, state, log, control, origin_config, Connection, inputFields='A', outputFields='B', matrix="B"):
     # convert temp from mC to C
-    origin_config = ConfigParser.ConfigParser()
-    origin_config.read(config_file)
     print data
     input_vector = []
     for input in inputFields:
@@ -31,21 +27,11 @@ def sendOutput(stream_id, data, state, log, control, streamName='', inputFields=
         data.update({outputFields[iter]: output})
         iter += 1
 
-    host = origin_config.get('Server', "ip")
-    msgport = origin_config.get('Server', "measure_port")
-    context = zmq.Context()
-    socket_data = context.socket(zmq.PUSH)
-    socket_data.connect("tcp://%s:%s" % (host, msgport))
-    keyOrder = records.keys()
-    connection = server_connection(origin_config, streamName, stream_id, keyOrder, format, records, context, socket_data)
-
-    connection.send(**data)
     print "\n"
     print data
     print "\n"
-    print data
 
-    return state
+    return data
 
 
 class Server(object):
@@ -207,16 +193,7 @@ class MatrixTransformServer(Server):
         self.origin_config = ConfigParser.ConfigParser()
         self.origin_config.read(config_file)
 
-    def startClient(self, outputs, outputStream):
 
-        serv = server(self.origin_config)
-        records = {}
-        for output in outputs:
-            records.update({output: 'float'})
-        self.records = records
-        self.connection = serv.registerStream(
-            stream=outputStream,
-            records=records)
 
     def startSub(self, dataStream):
 
@@ -243,8 +220,15 @@ class MatrixTransformServer(Server):
         # can use arbitrary callback
         # if you need to use the same base callback for multiple streams pass in specific
         # parameters through kwargs
-
-        self.sub.subscribe(dataStream, callback=sendOutput, streamName=dataStream, inputFields=self.inputs, matrix=self.matrix, config_file='origin-client.cfg', outputFields=self.outputs, records=self.records)
+        sub = Subscriber(origin_config, logger, loop=matrixPoller.matrix_poller_loop)
+        # read channels from feedback config file
+        streamName = ''
+        for channel in channels:
+            streamName = conMan.config.get('CHANNEL{}'.format(channel['number']), 'StreamName')
+            sub.subscribe(
+                streamName,
+                callback=channel['callback'],
+            )
 
     def setup(self, matrix, dataStream, inputs, outputs, outputStream):
         self.inputs = inputs
