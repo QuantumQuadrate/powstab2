@@ -4,6 +4,7 @@ import RPi.GPIO as GPIO
 import actionHandler
 import logging
 import json
+import time
 from origin.client.origin_server import server
 PWM = True
 outputStream = ''
@@ -49,6 +50,7 @@ def matrix_poller_loop(sub_addr, queue):
         stream=outputStream,
         records=records)
     subscriptions = {}
+    time.sleep(1)
     while True:
         # process new command messages from the parent process
         try:
