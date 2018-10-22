@@ -10,4 +10,4 @@ outputs = ['diff', 'sum', 'zero']
 
 myServer = server.MatrixTransformServer()
 myServer.setup(a, dataStream, inputs, outputs, outputStream)
-myServer.runServer()
+myServer.runMatServer()

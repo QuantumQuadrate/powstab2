@@ -177,7 +177,7 @@ class PIDServer(Server):
 
 class MatrixTransformServer(Server):
 
-    def runServer(self):
+    def runMatServer(self):
             app = Flask(__name__)
 
             # commands & webpage
