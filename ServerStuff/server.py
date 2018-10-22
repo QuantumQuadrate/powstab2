@@ -175,7 +175,6 @@ class PIDServer(Server):
         app.run(host='0.0.0.0', debug=True, use_reloader=False, port=80)
 
 
-
 class MatrixTransformServer(Server):
 
     def runServer(self):
@@ -184,20 +183,11 @@ class MatrixTransformServer(Server):
             # commands & webpage
             # home page "monitor"
             sub_file = 'subscriptions.json'
-            with open(sub_file, 'w') as f:
-                f.write('{}')
-                f.close()
-
             # commands & webpage
             # home page "monitor"
             @app.route('/monitor', methods=['GET', 'PUT'])
             def monitor():
                 # GET request string(json) needs to be save as file, to be read by flask template
-                if request.method == "PUT":
-                    sub_list_json = request.get_json()
-                    with open(sub_file, 'w') as f:
-                        f.write(sub_list_json)
-                        f.close()
                 with open(sub_file, 'r') as f:
                     sub_list = json.load(f)
 
