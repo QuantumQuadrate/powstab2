@@ -181,6 +181,11 @@ class MatrixTransformServer(Server):
             @app.route('/monitor', methods=['GET', 'PUT'])
             def monitor():
                 # GET request string(json) needs to be save as file, to be read by flask template
+                if request.method == "PUT":
+                    sub_list_json = request.get_json()
+                    with open(sub_file, 'w') as f:
+                        f.write(sub_list_json)
+                        f.close()
                 with open(sub_file, 'r') as f:
                     sub_list = json.load(f)
 
@@ -188,7 +193,7 @@ class MatrixTransformServer(Server):
                 return render_template('index.html', id_list=sub_list.keys(), sub_list=sub_list, **sub_list)
 
             super(MatrixTransformServer, self).runServer(self.sub, self.dataStream)
-            app.run(host='0.0.0.0', debug=True, use_reloader=False, port=81)
+            app.run(host='0.0.0.0', debug=True, use_reloader=False)
             self.sub.close()
 
     def setOriginConfig(self, config_file):
