@@ -194,7 +194,7 @@ class MatrixTransformServer(Server):
                 # sub_list = {1:{'kwargs':{kwargs}, 'control':{control}}
                 return render_template('index.html', id_list=sub_list.keys(), sub_list=sub_list, **sub_list)
 
-            super(PIDServer, self).runServer(self.sub, self.dataStream)
+            super(Server, self).runServer(self.sub, self.dataStream)
             app.run(host='0.0.0.0', debug=True, use_reloader=False, port=81)
             self.sub.close()
 
