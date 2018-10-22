@@ -211,7 +211,7 @@ class MatrixTransformServer(Server):
         self.sub = Subscriber(self.origin_config, self.logger, loop=matrixPoller.matrix_poller_loop)
         # read channels from feedback config file
         self.sub.subscribe(
-            dataStream,
+            stream=dataStream,
             callback=sendOutput,
             inputFields=self.inputs,
             outputFields=self.outputs,
