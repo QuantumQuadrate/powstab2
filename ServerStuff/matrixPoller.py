@@ -40,6 +40,7 @@ def matrix_poller_loop(sub_addr, queue):
     sub_sock.setsockopt(zmq.RCVTIMEO, 1000)
     sub_sock.connect(sub_addr)
     genHandler = actionHandler.generic_Handler(log)
+    subscriptions = {}
 
     serv = server(origin_config)
     records = {}
@@ -49,8 +50,7 @@ def matrix_poller_loop(sub_addr, queue):
     connection = serv.registerStream(
         stream=outputStream,
         records=records)
-    subscriptions = {}
-    time.sleep(1)
+
     while True:
         # process new command messages from the parent process
         try:
@@ -76,8 +76,8 @@ def matrix_poller_loop(sub_addr, queue):
             try:
                 log.debug("new data")
                 for cb in subscriptions[streamID]:
-                    cb['callback'](streamID, json.loads(content), log, origin_config, connection, **cb['kwargs'])
-
+                    data = cb['callback'](streamID, json.loads(content), log, origin_config, **cb['kwargs'])
+                    connection.send(**data)
             except KeyError:
                 msg = "An unrecognized streamID `{}` was encountered"
                 log.error(msg.format(streamID))
@@ -88,4 +88,3 @@ def matrix_poller_loop(sub_addr, queue):
     log.info('Shutting down poller loop.')
     sub_sock.close()
     context.term()
-    GPIO.cleanup()

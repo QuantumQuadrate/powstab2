@@ -8,12 +8,10 @@ import logging
 import ConfigParser
 from origin.client.origin_subscriber import Subscriber
 from origin import current_time, TIMESTAMP
-import pprint
-import sys
 import matrixPoller
 
 
-def sendOutput(stream_id, data, state, log, control, origin_config, Connection, inputFields='A', outputFields='B', matrix="B"):
+def sendOutput(stream_id, data, state, log, control, origin_config, inputFields='A', outputFields='B', matrix="B"):
     # convert temp from mC to C
     print data
     input_vector = []

@@ -7,7 +7,6 @@ from worker_DAC8532 import WDAC8532
 import requests
 
 
-
 class generic_Handler(object):
     """docstring for genericHandler."""
 
@@ -140,31 +139,49 @@ class generic_Handler(object):
 class PID_Handler(object):
     """docstring for ."""
     def __init__(self, log):
+        # a hash table (dict) of callbacks to perform when a message is recieved
+        # the hash is the data stream filter, the value is a list of callbacks
+        self.PWM = True
+        self.pids = {}
+        self.global_err_state = False
         self.last_msg = time.time()
+        time.sleep(2)
         self.stream_filter = ''
         self.log = log
-        self.dataStreams
+        self.pwm_ch = False
+        GPIO.setmode(GPIO.BOARD)  # define the pin numbering (i think)
+        # TODO: read off of config [MAIN]
+        if not self.PWM:
+            self.error_pin = 10  # GPIO pin number for error signal output
+            GPIO.setup(self.error_pin, GPIO.OUT)
+            GPIO.output(self.error_pin, False)
+        else:
+            self.error_pin = 12  # GPIO pin number for error signal output
+            GPIO.setup(self.error_pin, GPIO.OUT)
+            self.pwm_ch = GPIO.PWM(self.error_pin, 1000)  # GPIO pin number for hardware PWM
+            self.pwm_ch.start(0.)
 
-    def handle(self, subscriptions, sub_sock, origin_config, output):
-
-        serv = server(origin_config)
-        records = {}
-        for output in outputs:
-            records.update({output: 'float'})
-        records = records
-        connection = serv.registerStream(
-            stream=outputStream,
-            records=records)
+    def handle(self, subscriptions, sub_sock, conMan):
         try:
             [streamID, content] = sub_sock.recv_multipart()
+
             self.last_msg = time.time()
             try:
                 self.log.debug("new data")
                 for cb in subscriptions[streamID]:
-                    cb['callback'](streamID, json.loads(content), self.log, connection, **cb['kwargs'])
+                    result = cb['callback'](streamID, json.loads(content), self.log, **cb['kwargs'])
+                    pid_ctrl_name = result['name']
 
+                    # check if pid controller exists
+                    if pid_ctrl_name not in self.pids:
                         # if it doesn't make a new controller
-
+                        self.pids[pid_ctrl_name] = {'err_state': False}
+                        fb_type = conMan.config.get(result['name'], 'FeedbackDevice')
+                        self.log.debug('recieved first instance from channel: {} type: {}'.format(pid_ctrl_name, fb_type))
+                        if fb_type == WK10CR1.type:
+                            self.pids[pid_ctrl_name]['pid'] = WK10CR1(result['channel'], conMan.config, logger=self.log)
+                        if fb_type == WDAC8532.type:
+                            self.pids[pid_ctrl_name]['pid'] = WDAC8532(result['channel'], conMan.config, logger=self.log)
                     # update with new info, save error state
                     try:
                         self.pids[pid_ctrl_name]['pid'].updateConfig()
@@ -203,6 +220,7 @@ class PID_Handler(object):
 
         except:
             self.log.exception("error encountered")
+
 
 class matrix_Handler(object):
     """docstring for ."""
