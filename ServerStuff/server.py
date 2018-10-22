@@ -35,7 +35,7 @@ def sendOutput(stream_id, data, origin_config, inputFields='A', outputFields='B'
 
 class Server(object):
 
-    def runServer(self, sub, stream, conMan):
+    def runServer(self, sub, stream):
 
         app = Flask(__name__)
 
@@ -89,22 +89,7 @@ class Server(object):
             else:
                 pause = 'Started'
 
-            configStuff = conMan.config.items('CHANNEL'+str(kwargs['channel']))
-
-            return render_template('keywords.html', id=id, kw_dict=kwargs, alert=alert, pause=pause, config_dict=configStuff)
-
-        # subscribe
-        @app.route('/update/<id>/config', methods=['POST'])
-        def updateConfig(id):
-            with open(sub_file, 'r') as f:
-                sub_list = json.load(f)
-            id_dict = sub_list[id]
-            kwargs = id_dict['kwargs']
-            configDict = request.form.to_dict()
-            for key in configDict.keys():
-                conMan.config.set('CHANNEL'+str(kwargs['channel']), key, configDict[key])
-            conMan.updateConfig()
-            return ''
+            return render_template('keywords.html', id=id, kw_dict=kwargs, alert=alert, pause=pause)
 
         @app.route('/update/<id>/<action>/action', methods=['POST'])
         def unsubscribe(id, action):
@@ -134,7 +119,7 @@ class Server(object):
                 return 'error'
             return ''
 
-        app.run(host='0.0.0.0', debug=True, use_reloader=False)
+        app.run(host='0.0.0.0', debug=True, use_reloader=False, port=80)
 
 
 class PIDServer(Server):
@@ -156,7 +141,35 @@ class PIDServer(Server):
             conMan.updateConfig()
             return ''
 
-        super(PIDServer, self).runServer(sub, stream, conMan)
+        @app.route('/update/<id>', methods=['GET', 'POST'])
+        def update(id):
+            id = id.encode('ascii', 'ignore')
+            with open(sub_file, 'r') as f:
+                sub_list = json.load(f)
+                # sub_list = {1:{'kwargs':{kwargs}, 'control':{control}}
+
+            if request.method == 'POST':
+                sub_list[id]['kwargs'] = request.form.to_dict()
+                sub.update(stream, int(id), **sub_list[id]['kwargs'])
+
+            id_dict = sub_list[id]
+            control = id_dict['control']
+            kwargs = id_dict['kwargs']
+
+            if control['alert']:
+                alert = 'On'
+            else:
+                alert = 'Off'
+            if control['pause']:
+                pause = 'Paused'
+            else:
+                pause = 'Started'
+
+            configStuff = conMan.config.items('CHANNEL'+str(kwargs['channel']))
+
+            return render_template('keywords.html', id=id, kw_dict=kwargs, alert=alert, pause=pause, config_dict=configStuff)
+
+        super(PIDServer, self).runServer(sub, stream)
 
 
 class MatrixTransformServer(Server):
@@ -186,7 +199,9 @@ class MatrixTransformServer(Server):
 
                 # sub_list = {1:{'kwargs':{kwargs}, 'control':{control}}
                 return render_template('index.html', id_list=sub_list.keys(), sub_list=sub_list, **sub_list)
-            app.run(host='0.0.0.0', debug=True, use_reloader=False)
+
+            super(PIDServer, self).runServer(self.sub, self.dataStream)
+            app.run(host='0.0.0.0', debug=True, use_reloader=False, port=81)
             self.sub.close()
 
     def setOriginConfig(self, config_file):
