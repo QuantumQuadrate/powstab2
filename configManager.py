@@ -26,9 +26,12 @@ class configManager():
 
     def __init__(self):
         configPath = 'configs/'
+        if not os.path.exists(configPath):
+            os.makedirs(configPath)
         configFiles = os.listdir(configPath)
         if len(configFiles) == 0:
             copyfile('config.cfg', configPath+"config.cfg")
+            configFiles = os.listdir(configPath)
         paths = [os.path.join(configPath, basename) for basename in configFiles]
 
         latestConfig = max(paths, key=os.path.getctime)

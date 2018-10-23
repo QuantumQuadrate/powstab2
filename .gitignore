@@ -109,3 +109,6 @@ nohup.out
 *.dat
 
 outputValue.txt
+
+*.json
+configs/*
