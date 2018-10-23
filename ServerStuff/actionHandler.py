@@ -1,6 +1,7 @@
 import zmq
 import json
 import requests
+import time
 
 
 class generic_Handler(object):
@@ -128,5 +129,11 @@ class generic_Handler(object):
                         'kwargs': cb['kwargs']
                     }
         sub_list_json = json.dumps(self.sub_list)
-        requests.put('http://127.0.0.1:5000/monitor', json=sub_list_json)
+        post_addr = 'http://127.0.0.1:5000/monitor'
+        try:
+            requests.put(post_addr, json=sub_list_json)
+        except IOError:
+            self.log.error('Communication with monitor port failed, waiting and retrying.')
+            time.sleep(0.1)
+            requests.put(post_addr, json=sub_list_json)
         return self.stream_filter

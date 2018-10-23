@@ -35,7 +35,7 @@
       {% for kw in kw_dict %}
       <tr>
         <td class="text-left">{{kw}}</td>
-        <td class="text-left"><input type=text name={{kw}} value={{kw_dict[kw]}}></td>
+        <td class="text-left"><input type=text name={{kw}} value="{{kw_dict[kw]}}"></td>
       </tr>
       {% endfor %}
       <tr>
@@ -45,32 +45,6 @@
   </table>
 </form>
 
-
-<form action="{{ url_for('updateConfig',id=id) }}" method=post id="configForm" target="dummyframe">
-  <div class="table-title">
-    <h3>Configuration Setting</h3>
-  </div>
-  <table class="table-fill">
-    <thead>
-      <tr>
-        <th class="text-left">Parameter</th>
-        <th class="text-left">Value</th>
-      </tr>
-    </thead>
-    <tbody class="table-hover">
-
-      {% for config in config_dict %}
-      <tr>
-        <td class="text-left">{{config[0]}}</td>
-        <td class="text-left"><input type=text name={{config[0]}} value={{config[1]}}></td>
-      </tr>
-      {% endfor %}
-      <tr>
-        <td class="text-center" onclick="document.getElementById('configForm').submit();" colspan="2">Update</td>
-      </tr>
-    </tbody>
-  </table>
-</form>
 
   <div class="table-title">
     <h3>Actions</h3>

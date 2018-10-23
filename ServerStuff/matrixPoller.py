@@ -28,7 +28,7 @@ def matrix_poller_loop(sub_addr, queue):
     '''
 
     log = logging.getLogger('poller')
-    log.setLevel(logging.DEBUG)
+    log.setLevel(logging.INFO)
     ch = logging.StreamHandler()
     ch.setLevel(logging.DEBUG)
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -75,7 +75,6 @@ def matrix_poller_loop(sub_addr, queue):
             try:
                 log.debug("new data")
                 for cb in subscriptions[streamID]:
-                    print cb["kwargs"]
                     data = cb['callback'](streamID, json.loads(content), origin_config, **cb["kwargs"])
                     clientConn.send(**data)
             except KeyError:
