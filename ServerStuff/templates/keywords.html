@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<iframe width="0" height="0" border="0" name="dummyframe" id="dummyframe"></iframe>
+
+<link rel="stylesheet" href="{{ url_for('static',filename='styles.css') }}">
+
+<script>
+    window.onload = function() {
+        var anchors = document.getElementsByClassName("button");
+        for(var i = 0; i < anchors.length; i++) {
+            var anchor = anchors[i];
+            anchor.onclick = function() {
+                var name = this.getAttribute("name");
+                var xmlHttp = new XMLHttpRequest();
+                xmlHttp.open( "GET", '/update/{{id}}/'+name+'/action', false );
+                xmlHttp.send( null );
+                location.reload();
+              }
+        }
+    }
+</script>
+
+<form action="{{ url_for('update',id=id) }}" method=post id="form" target='dummyframe'>
+  <div class="table-title">
+    <h3>Keywords Setting</h3>
+  </div>
+  <table class="table-fill">
+    <thead>
+      <tr>
+        <th class="text-left">Keyword</th>
+        <th class="text-left">Value</th>
+      </tr>
+    </thead>
+    <tbody class="table-hover">
+
+      {% for kw in kw_dict %}
+      <tr>
+        <td class="text-left">{{kw}}</td>
+        <td class="text-left"><input type=text name={{kw}} value={{kw_dict[kw]}}></td>
+      </tr>
+      {% endfor %}
+      <tr>
+        <td class="text-center" onclick="document.getElementById('form').submit();" colspan="2">Update</td>
+      </tr>
+    </tbody>
+  </table>
+</form>
+
+
+<form action="{{ url_for('updateConfig',id=id) }}" method=post id="configForm" target="dummyframe">
+  <div class="table-title">
+    <h3>Configuration Setting</h3>
+  </div>
+  <table class="table-fill">
+    <thead>
+      <tr>
+        <th class="text-left">Parameter</th>
+        <th class="text-left">Value</th>
+      </tr>
+    </thead>
+    <tbody class="table-hover">
+
+      {% for config in config_dict %}
+      <tr>
+        <td class="text-left">{{config[0]}}</td>
+        <td class="text-left"><input type=text name={{config[0]}} value={{config[1]}}></td>
+      </tr>
+      {% endfor %}
+      <tr>
+        <td class="text-center" onclick="document.getElementById('configForm').submit();" colspan="2">Update</td>
+      </tr>
+    </tbody>
+  </table>
+</form>
+
+  <div class="table-title">
+    <h3>Actions</h3>
+  </div>
+  <table class="table-fill">
+    <tbody class="table-hover">
+      <tr>
+        <td class="text-left button" name='reset'>Reset</td>
+        <td class="text-left button" name='resetall'>Reset All Channels</td>
+        <td class="text-left button" name='mute'>Mute Channel Alert</td>
+        <td class="text-left button" name='muteall'>Mute All Alert</td>
+      </tr>
+
+
+      <tr>
+        <td class="text-left button" name='muteall'>Mute All Alert</td>
+        <td class="text-left button" name='unmuteall'>Unmute All Alert</td>
+        <td class="text-left button" name='pause'>Pause</td>
+        <td class="text-left button" name='pauseall'>Pause All Channels</td>
+      </tr>
+
+      <tr>
+        <td class="text-left button" name='restart'>Restart</td>
+        <td class="text-left button" name='restartall'>Restart All Channels</td>
+        <td class="text-left button" name='unsubscribe'> Unsubscribe </td>
+        <td class="text-left" onclick="window.location.href='/monitor'"> Back </td>
+      </tr>
+    </tbody>
+  </table>
+
+</form>

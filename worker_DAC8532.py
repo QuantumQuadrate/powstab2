@@ -26,6 +26,7 @@ class WDAC8532(Worker):
             # it doesn't just keep accumulating a non-physical output.
             dac.set_voltage(self.address, out)
         except IOError:
-            self.exception('A communication issue occured updating the DAC. Reverting output variable.')
+            self.exception("""A communication issue occured updating the DAC.
+                    Reverting output variable.""")
             self.output -= self.delta
         self.ready = True

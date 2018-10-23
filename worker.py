@@ -1,6 +1,9 @@
 import logging
 import time
 from ivPID import PID
+import ConfigParser
+import os
+import filecmp
 
 
 class Worker(object):
@@ -10,6 +13,11 @@ class Worker(object):
         self.channel = channel
         self.wname = 'NE_CH{}_{}'.format(channel, self.type)
         self.config = config
+        configPath = 'configs/'
+        configFiles = os.listdir(configPath)
+        paths = [os.path.join(configPath, basename) for basename in configFiles]
+        latestConfig = max(paths, key=os.path.getctime)
+        self.currentConfig = latestConfig
         self.logger = logger or logging.getLogger(__name__)
         self.setup_pid()
         self.ready = True
@@ -24,6 +32,17 @@ class Worker(object):
     def setup(self):
         "override for actuator specific initilization"
         pass
+
+    def updateConfig(self):
+        configPath = 'configs/'
+        configFiles = os.listdir(configPath)
+        paths = [os.path.join(configPath, basename) for basename in configFiles]
+        latestConfig = max(paths, key=os.path.getctime)
+        if latestConfig != self.currentConfig and not filecmp.cmp(latestConfig, self.currentConfig):
+            self.config = ConfigParser.ConfigParser()
+            self.config.read(latestConfig)
+            self.setup_pid()
+        return ''
 
     def setup_pid(self):
         section = 'CHANNEL{}'.format(self.channel)
@@ -49,6 +68,9 @@ class Worker(object):
         input = input_obj['measurement']
         # if we end up in a wierd state where the ready pin does get set back then just continue
         if self.ready or (time.time()-self.last_update) > 10:
+            if input < 0:  # not allowed for this system, update to define a settable range
+                self.error_sig = True
+                return True
             self.ready = False
             self.last_update = time.time()
             out = self.pid.update(input)
@@ -71,13 +93,11 @@ class Worker(object):
             self.logger.debug('[{}] error {:05.3f}, max error {:05.3f}'.format(self.wname, self.pid.last_error, self.max_error))
         else:
             self.logger.warning('[{}] Recieved new input while busy updating the setpoint.'.format(self.wname))
-
         if abs(input - self.pid.SetPoint) > self.max_error:
             self.error_sig = True
         else:
             self.error_sig = False
         return self.error_sig
-
 
     def update_setpoint(self, sp):
         self.pid.SetPoint = sp
@@ -93,5 +113,5 @@ class Worker(object):
         self.pid.clear()
 
     def update_output(self):
-        "Override in child class.  Set self.ready to True when complete."
+        "Override in child class. Set self.ready to True when complete."
         raise NotImplementedError
