@@ -165,7 +165,7 @@ class PIDServer(Server):
             return render_template('keywords.html', id=id, kw_dict=kwargs, alert=alert, pause=pause, config_dict=configStuff)
 
         super(PIDServer, self).runServer(sub, stream)
-        app.run(host='0.0.0.0', debug=True, use_reloader=False, port=80)
+        app.run(host='0.0.0.0', debug=True, use_reloader=False)
 
 
 class MatrixTransformServer(Server):
