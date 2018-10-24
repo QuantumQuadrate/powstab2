@@ -2,9 +2,9 @@ from origin import TIMESTAMP
 import ConfigParser
 from worker_K10CR1 import WK10CR1
 from worker_DAC8532 import WDAC8532
-from datetime import datetime
 import os
 from shutil import copyfile
+import time
 
 
 def stream_callback(stream_id, data, log, calibration=1, field='', name='', channel=''):
@@ -50,13 +50,17 @@ class configManager():
             if fb_type in [WDAC8532.type, WK10CR1.type]:
                 # get the channel number from the section title
                 ch_num = int(section.rsplit('CHANNEL')[1])
+                try:
+                    cal = self.config.getfloat(section, 'calibration')
+                except ConfigParser.NoOptionError:
+                    cal = 1
                 # callback has to be fully defined before Subscriber is initialized, since it starts
                 # a new process and won't know about anything in the main process after it starts
                 channels.append({
                     'number': ch_num,
                     'callback': stream_callback,
                     'kwargs': {
-                        'calibration': 1,
+                        'calibration': cal,
                         'field': self.config.get(section, 'FieldName'),
                         'name': section,
                         'channel': ch_num
@@ -65,7 +69,7 @@ class configManager():
         return channels
 
     def updateConfig(self):
-        fileName = "configs/config"+str(datetime.now())+".cfg"
+        fileName = "configs/config_"+str(int(time.time()))+".cfg"
         f = open(fileName, "w+")
         with f as configfile:
             self.config.write(configfile)
