@@ -133,7 +133,12 @@ class generic_Handler(object):
                         'kwargs': cb['kwargs']
                     }
         sub_list_json = json.dumps(self.sub_list)
-        requests.put('http://127.0.0.1:5000/monitor', json=sub_list_json)
+        mon_addr = 'http://127.0.0.1/monitor'
+        try:
+            requests.put(mon_addr, json=sub_list_json)
+        except IOError:
+            time.sleep(0.1)
+            requests.put(mon_addr, json=sub_list_json)
         return self.stream_filter
 
 
