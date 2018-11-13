@@ -133,7 +133,7 @@ class generic_Handler(object):
                         'kwargs': cb['kwargs']
                     }
         sub_list_json = json.dumps(self.sub_list)
-        mon_addr = 'http://127.0.0.1/monitor'
+        mon_addr = 'http://127.0.0.1:5000/monitor'
         try:
             requests.put(mon_addr, json=sub_list_json)
         except IOError:
