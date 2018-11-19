@@ -72,8 +72,7 @@ class configManager():
     def updateConfig(self):
         fileName = "configs/config"+str(datetime.now())+".cfg"
         f = open(fileName, "w+")
-        with f as configfile:
-            self.config.write(fileName)
+        self.config.write(fileName)
         
         f.close()
         if not filecmp.cmp(self.configFile, fileName):
