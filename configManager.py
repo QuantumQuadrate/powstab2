@@ -3,6 +3,7 @@ import ConfigParser
 from worker_K10CR1 import WK10CR1
 from worker_DAC8532 import WDAC8532
 import os
+import filecmp
 from shutil import copyfile
 import time
 
