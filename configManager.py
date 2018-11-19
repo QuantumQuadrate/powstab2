@@ -34,10 +34,10 @@ class configManager():
             configFiles = os.listdir(configPath)
         paths = [os.path.join(configPath, basename) for basename in configFiles]
 
-        latestConfig = max(paths, key=os.path.getctime)
-        self.configFile = latestConfig
+        self.latestConfig = max(paths, key=os.path.getctime)
+        self.configFile = self.latestConfig
         self.config = ConfigParser.ConfigParser()
-        self.config.read(latestConfig)
+        self.config.read(self.latestConfig)
         # get all the activated channels from config file
 
     def getChannels(self):
@@ -68,12 +68,16 @@ class configManager():
         return channels
 
     def updateConfig(self):
-        fileName = "configs/config_"+str(int(time.time()))+".cfg"
-        f = open(fileName, "w+")
-        with f as configfile:
-            self.config.write(configfile)
+        fileName = "configs/config"+str(datetime.now())+".cfg"
+        
+        if not filecmp.cmp(self.latestConfig, filename)
+            f = open(fileName, "w+")
+            with f as configfile:
+                self.config.write(configfile)
+            self.latestconfig = filename
         f.close()
         return ''
+
 
     def getConfigFilePath(self):
         return self.configFile
