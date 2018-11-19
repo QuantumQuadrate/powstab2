@@ -75,7 +75,7 @@ class configManager():
         with f as configfile:
             self.config.write(configfile)
         f.close()
-        if not filecmp.cmp(self.configFile, fileName):
+        if filecmp.cmp(self.configFile, fileName):
             os.remove(self.configFile)
             self.configFile = fileName
 
