@@ -70,14 +70,14 @@ class configManager():
         return channels
 
     def updateConfig(self):
-        fileName = "configs/config"+str(datetime.now())+".cfg"
-        f = open(fileName, "w+")
-        with f as configfile:
-            self.config.write(configfile)
-        f.close()
-        if filecmp.cmp(self.configFile, fileName):
-            os.remove(fileName)
-        else:
+        oldConfig = ConfigParser.ConfigParser()
+        oldConfig.read(self.configFile)
+        if self.config != oldConfig:
+            fileName = "configs/config"+str(datetime.now())+".cfg"
+            f = open(fileName, "w+")
+            with f as newConfigFile:
+                self.config.write(newConfigFile)
+            f.close()
             self.configFile = fileName
 
         return ''
