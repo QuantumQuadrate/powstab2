@@ -4,6 +4,7 @@ from worker_K10CR1 import WK10CR1
 from worker_DAC8532 import WDAC8532
 from datetime import datetime
 import os
+import filecmp
 
 def stream_callback(stream_id, data, log, calibration=1, field='', name='', channel=''):
     log.debug('Stream data for `{}` recieved.'.format(name))
@@ -26,9 +27,9 @@ class configManager():
         configPath = 'configs/'
         configFiles = os.listdir(configPath)
         paths = [os.path.join(configPath, basename) for basename in configFiles]
-        latestConfig = max(paths, key=os.path.getctime)
+        self.latestConfig = max(paths, key=os.path.getctime)
         self.config = ConfigParser.ConfigParser()
-        self.config.read(latestConfig)
+        self.config.read(self.latestConfig)
         # get all the activated channels from config file
 
     def getChannels(self):
@@ -63,9 +64,11 @@ class configManager():
 
     def updateConfig(self):
         fileName = "configs/config"+str(datetime.now())+".cfg"
-        f = open(fileName, "w+")
-        with f as configfile:
-            self.config.write(configfile)
+        
+        if not filecmp.cmp(self.latestConfig, filename)
+            f = open(fileName, "w+")
+            with f as configfile:
+                self.config.write(configfile)
         f.close()
         return ''
 
