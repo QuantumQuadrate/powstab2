@@ -43,10 +43,12 @@ class Worker(object):
         configFiles = os.listdir(configPath)
         paths = [os.path.join(configPath, basename) for basename in configFiles]
         latestConfig = max(paths, key=os.path.getctime)
-        if latestConfig != self.currentConfig and not filecmp.cmp(latestConfig, self.currentConfig):
+        if latestConfig != self.currentConfig:
             self.config = ConfigParser.ConfigParser()
             self.config.read(latestConfig)
             self.setup_pid()
+            self.currentConfig = latestConfig
+        
         return ''
 
     def setup_pid(self):
