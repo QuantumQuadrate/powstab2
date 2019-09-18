@@ -11,11 +11,19 @@ from origin import current_time, TIMESTAMP
 import matrixPoller
 
 
+def twos_comp(val):
+    bits=16
+    """compute the 2's complement of int value val"""
+    if (val & (1 << (bits - 1))) != 0: # if sign bit is set e.g., 8bit: 128-255
+        val = val - (1 << bits)        # compute negative value
+    return val                         # return positive value as is
+
+
 def sendOutput(stream_id, data, origin_config, inputFields='A', outputFields='B', matrix="B"):
     # convert temp from mC to C
     input_vector = []
     for input in inputFields:
-        input_vector.append(data[input])
+        input_vector.append(twos_comp(data[input]))
 
     output_vector = np.matmul(np.asarray(matrix), np.asarray(input_vector))
     iter = 0
