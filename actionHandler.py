@@ -16,9 +16,10 @@ class generic_Handler(object):
         self.subscriptions = {}
         self.sub_list = {}
         self.stream_filter = ''
-
+        
     def handle(self, cmd, sub_sock):
         self.sub_sock = sub_sock
+        print cmd
         if cmd['action'] == 'SUBSCRIBE':
             msg = 'Subscribing with stream filter: [{}]'
             self.stream_filter = cmd['stream_filter']

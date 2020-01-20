@@ -68,9 +68,6 @@ class Worker(object):
         input = input_obj['measurement']
         # if we end up in a wierd state where the ready pin does get set back then just continue
         if self.ready or (time.time()-self.last_update) > 10:
-            if input < 0:  # not allowed for this system, update to define a settable range
-                self.error_sig = True
-                return True
             self.ready = False
             self.last_update = time.time()
             out = self.pid.update(input)
