@@ -36,19 +36,24 @@ if __name__ == '__main__':
     logger.info('Started logging')
 
     # get the feedback config files
+    logger.info('reading feedback config')
     conMan = configManager.configManager()
     channels = conMan.getChannels()
 
     # get the origin config file
+    logger.info('reading origin config')
     origin_config = ConfigParser.ConfigParser()
     origin_config.read('origin-server.cfg')
 
     # setup subcription object with special pid poller loop
+    logger.info("creating subscriber with pid poller loop")
     sub = Subscriber(origin_config, logger, loop=pid_poller.pid_poller_loop)
     # read channels from feedback config file
     streamName = ''
+    logger.info("beginning to subscribe to channels {}".format(channels))
     for channel in channels:
         streamName = conMan.config.get('CHANNEL{}'.format(channel['number']), 'StreamName')
+        logger.info("subscribing to stream {}".format(streamName))
         sub.subscribe(
             streamName,
             callback=channel['callback'],
