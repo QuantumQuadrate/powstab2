@@ -2,6 +2,7 @@ from origin import TIMESTAMP
 import ConfigParser
 from worker_K10CR1 import WK10CR1
 from worker_DAC8532 import WDAC8532
+from worker_PDR1 import PDR1
 import os
 import filecmp
 from datetime import datetime
@@ -48,7 +49,7 @@ class configManager():
             if 'CHANNEL' not in section:
                 continue  # not a channel definition
             fb_type = self.config.get(section, 'FeedbackDevice')
-            if fb_type in [WDAC8532.type, WK10CR1.type]:
+            if fb_type in [WDAC8532.type, WK10CR1.type,WPDR1.type]:
                 # get the channel number from the section title
                 ch_num = int(section.rsplit('CHANNEL')[1])
                 try:
