@@ -4,6 +4,7 @@ import json
 import RPi.GPIO as GPIO
 from worker_K10CR1 import WK10CR1
 from worker_DAC8532 import WDAC8532
+from worker_PDR1 import WPDR1
 import requests
 
 
@@ -188,6 +189,8 @@ class PID_Handler(object):
                             self.pids[pid_ctrl_name]['pid'] = WK10CR1(result['channel'], conMan.config, logger=self.log)
                         if fb_type == WDAC8532.type:
                             self.pids[pid_ctrl_name]['pid'] = WDAC8532(result['channel'], conMan.config, logger=self.log)
+                        if fb_type == WPDR1.type:
+                            self.pids[pid_ctrl_name]['pid'] = WPDR1(result['channel'], conMan.config, logger=self.log)
                     # update with new info, save error state
                     try:
                         self.pids[pid_ctrl_name]['pid'].updateConfig()
