@@ -28,7 +28,7 @@ class Worker(object):
         # could also read current state from device
         self.delta = 0  # in case an actuator needs a differential output
         self.address = self.config.getint('CHANNEL{}'.format(channel), 'Address')
-        self.motchan = self.config.getint('CHANNEL{}'.format(channel), 'motchan')
+        self.motchan = self.config.getint('CHANNEL{}'.format(channel), 'Motor_channel')
         self.setup()
         self.last_update = time.time()
         self.last_pos_log = time.time()
