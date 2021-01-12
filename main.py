@@ -8,6 +8,7 @@ import RPi.GPIO as GPIO
 import ads1256.ADS1256 as ads
 from worker_K10CR1 import WK10CR1
 from worker_DAC8532 import WDAC8532
+from worker_PDR1 import WPDR1
 
 
 class RPiNE(object):
@@ -55,6 +56,8 @@ class RPiNE(object):
             fb_type = self.config.get('CHANNEL{}'.format(ch), 'FeedbackDevice')
             if fb_type == WK10CR1.type:
                 self.channels[ch] = WK10CR1(ch, self.config)
+            if fb_type == WPDR1.type:
+                self.channels[ch] = WPDR1(ch,self.config)
             if fb_type == WDAC8532.type:
                 self.channels[ch] = WDAC8532(ch, self.config)
 
