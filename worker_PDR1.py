@@ -10,7 +10,7 @@ class WPDR1(Worker):
         # setup motor
         self.ser_num = self.config.get('CHANNEL{}'.format(self.channel), 'Address')
         self.motchan = self.config.get('CHANNEL{}'.format(self.channel), 'Motor_channel')
-        self.motor = K10CR1(self.motchan,self.ser_num)
+        self.motor = PDR1(self.motchan,self.ser_num)
         # setup thread for actuator since moving rotator can take some time
         self.restart = threading.Event()  # make an event for unpausing execution thread
         self.thread = threading.Thread(target=self.loop, name=self.wname)
