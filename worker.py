@@ -27,14 +27,12 @@ class Worker(object):
         self.output = 0  # TODO: initialize with reasonable start value from config
         # could also read current state from device
         self.delta = 0  # in case an actuator needs a differential output
-        tmpaddress = str(self.config.getint('CHANNEL{}'.format(channel), 'Address'))
-        if(len(tmpaddress) == 9):
-            self.address = int(tmpaddress[0:8])
-            self.motchan = int(tmpaddress[8])
-        else:
-            self.address = int(tmpaddress)
-        # self.address = self.config.getint('CHANNEL{}'.format(channel), 'Address')
-        # self.motchan = self.config.getint('CHANNEL{}'.format(channel), 'Motor_channel')
+        self.address = self.config.getint('CHANNEL{}'.format(channel), 'Address')
+        
+        #if device is PDR1, then read "Motor_channel" from cfg file
+        if(str(self.address)[0:2] == "97"):            
+            self.motchan = self.config.getint('CHANNEL{}'.format(channel), 'Motor_channel')
+            
         self.setup()
         self.last_update = time.time()
         self.last_pos_log = time.time()
