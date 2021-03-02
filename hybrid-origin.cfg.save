@@ -1,0 +1,65 @@
+[MAIN]
+MaxChannels: 4 ; 4 ADC channels
+ErrorPin: 36 ; GPIO pin number for error signal output
+
+[CHANNEL0] ; MZ
+FeedbackDevice: K10CR1 ; waveplate rotator
+Address: 55000350 ; serial number
+StreamName: HYBRID ; stream to subscribe to
+FieldName: z1 ; field name of data in the stream
+
+Kp: 0.5 ; proportional gain
+Ki: 0.21 ; integral gain
+Kd: 0.0 ; derivative gain
+invert: False ; global error signal invert
+TauS: 300 ; finite response filter on integral error (5 minute memory)
+SetPointV: 0.300 ; setpoint in V
+MaxErrorV: 0.020 ; valid +/- SP
+
+
+[CHANNEL1] ; MZ
+FeedbackDevice: K10CR1 ; waveplate rotator
+Address: 55000350 ; serial number
+Source: origin ; is data coming from the attached ADC or origin? (adc or origin)
+StreamName: FNODE_ADCS ; stream to subscribe to
+FieldName: c1 ; field name of data in the stream
+
+Kp: 0.5 ; proportional gain
+Ki: 0.021 ; integral gain
+Kd: 0.0 ; derivative gain
+invert: False ; global error signal invert
+TauS: 300 ; finite response filter on integral error (5 minute memory)
+SetPointV: 0.603 ; setpoint in V
+MaxErrorV: 0.020 ; valid +/- SP
+
+
+[CHANNEL2] ; MXY
+FeedbackDevice: K10CR1 ; waveplate rotator
+Address: 55000483 ; serial number
+Source: origin ; is data coming from the attached ADC or origin? (adc or origin)
+StreamName: FNODE_ADCS ; stream to subscribe to
+FieldName: c2 ; field name of data in the stream
+
+Kp: 0.5 ; proportional gain
+Ki: 0.021 ; integral gain
+Kd: 0.0 ; derivative gain
+invert: False ; global error signal invert
+TauS: 300 ; finite response filter on integral error (5 minute memory)
+SetPointV: 0.871 ; setpoint in V
+MaxErrorV: 0.020 ; valid +/- SP
+
+
+[CHANNEL3]
+FeedbackDevice: DAC8532 ; Analog voltage feedback
+Address: 1 ;
+Source: origin ; is data coming from the attached ADC or origin? (adc or origin)
+StreamName: FNODE_ADCS ; stream to subscribe to
+FieldName: c8 ; field name of data in the stream
+
+Kp: 0.5 ; proportional gain
+Ki: 0.05 ; integral gain
+Kd: 0.0 ; derivative gain
+invert: False ; global error signal invert
+TauS: 300 ; finite response filter on integral error (5 minute memory)
+SetPointV: 0.450 ; setpoint in V
+MaxErrorV: 0.010 ; valid +/- SP 
