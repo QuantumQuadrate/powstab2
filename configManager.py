@@ -36,6 +36,8 @@ class configManager():
 
         latestConfig = max(paths, key=os.path.getctime)
         self.configFile = latestConfig
+        if os.stat(self.configFile).st_size == 0:
+            raise RuntimeError("config file {} is empty. Delete then try again".format(self.configFile))
         self.config = ConfigParser.ConfigParser()
         self.config.read(latestConfig)
         # get all the activated channels from config file
